@@ -1,3 +1,9 @@
 package main
 
-func main() {}
+import (
+	"loyalty-system/internal/config"
+)
+
+func main() {
+	config.New()
+}
