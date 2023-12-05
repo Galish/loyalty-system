@@ -1,17 +1,20 @@
 package router
 
 import (
+	"loyalty-system/internal/auth"
 	"loyalty-system/internal/config"
 	"net/http"
 )
 
 type httpHandler struct {
-	cfg *config.Config
+	cfg         *config.Config
+	authService *auth.AuthService
 }
 
-func newHandler(cfg *config.Config) *httpHandler {
+func newHandler(cfg *config.Config, authService *auth.AuthService) *httpHandler {
 	return &httpHandler{
-		cfg: cfg,
+		cfg:         cfg,
+		authService: authService,
 	}
 }
 

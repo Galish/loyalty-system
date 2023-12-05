@@ -14,4 +14,8 @@ func parseEnvVars() {
 	if accrualAddr := os.Getenv("ACCRUAL_SYSTEM_ADDRESS"); accrualAddr != "" {
 		cfg.AccrualAddr = accrualAddr
 	}
+
+	if logLevel := os.Getenv("LOG_LEVEL"); logLevel != "" {
+		cfg.LogLevel = logLevel
+	}
 }
