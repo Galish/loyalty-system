@@ -11,26 +11,51 @@ type AuthService struct {
 	repo repository.UserRepository
 }
 
+type Credentials struct {
+	Login    string `json:"login"`
+	Password string `json:"password"`
+}
+
 func NewService(repo repository.UserRepository) *AuthService {
 	return &AuthService{
 		repo: repo,
 	}
 }
 
-func (as *AuthService) Register(ctx context.Context, login, password string) error {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+func (as *AuthService) Register(ctx context.Context, creds Credentials) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(creds.Password), 14)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return as.repo.Create(ctx, login, string(bytes))
+	user, err := as.repo.Create(ctx, creds.Login, string(bytes))
+	if err != nil {
+		return "", err
+	}
+
+	token, err := GenerateToken(user)
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
 }
 
-func (as *AuthService) Authenticate(ctx context.Context, login, password string) error {
-	user, err := as.repo.GetByLogin(ctx, login)
+func (as *AuthService) Authenticate(ctx context.Context, creds Credentials) (string, error) {
+	user, err := as.repo.GetByLogin(ctx, creds.Login)
 	if err != nil {
-		return nil
+		return "", nil
 	}
 
-	return bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(creds.Password))
+	if err != nil {
+		return "", err
+	}
+
+	token, err := GenerateToken(user)
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
 }

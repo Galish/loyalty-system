@@ -6,7 +6,7 @@ import (
 )
 
 type UserRepository interface {
-	Create(context.Context, string, string) error
+	Create(context.Context, string, string) (*userRepo.User, error)
 	GetByLogin(context.Context, string) (*userRepo.User, error)
 }
 

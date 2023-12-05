@@ -18,7 +18,7 @@ func (s *psqlStore) Bootstrap(ctx context.Context) error {
 		ctx,
 		`
 			CREATE TABLE IF NOT EXISTS users (
-				id serial PRIMARY KEY,
+				uuid varchar(36) NOT NULL,
 				login varchar(250) NOT NULL,
 				password varchar(250) NOT NULL,
 				is_active boolean DEFAULT true
