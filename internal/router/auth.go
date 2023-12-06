@@ -10,7 +10,7 @@ import (
 	repo "loyalty-system/internal/repository"
 )
 
-const AuthCookieName = "auth"
+const authCookieName = "auth"
 
 func (h *httpHandler) Register(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
@@ -67,7 +67,7 @@ func setAuthCookie(w http.ResponseWriter, token string) {
 	http.SetCookie(
 		w,
 		&http.Cookie{
-			Name:  AuthCookieName,
+			Name:  authCookieName,
 			Value: token,
 		},
 	)

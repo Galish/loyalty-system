@@ -3,6 +3,7 @@ package router
 import (
 	"loyalty-system/internal/auth"
 	"loyalty-system/internal/config"
+	"loyalty-system/internal/middleware"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -10,6 +11,8 @@ import (
 func New(cfg *config.Config, authService *auth.AuthService) *chi.Mux {
 	handler := newHandler(cfg, authService)
 	router := chi.NewRouter()
+
+	router.Use(middleware.WithRequestLogger)
 
 	router.Route("/api/user", func(r chi.Router) {
 		r.Post("/register", handler.Register)
@@ -23,7 +26,7 @@ func New(cfg *config.Config, authService *auth.AuthService) *chi.Mux {
 		r.Get("/withdrawals", handler.Ping)
 	})
 
-	router.Post("/ping", handler.Register)
+	router.Get("/ping", handler.Ping)
 
 	return router
 }

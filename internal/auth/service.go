@@ -7,6 +7,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+const AuthHeaderName = "X-User"
+
 type AuthService struct {
 	repo repository.UserRepository
 }
