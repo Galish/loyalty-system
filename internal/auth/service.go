@@ -23,7 +23,7 @@ func NewService(repo repository.UserRepository) *AuthService {
 }
 
 func (as *AuthService) Register(ctx context.Context, creds Credentials) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(creds.Password), 14)
+	bytes, err := bcrypt.GenerateFromPassword([]byte(creds.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", err
 	}

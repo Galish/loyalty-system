@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"loyalty-system/internal/auth"
-	userRepo "loyalty-system/internal/repository/user"
+	repo "loyalty-system/internal/repository"
 )
 
 const AuthCookieName = "auth"
@@ -26,7 +26,7 @@ func (h *httpHandler) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token, err := h.authService.Register(r.Context(), creds)
-	if err != nil && errors.Is(err, userRepo.ErrConflict) {
+	if err != nil && errors.Is(err, repo.ErrConflict) {
 		http.Error(w, err.Error(), http.StatusConflict)
 		return
 	}

@@ -1,20 +1,22 @@
-package userRepository
+package psql
 
 import (
 	"context"
 	"errors"
 
+	repo "loyalty-system/internal/repository"
+
 	"github.com/jackc/pgx/v5"
 )
 
-func (s *psqlStore) GetByLogin(ctx context.Context, login string) (*User, error) {
+func (s *psqlStore) GetByLogin(ctx context.Context, login string) (*repo.User, error) {
 	row := s.db.QueryRowContext(
 		ctx,
 		`SELECT * FROM users WHERE login=$1;`,
 		login,
 	)
 
-	var user User
+	var user repo.User
 	err := row.Scan(
 		&user.ID,
 		&user.Login,
@@ -23,7 +25,7 @@ func (s *psqlStore) GetByLogin(ctx context.Context, login string) (*User, error)
 	)
 
 	if err != nil && errors.Is(pgx.ErrNoRows, err) {
-		return nil, ErrNotFound
+		return nil, repo.ErrNotFound
 	}
 
 	if err != nil {

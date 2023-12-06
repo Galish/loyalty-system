@@ -1,4 +1,4 @@
-package userRepository
+package psql
 
 import (
 	"context"
@@ -15,7 +15,7 @@ type psqlStore struct {
 	db *sql.DB
 }
 
-func New(cfg *config.Config) (*psqlStore, error) {
+func NewStore(cfg *config.Config) (*psqlStore, error) {
 	if cfg.DBAddr == "" {
 		return nil, errors.New("database address missing")
 	}
@@ -34,4 +34,8 @@ func New(cfg *config.Config) (*psqlStore, error) {
 	}
 
 	return &store, nil
+}
+
+func (s *psqlStore) Close() error {
+	return s.db.Close()
 }

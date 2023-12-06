@@ -15,13 +15,15 @@ func New(cfg *config.Config, authService *auth.AuthService) *chi.Mux {
 		r.Post("/register", handler.Register)
 		r.Post("/login", handler.Login)
 
-		r.Post("/orders", handler.stub)
-		r.Get("/orders", handler.stub)
+		r.Post("/orders", handler.Ping)
+		r.Get("/orders", handler.Ping)
 
-		r.Get("/balance", handler.stub)
-		r.Post("/balance/withdraw", handler.stub)
-		r.Get("/withdrawals", handler.stub)
+		r.Get("/balance", handler.Ping)
+		r.Post("/balance/withdraw", handler.Ping)
+		r.Get("/withdrawals", handler.Ping)
 	})
+
+	router.Post("/ping", handler.Register)
 
 	return router
 }

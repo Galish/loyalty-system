@@ -1,7 +1,7 @@
 package auth
 
 import (
-	userRepo "loyalty-system/internal/repository/user"
+	repo "loyalty-system/internal/repository"
 
 	"github.com/golang-jwt/jwt/v4"
 )
@@ -13,7 +13,7 @@ type JWTClaims struct {
 	UserID string
 }
 
-func GenerateToken(user *userRepo.User) (string, error) {
+func GenerateToken(user *repo.User) (string, error) {
 	token := jwt.NewWithClaims(
 		jwt.SigningMethodHS256,
 		&JWTClaims{

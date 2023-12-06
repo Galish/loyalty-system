@@ -1,15 +1,17 @@
-package userRepository
+package psql
 
 import (
 	"context"
 	"errors"
 
+	repo "loyalty-system/internal/repository"
+
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
-func (s *psqlStore) Create(ctx context.Context, login, password string) (*User, error) {
-	user := User{
+func (s *psqlStore) Create(ctx context.Context, login, password string) (*repo.User, error) {
+	user := repo.User{
 		ID:       uuid.NewString(),
 		Login:    login,
 		Password: password,
@@ -27,7 +29,7 @@ func (s *psqlStore) Create(ctx context.Context, login, password string) (*User, 
 
 	var pgErr *pgconn.PgError
 	if err != nil && errors.As(err, &pgErr) && pgErr.Code == "23505" {
-		return nil, ErrConflict
+		return nil, repo.ErrConflict
 	}
 	if err != nil {
 		return nil, err

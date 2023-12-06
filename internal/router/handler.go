@@ -18,6 +18,6 @@ func newHandler(cfg *config.Config, authService *auth.AuthService) *httpHandler 
 	}
 }
 
-func (f *httpHandler) stub(w http.ResponseWriter, r *http.Request) {
+func (f *httpHandler) Ping(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }

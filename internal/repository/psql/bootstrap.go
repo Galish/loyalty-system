@@ -1,4 +1,4 @@
-package userRepository
+package psql
 
 import (
 	"context"
