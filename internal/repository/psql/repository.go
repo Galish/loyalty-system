@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"errors"
 
-	"loyalty-system/internal/config"
-	"loyalty-system/internal/logger"
+	"github.com/Galish/loyalty-system/internal/config"
+	"github.com/Galish/loyalty-system/internal/logger"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
 )

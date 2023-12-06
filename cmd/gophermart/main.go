@@ -1,12 +1,12 @@
 package main
 
 import (
-	"loyalty-system/internal/auth"
-	"loyalty-system/internal/config"
-	"loyalty-system/internal/logger"
-	"loyalty-system/internal/repository/psql"
-	"loyalty-system/internal/router"
-	"loyalty-system/internal/server"
+	"github.com/Galish/loyalty-system/internal/auth"
+	"github.com/Galish/loyalty-system/internal/config"
+	"github.com/Galish/loyalty-system/internal/logger"
+	"github.com/Galish/loyalty-system/internal/repository/psql"
+	"github.com/Galish/loyalty-system/internal/router"
+	"github.com/Galish/loyalty-system/internal/server"
 )
 
 func main() {

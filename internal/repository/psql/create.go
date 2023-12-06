@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	repo "loyalty-system/internal/repository"
+	repo "github.com/Galish/loyalty-system/internal/repository"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"

@@ -1,9 +1,9 @@
 package router
 
 import (
-	"loyalty-system/internal/auth"
-	"loyalty-system/internal/config"
-	"loyalty-system/internal/middleware"
+	"github.com/Galish/loyalty-system/internal/auth"
+	"github.com/Galish/loyalty-system/internal/config"
+	"github.com/Galish/loyalty-system/internal/middleware"
 
 	"github.com/go-chi/chi/v5"
 )

@@ -1,4 +1,4 @@
-module loyalty-system
+module github.com/Galish/loyalty-system
 
 go 1.19
 

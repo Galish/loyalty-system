@@ -6,8 +6,8 @@ import (
 	"io"
 	"net/http"
 
-	"loyalty-system/internal/auth"
-	repo "loyalty-system/internal/repository"
+	"github.com/Galish/loyalty-system/internal/auth"
+	repo "github.com/Galish/loyalty-system/internal/repository"
 )
 
 const authCookieName = "auth"

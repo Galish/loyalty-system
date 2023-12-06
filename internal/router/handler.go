@@ -1,9 +1,10 @@
 package router
 
 import (
-	"loyalty-system/internal/auth"
-	"loyalty-system/internal/config"
 	"net/http"
+
+	"github.com/Galish/loyalty-system/internal/auth"
+	"github.com/Galish/loyalty-system/internal/config"
 )
 
 type httpHandler struct {

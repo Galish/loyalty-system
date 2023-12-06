@@ -1,7 +1,7 @@
 package auth
 
 import (
-	repo "loyalty-system/internal/repository"
+	repo "github.com/Galish/loyalty-system/internal/repository"
 
 	"github.com/golang-jwt/jwt/v4"
 )

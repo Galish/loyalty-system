@@ -3,7 +3,7 @@ package psql
 import (
 	"context"
 
-	"loyalty-system/internal/logger"
+	"github.com/Galish/loyalty-system/internal/logger"
 )
 
 func (s *psqlStore) Bootstrap(ctx context.Context) error {

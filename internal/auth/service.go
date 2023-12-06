@@ -2,7 +2,8 @@ package auth
 
 import (
 	"context"
-	"loyalty-system/internal/repository"
+
+	"github.com/Galish/loyalty-system/internal/repository"
 
 	"golang.org/x/crypto/bcrypt"
 )
