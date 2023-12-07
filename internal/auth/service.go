@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"errors"
 
 	"github.com/Galish/loyalty-system/internal/repository"
 
@@ -47,12 +48,12 @@ func (as *AuthService) Register(ctx context.Context, creds Credentials) (string,
 func (as *AuthService) Authenticate(ctx context.Context, creds Credentials) (string, error) {
 	user, err := as.repo.GetByLogin(ctx, creds.Login)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(creds.Password))
 	if err != nil {
-		return "", err
+		return "", errors.New("incorrect login/password pair")
 	}
 
 	token, err := GenerateToken(user)

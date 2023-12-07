@@ -15,9 +15,6 @@ type UserRepository interface {
 	GetByLogin(context.Context, string) (*User, error)
 }
 
-type LoyaltyRepository interface {
-}
-
 type User struct {
 	ID       string `json:"uuid"`
 	Login    string `json:"login"`

@@ -25,6 +25,11 @@ func (h *httpHandler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if creds.Login == "" || creds.Password == "" {
+		http.Error(w, "missing login or password", http.StatusBadRequest)
+		return
+	}
+
 	token, err := h.authService.Register(r.Context(), creds)
 	if err != nil && errors.Is(err, repo.ErrConflict) {
 		http.Error(w, err.Error(), http.StatusConflict)
@@ -50,6 +55,11 @@ func (h *httpHandler) Login(w http.ResponseWriter, r *http.Request) {
 	var creds auth.Credentials
 	if err := json.Unmarshal(body, &creds); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if creds.Login == "" || creds.Password == "" {
+		http.Error(w, "missing login or password", http.StatusBadRequest)
 		return
 	}
 
