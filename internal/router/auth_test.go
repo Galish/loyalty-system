@@ -206,7 +206,7 @@ func TestHandlerRegister(t *testing.T) {
 				var authCookie *http.Cookie
 
 				for _, c := range resp.Cookies() {
-					if c.Name == authCookieName {
+					if c.Name == auth.AuthCookieName {
 						authCookie = c
 						break
 					}
@@ -426,7 +426,7 @@ func TestHandlerLogin(t *testing.T) {
 				var authCookie *http.Cookie
 
 				for _, c := range resp.Cookies() {
-					if c.Name == authCookieName {
+					if c.Name == auth.AuthCookieName {
 						authCookie = c
 						break
 					}

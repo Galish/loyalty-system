@@ -1,6 +1,9 @@
 package auth
 
 import (
+	"errors"
+	"fmt"
+
 	repo "github.com/Galish/loyalty-system/internal/repository"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -27,4 +30,29 @@ func GenerateToken(user *repo.User) (string, error) {
 	}
 
 	return tokenString, nil
+}
+
+func ParseToken(tokenString string) (*JWTClaims, error) {
+	var claims JWTClaims
+
+	token, err := jwt.ParseWithClaims(
+		tokenString,
+		&claims,
+		func(t *jwt.Token) (interface{}, error) {
+			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+			}
+
+			return []byte(secretKey), nil
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	if !token.Valid {
+		return nil, errors.New("token is not valid")
+	}
+
+	return &claims, nil
 }
