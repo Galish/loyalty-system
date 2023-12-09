@@ -9,10 +9,10 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func (s *psqlStore) GetByLogin(ctx context.Context, login string) (*repo.User, error) {
+func (s *psqlStore) GetUserByLogin(ctx context.Context, login string) (*repo.User, error) {
 	row := s.db.QueryRowContext(
 		ctx,
-		`SELECT * FROM users WHERE login=$1;`,
+		`SELECT uuid, login, password, is_active FROM users WHERE login=$1;`,
 		login,
 	)
 
@@ -25,7 +25,7 @@ func (s *psqlStore) GetByLogin(ctx context.Context, login string) (*repo.User, e
 	)
 
 	if err != nil && errors.Is(pgx.ErrNoRows, err) {
-		return nil, repo.ErrNotFound
+		return nil, repo.ErrUserNotFound
 	}
 
 	if err != nil {

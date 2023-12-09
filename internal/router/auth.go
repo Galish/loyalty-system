@@ -15,14 +15,14 @@ func (h *httpHandler) Register(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		logger.WithError(err).Debug("unable to read request body")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "unable to read request body", http.StatusInternalServerError)
 		return
 	}
 
 	var creds auth.Credentials
 	if err := json.Unmarshal(body, &creds); err != nil {
 		logger.WithError(err).Debug("cannot decode request JSON body")
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "cannot decode request JSON body", http.StatusBadRequest)
 		return
 	}
 
@@ -33,15 +33,15 @@ func (h *httpHandler) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token, err := h.authService.Register(r.Context(), creds)
-	if err != nil && errors.Is(err, repo.ErrConflict) {
-		logger.WithError(err).Debug("unable to register user")
-		http.Error(w, err.Error(), http.StatusConflict)
+	if err != nil && errors.Is(err, repo.ErrUserConflict) {
+		logger.WithError(err).Debug("unable to write to repository")
+		http.Error(w, "unable to write to repository", http.StatusConflict)
 		return
 	}
 
 	if err != nil {
-		logger.WithError(err).Debug("unable to register user")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		logger.WithError(err).Debug("unable to write to repository")
+		http.Error(w, "unable to write to repository", http.StatusInternalServerError)
 		return
 	}
 
@@ -54,14 +54,14 @@ func (h *httpHandler) Login(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		logger.WithError(err).Debug("unable to read request body")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "unable to read request body", http.StatusInternalServerError)
 		return
 	}
 
 	var creds auth.Credentials
 	if err := json.Unmarshal(body, &creds); err != nil {
 		logger.WithError(err).Debug("cannot decode request JSON body")
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "cannot decode request JSON body", http.StatusBadRequest)
 		return
 	}
 
@@ -73,7 +73,7 @@ func (h *httpHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 	token, err := h.authService.Authenticate(r.Context(), creds)
 	if err != nil {
-		logger.WithError(err).Debug("unable to authenticate user")
+		logger.WithError(err).Debug("unable to write to repository")
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}

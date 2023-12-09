@@ -3,16 +3,24 @@ package repository
 import (
 	"context"
 	"errors"
+	"time"
 )
 
 var (
-	ErrConflict = errors.New("user already exists")
-	ErrNotFound = errors.New("user not found")
+	ErrOrderExists   = errors.New("order has already been added")
+	ErrOrderConflict = errors.New("order has already been added by another user")
+	ErrUserConflict  = errors.New("user already exists")
+	ErrUserNotFound  = errors.New("user not found")
 )
 
 type UserRepository interface {
-	Create(context.Context, string, string) (*User, error)
-	GetByLogin(context.Context, string) (*User, error)
+	CreateUser(context.Context, string, string) (*User, error)
+	GetUserByLogin(context.Context, string) (*User, error)
+}
+
+type LoyaltyRepository interface {
+	CreateOrder(context.Context, *Order) error
+	GetUserOrders(context.Context, string) ([]*Order, error)
 }
 
 type User struct {
@@ -20,4 +28,12 @@ type User struct {
 	Login    string `json:"login"`
 	Password string `json:"password"`
 	IsActive bool   `json:"is_active"`
+}
+
+type Order struct {
+	ID         string    `json:"uuid"`
+	Status     string    `json:"status"`
+	Accrual    uint      `json:"accrual"`
+	UploadedAt time.Time `json:"uploaded_at"`
+	User       string    `json:"user_id"`
 }

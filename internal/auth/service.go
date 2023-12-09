@@ -35,7 +35,7 @@ func (as *AuthService) Register(ctx context.Context, creds Credentials) (string,
 		return "", err
 	}
 
-	user, err := as.repo.Create(ctx, creds.Login, string(bytes))
+	user, err := as.repo.CreateUser(ctx, creds.Login, string(bytes))
 	if err != nil {
 		return "", err
 	}
@@ -49,7 +49,7 @@ func (as *AuthService) Register(ctx context.Context, creds Credentials) (string,
 }
 
 func (as *AuthService) Authenticate(ctx context.Context, creds Credentials) (string, error) {
-	user, err := as.repo.GetByLogin(ctx, creds.Login)
+	user, err := as.repo.GetUserByLogin(ctx, creds.Login)
 	if err != nil {
 		return "", err
 	}

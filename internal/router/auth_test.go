@@ -45,7 +45,7 @@ func TestHandlerRegister(t *testing.T) {
 			"user",
 			gomock.Any(),
 		).
-		Return(nil, repository.ErrConflict).
+		Return(nil, repository.ErrUserConflict).
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}
@@ -249,7 +249,7 @@ func TestHandlerLogin(t *testing.T) {
 			gomock.Any(),
 			"user",
 		).
-		Return(nil, repository.ErrNotFound).
+		Return(nil, repository.ErrUserNotFound).
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}
