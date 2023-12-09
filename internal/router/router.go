@@ -17,26 +17,28 @@ func New(
 	handler := newHandler(cfg, auth, loyalty)
 	router := chi.NewRouter()
 
-	router.Group(func(r chi.Router) {
-		r.Use(middleware.WithRequestLogger)
-
-		r.Post("/api/user/register", handler.Register)
-		r.Post("/api/user/login", handler.Login)
-
-		r.Get("/ping", handler.Ping)
-	})
-
 	router.Route("/api/user", func(r chi.Router) {
-		r.Use(middleware.WithAuthChecker)
-		r.Use(middleware.WithRequestLogger)
+		r.Group(func(r chi.Router) {
+			r.Use(middleware.WithRequestLogger)
 
-		r.Post("/orders", handler.AddOrder)
-		r.Get("/orders", handler.GetOrders)
+			r.Post("/register", handler.Register)
+			r.Post("/login", handler.Login)
+		})
 
-		r.Get("/balance", handler.Ping)
-		r.Post("/balance/withdraw", handler.Ping)
-		r.Get("/withdrawals", handler.Ping)
+		r.Group(func(r chi.Router) {
+			r.Use(middleware.WithAuthChecker)
+			r.Use(middleware.WithRequestLogger)
+
+			r.Post("/orders", handler.AddOrder)
+			r.Get("/orders", handler.GetOrders)
+
+			r.Get("/balance", handler.Ping)
+			r.Post("/balance/withdraw", handler.Ping)
+			r.Get("/withdrawals", handler.Ping)
+		})
 	})
+
+	router.Get("/ping", handler.Ping)
 
 	return router
 }

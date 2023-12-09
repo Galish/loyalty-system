@@ -26,7 +26,7 @@ func TestHandlerRegister(t *testing.T) {
 	m := mocks.NewMockUserRepository(ctrl)
 
 	m.EXPECT().
-		Create(
+		CreateUser(
 			gomock.Any(),
 			"username",
 			gomock.Any(),
@@ -40,7 +40,7 @@ func TestHandlerRegister(t *testing.T) {
 		AnyTimes()
 
 	m.EXPECT().
-		Create(
+		CreateUser(
 			gomock.Any(),
 			"user",
 			gomock.Any(),
@@ -52,7 +52,7 @@ func TestHandlerRegister(t *testing.T) {
 	authService := auth.NewService(m)
 
 	ts := httptest.NewServer(
-		New(&cfg, authService),
+		New(&cfg, authService, nil),
 	)
 	defer ts.Close()
 
@@ -232,7 +232,7 @@ func TestHandlerLogin(t *testing.T) {
 	m := mocks.NewMockUserRepository(ctrl)
 
 	m.EXPECT().
-		GetByLogin(
+		GetUserByLogin(
 			gomock.Any(),
 			"username",
 		).
@@ -245,7 +245,7 @@ func TestHandlerLogin(t *testing.T) {
 		AnyTimes()
 
 	m.EXPECT().
-		GetByLogin(
+		GetUserByLogin(
 			gomock.Any(),
 			"user",
 		).
@@ -256,7 +256,7 @@ func TestHandlerLogin(t *testing.T) {
 	authService := auth.NewService(m)
 
 	ts := httptest.NewServer(
-		New(&cfg, authService),
+		New(&cfg, authService, nil),
 	)
 	defer ts.Close()
 

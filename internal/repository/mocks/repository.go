@@ -35,32 +35,84 @@ func (m *MockUserRepository) EXPECT() *MockUserRepositoryMockRecorder {
 	return m.recorder
 }
 
-// Create mocks base method.
-func (m *MockUserRepository) Create(arg0 context.Context, arg1, arg2 string) (*repository.User, error) {
+// CreateUser mocks base method.
+func (m *MockUserRepository) CreateUser(arg0 context.Context, arg1, arg2 string) (*repository.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "CreateUser", arg0, arg1, arg2)
 	ret0, _ := ret[0].(*repository.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// Create indicates an expected call of Create.
-func (mr *MockUserRepositoryMockRecorder) Create(arg0, arg1, arg2 interface{}) *gomock.Call {
+// CreateUser indicates an expected call of CreateUser.
+func (mr *MockUserRepositoryMockRecorder) CreateUser(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockUserRepository)(nil).Create), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockUserRepository)(nil).CreateUser), arg0, arg1, arg2)
 }
 
-// GetByLogin mocks base method.
-func (m *MockUserRepository) GetByLogin(arg0 context.Context, arg1 string) (*repository.User, error) {
+// GetUserByLogin mocks base method.
+func (m *MockUserRepository) GetUserByLogin(arg0 context.Context, arg1 string) (*repository.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByLogin", arg0, arg1)
+	ret := m.ctrl.Call(m, "GetUserByLogin", arg0, arg1)
 	ret0, _ := ret[0].(*repository.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetByLogin indicates an expected call of GetByLogin.
-func (mr *MockUserRepositoryMockRecorder) GetByLogin(arg0, arg1 interface{}) *gomock.Call {
+// GetUserByLogin indicates an expected call of GetUserByLogin.
+func (mr *MockUserRepositoryMockRecorder) GetUserByLogin(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByLogin", reflect.TypeOf((*MockUserRepository)(nil).GetByLogin), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByLogin", reflect.TypeOf((*MockUserRepository)(nil).GetUserByLogin), arg0, arg1)
+}
+
+// MockLoyaltyRepository is a mock of LoyaltyRepository interface.
+type MockLoyaltyRepository struct {
+	ctrl     *gomock.Controller
+	recorder *MockLoyaltyRepositoryMockRecorder
+}
+
+// MockLoyaltyRepositoryMockRecorder is the mock recorder for MockLoyaltyRepository.
+type MockLoyaltyRepositoryMockRecorder struct {
+	mock *MockLoyaltyRepository
+}
+
+// NewMockLoyaltyRepository creates a new mock instance.
+func NewMockLoyaltyRepository(ctrl *gomock.Controller) *MockLoyaltyRepository {
+	mock := &MockLoyaltyRepository{ctrl: ctrl}
+	mock.recorder = &MockLoyaltyRepositoryMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockLoyaltyRepository) EXPECT() *MockLoyaltyRepositoryMockRecorder {
+	return m.recorder
+}
+
+// CreateOrder mocks base method.
+func (m *MockLoyaltyRepository) CreateOrder(arg0 context.Context, arg1 *repository.Order) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateOrder", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateOrder indicates an expected call of CreateOrder.
+func (mr *MockLoyaltyRepositoryMockRecorder) CreateOrder(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOrder", reflect.TypeOf((*MockLoyaltyRepository)(nil).CreateOrder), arg0, arg1)
+}
+
+// GetUserOrders mocks base method.
+func (m *MockLoyaltyRepository) GetUserOrders(arg0 context.Context, arg1 string) ([]*repository.Order, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserOrders", arg0, arg1)
+	ret0, _ := ret[0].([]*repository.Order)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserOrders indicates an expected call of GetUserOrders.
+func (mr *MockLoyaltyRepositoryMockRecorder) GetUserOrders(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserOrders", reflect.TypeOf((*MockLoyaltyRepository)(nil).GetUserOrders), arg0, arg1)
 }
