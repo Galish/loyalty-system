@@ -1,6 +1,9 @@
 package server
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 type httpServer struct {
 	addr    string
@@ -15,5 +18,6 @@ func New(addr string, handler http.Handler) *httpServer {
 }
 
 func (s *httpServer) Run() error {
+	fmt.Println("running server on", s.addr)
 	return http.ListenAndServe(s.addr, s.handler)
 }

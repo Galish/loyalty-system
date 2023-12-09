@@ -1,20 +1,24 @@
 package router
 
 import (
-	"loyalty-system/internal/config"
 	"net/http"
+
+	"github.com/Galish/loyalty-system/internal/auth"
+	"github.com/Galish/loyalty-system/internal/config"
 )
 
 type httpHandler struct {
-	cfg *config.Config
+	cfg         *config.Config
+	authService *auth.AuthService
 }
 
-func newHandler(cfg *config.Config) *httpHandler {
+func newHandler(cfg *config.Config, authService *auth.AuthService) *httpHandler {
 	return &httpHandler{
-		cfg: cfg,
+		cfg:         cfg,
+		authService: authService,
 	}
 }
 
-func (f *httpHandler) stub(w http.ResponseWriter, r *http.Request) {
+func (f *httpHandler) Ping(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
