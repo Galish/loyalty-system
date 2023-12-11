@@ -21,7 +21,7 @@ func main() {
 	}
 	defer store.Close()
 
-	authService := auth.NewService(store)
+	authService := auth.NewService(store, cfg.SecretKey)
 	loyaltyService := loyalty.NewService(store)
 
 	router := router.New(cfg, authService, loyaltyService)

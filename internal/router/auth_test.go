@@ -49,7 +49,7 @@ func TestHandlerRegister(t *testing.T) {
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}
-	authService := auth.NewService(m)
+	authService := auth.NewService(m, "yvdUuY)HSX}?&b")
 
 	ts := httptest.NewServer(
 		New(&cfg, authService, nil),
@@ -253,7 +253,7 @@ func TestHandlerLogin(t *testing.T) {
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}
-	authService := auth.NewService(m)
+	authService := auth.NewService(m, "yvdUuY)HSX}?&b")
 
 	ts := httptest.NewServer(
 		New(&cfg, authService, nil),

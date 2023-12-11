@@ -26,7 +26,7 @@ func New(
 		})
 
 		r.Group(func(r chi.Router) {
-			r.Use(middleware.WithAuthChecker)
+			r.Use(middleware.WithAuthChecker(auth))
 			r.Use(middleware.WithRequestLogger)
 
 			r.Post("/orders", handler.AddOrder)
@@ -38,7 +38,11 @@ func New(
 		})
 	})
 
-	router.Get("/ping", handler.Ping)
+	router.Group(func(r chi.Router) {
+		r.Use(middleware.WithRequestLogger)
+
+		r.Get("/ping", handler.Ping)
+	})
 
 	return router
 }

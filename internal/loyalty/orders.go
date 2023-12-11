@@ -26,16 +26,16 @@ const (
 	StatusInvalid    = Status("INVALID")
 	StatusProcessed  = Status("PROCESSED")
 
-	TimeLayout = time.RFC3339 //"2006-01-02T15:04:05-07:00"
+	TimeLayout = time.RFC3339
 )
 
 var (
-	ErrInvalidOrderID = errors.New("invalid order number value")
+	ErrInvalidOrderNumber = errors.New("invalid order number value")
 )
 
 func (s *LoyaltyService) AddOrder(ctx context.Context, id, user string) (*Order, error) {
-	if err := goluhn.Validate(id); err != nil {
-		return nil, ErrInvalidOrderID
+	if !s.ValidateOrderNumber(id) {
+		return nil, ErrInvalidOrderNumber
 	}
 
 	order := repo.Order{
@@ -79,4 +79,16 @@ func (s *LoyaltyService) GetOrders(ctx context.Context, userID string) ([]*Order
 	}
 
 	return userOrders, nil
+}
+
+func (s *LoyaltyService) ValidateOrderNumber(id string) bool {
+	if id == "" {
+		return false
+	}
+
+	if err := goluhn.Validate(id); err != nil {
+		return false
+	}
+
+	return true
 }

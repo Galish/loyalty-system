@@ -8,6 +8,7 @@ import (
 
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/logger"
+	"github.com/Galish/loyalty-system/internal/loyalty"
 	"github.com/Galish/loyalty-system/internal/repository"
 )
 
@@ -22,16 +23,23 @@ func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 	userID := r.Header.Get(auth.AuthHeaderName)
 
 	_, err = h.loyaltyService.AddOrder(r.Context(), string(number), userID)
-	if err != nil && errors.Is(repository.ErrOrderConflict, err) {
-		http.Error(w, err.Error(), http.StatusConflict)
-		return
-	}
-	if err != nil && errors.Is(repository.ErrOrderExists, err) {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(err.Error()))
-		return
-	}
 	if err != nil {
+		if errors.Is(loyalty.ErrInvalidOrderNumber, err) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		if errors.Is(repository.ErrOrderConflict, err) {
+			http.Error(w, err.Error(), http.StatusConflict)
+			return
+		}
+
+		if errors.Is(repository.ErrOrderExists, err) {
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte(err.Error()))
+			return
+		}
+
 		logger.WithError(err).Debug("unable to add order")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

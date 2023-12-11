@@ -4,11 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/Galish/loyalty-system/internal/repository"
 	repo "github.com/Galish/loyalty-system/internal/repository"
 )
 
-func (s *psqlStore) CreateOrder(ctx context.Context, order *repository.Order) error {
+func (s *psqlStore) CreateOrder(ctx context.Context, order *repo.Order) error {
 	row := s.db.QueryRowContext(
 		ctx,
 		`
@@ -34,11 +33,11 @@ func (s *psqlStore) CreateOrder(ctx context.Context, order *repository.Order) er
 		return err
 	}
 
-	if !order.UploadedAt.Equal(uploadedAt) && order.User != user {
-		return repo.ErrOrderConflict
-	}
-
 	if !order.UploadedAt.Equal(uploadedAt) {
+		if order.User != user {
+			return repo.ErrOrderConflict
+		}
+
 		return repo.ErrOrderExists
 	}
 

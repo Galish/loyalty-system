@@ -36,5 +36,9 @@ func (s *psqlStore) GetUserOrders(ctx context.Context, userID string) ([]*repo.O
 		orders = append(orders, &order)
 	}
 
+	if err := rows.Err(); err != nil {
+		return []*repo.Order{}, err
+	}
+
 	return orders, nil
 }

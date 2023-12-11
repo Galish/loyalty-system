@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/Galish/loyalty-system/internal/auth"
@@ -11,34 +10,31 @@ import (
 
 var errMissingUserID = errors.New("user id not specified")
 
-func WithAuthChecker(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		authData, err := parseAuthCookie(r)
-		if err != nil {
-			logger.WithError(err).Debug("unauthorized access attempt")
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
+func WithAuthChecker(authService *auth.AuthService) func(http.Handler) http.Handler {
+	return func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			cookie, err := r.Cookie(auth.AuthCookieName)
+			if err != nil {
+				logger.WithError(err).Debug("unable to extract auth cookie")
+				w.WriteHeader(http.StatusUnauthorized)
+				return
+			}
 
-		r.Header.Set(auth.AuthHeaderName, authData.UserID)
+			authData, err := authService.ParseToken(cookie.Value)
+			if err != nil {
+				logger.WithError(err).Debug("unable to parse auth token")
+				w.WriteHeader(http.StatusUnauthorized)
+				return
+			}
+			if authData.UserID == "" {
+				logger.WithError(errMissingUserID).Debug("unauthorized access attempt")
+				w.WriteHeader(http.StatusUnauthorized)
+				return
+			}
 
-		h.ServeHTTP(w, r)
-	})
-}
+			r.Header.Set(auth.AuthHeaderName, authData.UserID)
 
-func parseAuthCookie(r *http.Request) (*auth.JWTClaims, error) {
-	cookie, err := r.Cookie(auth.AuthCookieName)
-	if err != nil {
-		return nil, fmt.Errorf("unable to extract auth cookie: %w", err)
+			h.ServeHTTP(w, r)
+		})
 	}
-
-	claims, err := auth.ParseToken(cookie.Value)
-	if err != nil {
-		return nil, fmt.Errorf("unable to parse auth token: %w", err)
-	}
-	if claims.UserID == "" {
-		return nil, errMissingUserID
-	}
-
-	return claims, nil
 }
