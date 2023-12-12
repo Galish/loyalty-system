@@ -11,6 +11,10 @@ func parseEnvVars() {
 		cfg.DBAddr = dbAddr
 	}
 
+	if secretKey := os.Getenv("SECRET_KEY"); secretKey != "" {
+		cfg.SecretKey = secretKey
+	}
+
 	if accrualAddr := os.Getenv("ACCRUAL_SYSTEM_ADDRESS"); accrualAddr != "" {
 		cfg.AccrualAddr = accrualAddr
 	}

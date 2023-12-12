@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
-func (s *psqlStore) Create(ctx context.Context, login, password string) (*repo.User, error) {
+func (s *psqlStore) CreateUser(ctx context.Context, login, password string) (*repo.User, error) {
 	user := repo.User{
 		ID:       uuid.NewString(),
 		Login:    login,
@@ -29,7 +29,7 @@ func (s *psqlStore) Create(ctx context.Context, login, password string) (*repo.U
 
 	var pgErr *pgconn.PgError
 	if err != nil && errors.As(err, &pgErr) && pgErr.Code == "23505" {
-		return nil, repo.ErrConflict
+		return nil, repo.ErrUserConflict
 	}
 	if err != nil {
 		return nil, err

@@ -26,7 +26,7 @@ func TestHandlerRegister(t *testing.T) {
 	m := mocks.NewMockUserRepository(ctrl)
 
 	m.EXPECT().
-		Create(
+		CreateUser(
 			gomock.Any(),
 			"username",
 			gomock.Any(),
@@ -40,19 +40,19 @@ func TestHandlerRegister(t *testing.T) {
 		AnyTimes()
 
 	m.EXPECT().
-		Create(
+		CreateUser(
 			gomock.Any(),
 			"user",
 			gomock.Any(),
 		).
-		Return(nil, repository.ErrConflict).
+		Return(nil, repository.ErrUserConflict).
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}
-	authService := auth.NewService(m)
+	authService := auth.NewService(m, "yvdUuY)HSX}?&b")
 
 	ts := httptest.NewServer(
-		New(&cfg, authService),
+		New(&cfg, authService, nil),
 	)
 	defer ts.Close()
 
@@ -232,7 +232,7 @@ func TestHandlerLogin(t *testing.T) {
 	m := mocks.NewMockUserRepository(ctrl)
 
 	m.EXPECT().
-		GetByLogin(
+		GetUserByLogin(
 			gomock.Any(),
 			"username",
 		).
@@ -245,18 +245,18 @@ func TestHandlerLogin(t *testing.T) {
 		AnyTimes()
 
 	m.EXPECT().
-		GetByLogin(
+		GetUserByLogin(
 			gomock.Any(),
 			"user",
 		).
-		Return(nil, repository.ErrNotFound).
+		Return(nil, repository.ErrUserNotFound).
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}
-	authService := auth.NewService(m)
+	authService := auth.NewService(m, "yvdUuY)HSX}?&b")
 
 	ts := httptest.NewServer(
-		New(&cfg, authService),
+		New(&cfg, authService, nil),
 	)
 	defer ts.Close()
 

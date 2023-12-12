@@ -15,7 +15,8 @@ const (
 )
 
 type AuthService struct {
-	repo repository.UserRepository
+	repo      repository.UserRepository
+	secretKey string
 }
 
 type Credentials struct {
@@ -23,9 +24,10 @@ type Credentials struct {
 	Password string `json:"password"`
 }
 
-func NewService(repo repository.UserRepository) *AuthService {
+func NewService(repo repository.UserRepository, secretKey string) *AuthService {
 	return &AuthService{
-		repo: repo,
+		repo:      repo,
+		secretKey: secretKey,
 	}
 }
 
@@ -35,12 +37,12 @@ func (as *AuthService) Register(ctx context.Context, creds Credentials) (string,
 		return "", err
 	}
 
-	user, err := as.repo.Create(ctx, creds.Login, string(bytes))
+	user, err := as.repo.CreateUser(ctx, creds.Login, string(bytes))
 	if err != nil {
 		return "", err
 	}
 
-	token, err := GenerateToken(user)
+	token, err := as.GenerateToken(user)
 	if err != nil {
 		return "", err
 	}
@@ -49,7 +51,7 @@ func (as *AuthService) Register(ctx context.Context, creds Credentials) (string,
 }
 
 func (as *AuthService) Authenticate(ctx context.Context, creds Credentials) (string, error) {
-	user, err := as.repo.GetByLogin(ctx, creds.Login)
+	user, err := as.repo.GetUserByLogin(ctx, creds.Login)
 	if err != nil {
 		return "", err
 	}
@@ -59,7 +61,7 @@ func (as *AuthService) Authenticate(ctx context.Context, creds Credentials) (str
 		return "", errors.New("incorrect login/password pair")
 	}
 
-	token, err := GenerateToken(user)
+	token, err := as.GenerateToken(user)
 	if err != nil {
 		return "", err
 	}

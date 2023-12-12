@@ -9,14 +9,12 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-const secretKey = "yvdUuY)HSX}?&b':8/9N5"
-
 type JWTClaims struct {
 	jwt.RegisteredClaims
 	UserID string
 }
 
-func GenerateToken(user *repo.User) (string, error) {
+func (as *AuthService) GenerateToken(user *repo.User) (string, error) {
 	token := jwt.NewWithClaims(
 		jwt.SigningMethodHS256,
 		&JWTClaims{
@@ -24,7 +22,7 @@ func GenerateToken(user *repo.User) (string, error) {
 		},
 	)
 
-	tokenString, err := token.SignedString([]byte(secretKey))
+	tokenString, err := token.SignedString([]byte(as.secretKey))
 	if err != nil {
 		return "", err
 	}
@@ -32,7 +30,7 @@ func GenerateToken(user *repo.User) (string, error) {
 	return tokenString, nil
 }
 
-func ParseToken(tokenString string) (*JWTClaims, error) {
+func (as *AuthService) ParseToken(tokenString string) (*JWTClaims, error) {
 	var claims JWTClaims
 
 	token, err := jwt.ParseWithClaims(
@@ -43,7 +41,7 @@ func ParseToken(tokenString string) (*JWTClaims, error) {
 				return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
 			}
 
-			return []byte(secretKey), nil
+			return []byte(as.secretKey), nil
 		},
 	)
 	if err != nil {
