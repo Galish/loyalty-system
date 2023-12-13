@@ -10,7 +10,7 @@ import (
 )
 
 type Order struct {
-	ID         string  `json:"number"`
+	ID         string  `json:"order"`
 	Status     Status  `json:"status"`
 	Accrual    float32 `json:"accrual"`
 	UploadedAt string  `json:"uploaded_at"`
