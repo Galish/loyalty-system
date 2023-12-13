@@ -13,19 +13,19 @@ import (
 )
 
 func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
-	number, err := io.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		logger.WithError(err).Debug("unable to read request body")
 		http.Error(w, "unable to read request body", http.StatusBadRequest)
 		return
 	}
 
-	userID := r.Header.Get(auth.AuthHeaderName)
+	user := r.Header.Get(auth.AuthHeaderName)
 
-	_, err = h.loyaltyService.AddOrder(r.Context(), string(number), userID)
+	_, err = h.loyaltyService.AddOrder(r.Context(), string(body), user)
 	if err != nil {
 		if errors.Is(loyalty.ErrInvalidOrderNumber, err) {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 			return
 		}
 

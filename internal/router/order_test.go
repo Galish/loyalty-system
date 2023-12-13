@@ -132,7 +132,7 @@ func TestHandlerAddOrder(t *testing.T) {
 				"",
 			},
 			&want{
-				http.StatusBadRequest,
+				http.StatusUnprocessableEntity,
 				"invalid order number value\n",
 				"text/plain; charset=utf-8",
 			},
@@ -149,7 +149,7 @@ func TestHandlerAddOrder(t *testing.T) {
 				"12345",
 			},
 			&want{
-				http.StatusBadRequest,
+				http.StatusUnprocessableEntity,
 				"invalid order number value\n",
 				"text/plain; charset=utf-8",
 			},

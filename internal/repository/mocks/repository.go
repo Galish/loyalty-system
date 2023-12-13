@@ -102,6 +102,35 @@ func (mr *MockLoyaltyRepositoryMockRecorder) CreateOrder(arg0, arg1 interface{})
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOrder", reflect.TypeOf((*MockLoyaltyRepository)(nil).CreateOrder), arg0, arg1)
 }
 
+// CreateWithdraw mocks base method.
+func (m *MockLoyaltyRepository) CreateWithdraw(arg0 context.Context, arg1 *repository.Withdraw) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateWithdraw", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateWithdraw indicates an expected call of CreateWithdraw.
+func (mr *MockLoyaltyRepositoryMockRecorder) CreateWithdraw(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateWithdraw", reflect.TypeOf((*MockLoyaltyRepository)(nil).CreateWithdraw), arg0, arg1)
+}
+
+// GetUserBalance mocks base method.
+func (m *MockLoyaltyRepository) GetUserBalance(arg0 context.Context, arg1 string) (*repository.Balance, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserBalance", arg0, arg1)
+	ret0, _ := ret[0].(*repository.Balance)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserBalance indicates an expected call of GetUserBalance.
+func (mr *MockLoyaltyRepositoryMockRecorder) GetUserBalance(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserBalance", reflect.TypeOf((*MockLoyaltyRepository)(nil).GetUserBalance), arg0, arg1)
+}
+
 // GetUserOrders mocks base method.
 func (m *MockLoyaltyRepository) GetUserOrders(arg0 context.Context, arg1 string) ([]*repository.Order, error) {
 	m.ctrl.T.Helper()
@@ -117,8 +146,23 @@ func (mr *MockLoyaltyRepositoryMockRecorder) GetUserOrders(arg0, arg1 interface{
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserOrders", reflect.TypeOf((*MockLoyaltyRepository)(nil).GetUserOrders), arg0, arg1)
 }
 
+// GetWithdrawals mocks base method.
+func (m *MockLoyaltyRepository) GetWithdrawals(arg0 context.Context, arg1 string) ([]*repository.Withdraw, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetWithdrawals", arg0, arg1)
+	ret0, _ := ret[0].([]*repository.Withdraw)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetWithdrawals indicates an expected call of GetWithdrawals.
+func (mr *MockLoyaltyRepositoryMockRecorder) GetWithdrawals(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetWithdrawals", reflect.TypeOf((*MockLoyaltyRepository)(nil).GetWithdrawals), arg0, arg1)
+}
+
 // UpdateBalance mocks base method.
-func (m *MockLoyaltyRepository) UpdateBalance(arg0 context.Context, arg1 string, arg2 int) error {
+func (m *MockLoyaltyRepository) UpdateBalance(arg0 context.Context, arg1 string, arg2 float32) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateBalance", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
