@@ -44,7 +44,7 @@ func TestHandlerAddOrder(t *testing.T) {
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}
-	loyaltyService := loyalty.NewService(m)
+	loyaltyService := loyalty.NewService(m, &cfg)
 
 	authService := auth.NewService(nil, "yvdUuY)HSX}?&b")
 	jwtToken, _ := authService.GenerateToken(&repo.User{ID: "123"})
@@ -267,7 +267,7 @@ func TestHandlerGetOrders(t *testing.T) {
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}
-	loyaltyService := loyalty.NewService(m)
+	loyaltyService := loyalty.NewService(m, &cfg)
 
 	authService := auth.NewService(nil, "yvdUuY)HSX}?&b")
 	jwtToken, _ := authService.GenerateToken(&repo.User{ID: "12345"})

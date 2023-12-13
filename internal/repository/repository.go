@@ -21,6 +21,8 @@ type UserRepository interface {
 type LoyaltyRepository interface {
 	CreateOrder(context.Context, *Order) error
 	GetUserOrders(context.Context, string) ([]*Order, error)
+	UpdateOrder(context.Context, *Order) error
+	UpdateBalance(context.Context, string, int) error
 }
 
 type User struct {
