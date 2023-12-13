@@ -26,7 +26,7 @@ func NewService(repo repository.LoyaltyRepository, cfg *config.Config) *LoyaltyS
 }
 
 func (s *LoyaltyService) flushMessages() {
-	limiter := NewLimiter(10 * time.Second)
+	limiter := NewLimiter(1 * time.Second)
 
 	for order := range s.orderCh {
 		<-limiter
