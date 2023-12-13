@@ -22,7 +22,11 @@ type LoyaltyRepository interface {
 	CreateOrder(context.Context, *Order) error
 	GetUserOrders(context.Context, string) ([]*Order, error)
 	UpdateOrder(context.Context, *Order) error
-	UpdateBalance(context.Context, string, int) error
+	GetUserBalance(context.Context, string) (*Balance, error)
+	UpdateBalance(context.Context, string, float32) error
+
+	CreateWithdraw(context.Context, *Withdraw) error
+	GetWithdrawals(context.Context, string) ([]*Withdraw, error)
 }
 
 type User struct {
@@ -35,7 +39,21 @@ type User struct {
 type Order struct {
 	ID         string    `json:"uuid"`
 	Status     string    `json:"status"`
-	Accrual    uint      `json:"accrual"`
+	Accrual    float32   `json:"accrual"`
 	UploadedAt time.Time `json:"uploaded_at"`
 	User       string    `json:"user_id"`
+}
+
+type Balance struct {
+	User      string    `json:"user_id"`
+	Current   float32   `json:"current"`
+	Withdrawn float32   `json:"withdrawn"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+type Withdraw struct {
+	Order       string
+	User        string
+	Sum         float32
+	ProcessedAt time.Time
 }

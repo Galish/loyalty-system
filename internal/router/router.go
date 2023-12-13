@@ -32,9 +32,9 @@ func New(
 			r.Post("/orders", handler.AddOrder)
 			r.Get("/orders", handler.GetOrders)
 
-			r.Get("/balance", handler.Ping)
-			r.Post("/balance/withdraw", handler.Ping)
-			r.Get("/withdrawals", handler.Ping)
+			r.Get("/balance", handler.GetBalance)
+			r.Post("/balance/withdraw", handler.Withdraw)
+			r.Get("/withdrawals", handler.GetWithdrawals)
 		})
 	})
 

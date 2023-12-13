@@ -54,7 +54,7 @@ func (s *LoyaltyService) getOrderAccrual(order *Order) {
 		err = s.repo.UpdateBalance(
 			context.Background(),
 			order.User,
-			int(payload.Accrual),
+			payload.Accrual,
 		)
 		if err != nil {
 			logger.WithError(err).Debug("unable to update balance")

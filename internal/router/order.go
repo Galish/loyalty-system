@@ -68,7 +68,7 @@ func (h *httpHandler) GetOrders(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewEncoder(w).Encode(orders); err != nil {
 		logger.WithError(err).Debug("cannot encode request JSON body")
-		http.Error(w, "cannot encode request JSON body", http.StatusBadRequest)
+		http.Error(w, "cannot encode request JSON body", http.StatusInternalServerError)
 		return
 	}
 }

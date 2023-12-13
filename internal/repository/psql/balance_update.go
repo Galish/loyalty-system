@@ -6,24 +6,23 @@ import (
 	"time"
 )
 
-func (s *psqlStore) UpdateBalance(ctx context.Context, user string, value int) error {
+func (s *psqlStore) UpdateBalance(ctx context.Context, user string, value float32) error {
 	fmt.Println("Balance", user, value)
 
 	_, err := s.db.ExecContext(
 		ctx,
 		`
-			INSERT INTO balance (user_id, points, updated_at)
+			INSERT INTO balance (user_id, current, updated_at)
 			VALUES ($1, $2, $3)
 			ON CONFLICT (user_id)
-			DO UPDATE SET points = balance.points + excluded.points
+			DO UPDATE
+			SET current = balance.current + excluded.current
 		`,
 		user,
 		value,
 		time.Now(),
 	)
-	// , updated_at = excluded.updated_at
 	if err != nil {
-		fmt.Println("Err", err)
 		return err
 	}
 
