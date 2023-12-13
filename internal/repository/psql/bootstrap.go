@@ -67,5 +67,31 @@ func (s *psqlStore) Bootstrap(ctx context.Context) error {
 		return err
 	}
 
+	// balance
+
+	_, err = tx.ExecContext(
+		ctx,
+		`
+			CREATE TABLE IF NOT EXISTS balance (
+				_id SERIAL PRIMARY KEY,
+				user_id VARCHAR(36) NOT NULL,
+				points INTEGER DEFAULT 0,
+				updated_at TIMESTAMPTZ NOT NULL
+			)
+		`,
+	)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	_, err = tx.Exec(`
+		CREATE UNIQUE INDEX IF NOT EXISTS user_id_idx ON balance (user_id)
+	`)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
 	return tx.Commit()
 }

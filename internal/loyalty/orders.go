@@ -38,23 +38,29 @@ func (s *LoyaltyService) AddOrder(ctx context.Context, id, user string) (*Order,
 		return nil, ErrInvalidOrderNumber
 	}
 
-	order := repo.Order{
+	repoOrder := repo.Order{
 		ID:         id,
 		Status:     string(StatusNew),
 		UploadedAt: time.Now(),
 		User:       user,
 	}
 
-	if err := s.repo.CreateOrder(ctx, &order); err != nil {
+	if err := s.repo.CreateOrder(ctx, &repoOrder); err != nil {
 		return nil, err
 	}
 
-	return &Order{
-		ID:         order.ID,
-		Status:     Status(order.Status),
-		UploadedAt: order.UploadedAt.Format(TimeLayout),
+	order := Order{
+		ID:         repoOrder.ID,
+		Status:     Status(repoOrder.Status),
+		UploadedAt: repoOrder.UploadedAt.Format(TimeLayout),
 		User:       user,
-	}, nil
+	}
+
+	go func() {
+		s.orderCh <- &order
+	}()
+
+	return &order, nil
 }
 
 func (s *LoyaltyService) GetOrders(ctx context.Context, userID string) ([]*Order, error) {

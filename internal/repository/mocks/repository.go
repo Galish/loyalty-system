@@ -116,3 +116,31 @@ func (mr *MockLoyaltyRepositoryMockRecorder) GetUserOrders(arg0, arg1 interface{
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserOrders", reflect.TypeOf((*MockLoyaltyRepository)(nil).GetUserOrders), arg0, arg1)
 }
+
+// UpdateBalance mocks base method.
+func (m *MockLoyaltyRepository) UpdateBalance(arg0 context.Context, arg1 string, arg2 int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateBalance", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateBalance indicates an expected call of UpdateBalance.
+func (mr *MockLoyaltyRepositoryMockRecorder) UpdateBalance(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateBalance", reflect.TypeOf((*MockLoyaltyRepository)(nil).UpdateBalance), arg0, arg1, arg2)
+}
+
+// UpdateOrder mocks base method.
+func (m *MockLoyaltyRepository) UpdateOrder(arg0 context.Context, arg1 *repository.Order) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateOrder", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateOrder indicates an expected call of UpdateOrder.
+func (mr *MockLoyaltyRepositoryMockRecorder) UpdateOrder(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateOrder", reflect.TypeOf((*MockLoyaltyRepository)(nil).UpdateOrder), arg0, arg1)
+}
