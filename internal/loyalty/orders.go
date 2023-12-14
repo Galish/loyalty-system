@@ -10,11 +10,11 @@ import (
 )
 
 type Order struct {
-	ID         string  `json:"order"`
+	ID         string  `json:"number"`
 	Status     Status  `json:"status"`
 	Accrual    float32 `json:"accrual"`
 	UploadedAt string  `json:"uploaded_at"`
-	User       string  `json:"user_id"`
+	User       string  `json:"user_id,omitempty"`
 }
 
 type Status string
@@ -26,7 +26,8 @@ const (
 	StatusInvalid    = Status("INVALID")
 	StatusProcessed  = Status("PROCESSED")
 
-	TimeLayout = time.RFC3339
+	TimeLayout = "2006-01-02T15:04:05-07:00"
+	// time.RFC3339
 )
 
 var (
@@ -50,10 +51,8 @@ func (s *LoyaltyService) AddOrder(ctx context.Context, id, user string) (*Order,
 	}
 
 	order := Order{
-		ID:         repoOrder.ID,
-		Status:     Status(repoOrder.Status),
-		UploadedAt: repoOrder.UploadedAt.Format(TimeLayout),
-		User:       user,
+		ID:   repoOrder.ID,
+		User: repoOrder.User,
 	}
 
 	go func() {
@@ -79,7 +78,6 @@ func (s *LoyaltyService) GetOrders(ctx context.Context, userID string) ([]*Order
 				Accrual:    order.Accrual,
 				Status:     Status(order.Status),
 				UploadedAt: order.UploadedAt.Format(TimeLayout),
-				User:       order.User,
 			},
 		)
 	}

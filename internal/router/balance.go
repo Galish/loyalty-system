@@ -8,6 +8,7 @@ import (
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/logger"
 	"github.com/Galish/loyalty-system/internal/loyalty"
+	repo "github.com/Galish/loyalty-system/internal/repository"
 )
 
 func (h *httpHandler) GetBalance(w http.ResponseWriter, r *http.Request) {
@@ -34,6 +35,7 @@ func (h *httpHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&withdraw)
 	if err != nil {
 		logger.WithError(err).Debug("cannot decode request JSON body")
+		http.Error(w, "cannot decode request JSON body", http.StatusBadRequest)
 		return
 	}
 
@@ -41,18 +43,19 @@ func (h *httpHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
 
 	err = h.loyaltyService.Withdraw(r.Context(), &withdraw)
 	if err != nil {
-		var httpStatus = http.StatusInternalServerError
+		logger.WithError(err).Debug("unable to withdraw funds")
 
-		if errors.Is(err, loyalty.ErrInsufficientFunds) {
-			httpStatus = http.StatusPaymentRequired
+		if errors.Is(err, repo.ErrInsufficientFunds) {
+			http.Error(w, err.Error(), http.StatusPaymentRequired)
+			return
 		}
 
 		if errors.Is(err, loyalty.ErrInvalidOrderNumber) {
-			httpStatus = http.StatusUnprocessableEntity
+			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+			return
 		}
 
-		logger.WithError(err).Debug("unable to withdraw funds")
-		http.Error(w, "unable to withdraw funds", httpStatus)
+		http.Error(w, "unable to withdraw funds", http.StatusInternalServerError)
 		return
 	}
 

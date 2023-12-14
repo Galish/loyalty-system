@@ -2,13 +2,11 @@ package psql
 
 import (
 	"context"
-	"fmt"
-	"time"
+
+	repo "github.com/Galish/loyalty-system/internal/repository"
 )
 
-func (s *psqlStore) UpdateBalance(ctx context.Context, user string, value float32) error {
-	fmt.Println("Balance", user, value)
-
+func (s *psqlStore) UpdateBalance(ctx context.Context, enroll *repo.BalanceEnrollment) error {
 	_, err := s.db.ExecContext(
 		ctx,
 		`
@@ -18,9 +16,12 @@ func (s *psqlStore) UpdateBalance(ctx context.Context, user string, value float3
 			DO UPDATE
 			SET current = balance.current + excluded.current
 		`,
-		user,
-		value,
-		time.Now(),
+		enroll.User,
+		enroll.Sum,
+		enroll.ProcessedAt,
+		// user,
+		// value,
+		// time.Now(),
 	)
 	if err != nil {
 		return err

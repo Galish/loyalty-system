@@ -56,10 +56,15 @@ func TestHandlerRegister(t *testing.T) {
 	)
 	defer ts.Close()
 
+	type credentials struct {
+		Login    string `json:"login"`
+		Password string `json:"password"`
+	}
+
 	type request struct {
 		path   string
 		method string
-		body   *auth.Credentials
+		body   *credentials
 	}
 
 	type want struct {
@@ -78,7 +83,7 @@ func TestHandlerRegister(t *testing.T) {
 			&request{
 				"/api/user/registration",
 				"POST",
-				&auth.Credentials{},
+				&credentials{},
 			},
 			&want{
 				http.StatusNotFound,
@@ -91,7 +96,7 @@ func TestHandlerRegister(t *testing.T) {
 			&request{
 				"/api/user/register",
 				"GET",
-				&auth.Credentials{},
+				&credentials{},
 			},
 			&want{
 				http.StatusMethodNotAllowed,
@@ -104,7 +109,7 @@ func TestHandlerRegister(t *testing.T) {
 			&request{
 				"/api/user/register",
 				"POST",
-				&auth.Credentials{},
+				&credentials{},
 			},
 			&want{
 				http.StatusBadRequest,
@@ -117,7 +122,7 @@ func TestHandlerRegister(t *testing.T) {
 			&request{
 				"/api/user/register",
 				"POST",
-				&auth.Credentials{
+				&credentials{
 					Login: "username",
 				},
 			},
@@ -132,7 +137,7 @@ func TestHandlerRegister(t *testing.T) {
 			&request{
 				"/api/user/register",
 				"POST",
-				&auth.Credentials{
+				&credentials{
 					Password: "123456",
 				},
 			},
@@ -147,7 +152,7 @@ func TestHandlerRegister(t *testing.T) {
 			&request{
 				"/api/user/register",
 				"POST",
-				&auth.Credentials{
+				&credentials{
 					Login:    "username",
 					Password: "123456",
 				},
@@ -163,7 +168,7 @@ func TestHandlerRegister(t *testing.T) {
 			&request{
 				"/api/user/register",
 				"POST",
-				&auth.Credentials{
+				&credentials{
 					Login:    "user",
 					Password: "123456",
 				},
@@ -186,9 +191,6 @@ func TestHandlerRegister(t *testing.T) {
 				bytes.NewBuffer(reqBody),
 			)
 			require.NoError(t, err)
-
-			// Disable compression
-			// req.Header.Set("Accept-Encoding", "identity")
 
 			client := &http.Client{}
 			resp, err := client.Do(req)
@@ -260,10 +262,15 @@ func TestHandlerLogin(t *testing.T) {
 	)
 	defer ts.Close()
 
+	type credentials struct {
+		Login    string `json:"login"`
+		Password string `json:"password"`
+	}
+
 	type request struct {
 		path   string
 		method string
-		body   *auth.Credentials
+		body   *credentials
 	}
 
 	type want struct {
@@ -282,7 +289,7 @@ func TestHandlerLogin(t *testing.T) {
 			&request{
 				"/api/user/auth",
 				"POST",
-				&auth.Credentials{},
+				&credentials{},
 			},
 			&want{
 				http.StatusNotFound,
@@ -295,7 +302,7 @@ func TestHandlerLogin(t *testing.T) {
 			&request{
 				"/api/user/login",
 				"GET",
-				&auth.Credentials{},
+				&credentials{},
 			},
 			&want{
 				http.StatusMethodNotAllowed,
@@ -308,7 +315,7 @@ func TestHandlerLogin(t *testing.T) {
 			&request{
 				"/api/user/login",
 				"POST",
-				&auth.Credentials{},
+				&credentials{},
 			},
 			&want{
 				http.StatusBadRequest,
@@ -321,7 +328,7 @@ func TestHandlerLogin(t *testing.T) {
 			&request{
 				"/api/user/login",
 				"POST",
-				&auth.Credentials{
+				&credentials{
 					Login: "username",
 				},
 			},
@@ -336,7 +343,7 @@ func TestHandlerLogin(t *testing.T) {
 			&request{
 				"/api/user/login",
 				"POST",
-				&auth.Credentials{
+				&credentials{
 					Password: "123456",
 				},
 			},
@@ -351,7 +358,7 @@ func TestHandlerLogin(t *testing.T) {
 			&request{
 				"/api/user/login",
 				"POST",
-				&auth.Credentials{
+				&credentials{
 					Login:    "username",
 					Password: "123456",
 				},
@@ -367,7 +374,7 @@ func TestHandlerLogin(t *testing.T) {
 			&request{
 				"/api/user/login",
 				"POST",
-				&auth.Credentials{
+				&credentials{
 					Login:    "user",
 					Password: "123456",
 				},
@@ -383,7 +390,7 @@ func TestHandlerLogin(t *testing.T) {
 			&request{
 				"/api/user/login",
 				"POST",
-				&auth.Credentials{
+				&credentials{
 					Login:    "username",
 					Password: "12345678",
 				},

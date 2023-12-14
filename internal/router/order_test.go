@@ -47,7 +47,7 @@ func TestHandlerAddOrder(t *testing.T) {
 	loyaltyService := loyalty.NewService(m, &cfg)
 
 	authService := auth.NewService(nil, "yvdUuY)HSX}?&b")
-	jwtToken, _ := authService.GenerateToken(&repo.User{ID: "123"})
+	jwtToken, _ := authService.GenerateToken(&repo.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
 
 	ts := httptest.NewServer(
 		New(&cfg, authService, loyaltyService),
@@ -242,18 +242,35 @@ func TestHandlerGetOrders(t *testing.T) {
 
 	m := mocks.NewMockLoyaltyRepository(ctrl)
 
+	timezone1 := time.FixedZone("UTC-8", -8*60*60)
+	timezone2 := time.FixedZone("UTC+5", 5*60*60)
+
 	m.EXPECT().
 		GetUserOrders(
 			gomock.Any(),
-			"12345",
+			"395fd5f4-964d-4135-9a55-fbf91c4a163b",
 		).
 		Return([]*repo.Order{
 			{
-				ID:         "#11111",
+				ID:         "2774311589",
 				Status:     "NEW",
+				Accrual:    0,
+				UploadedAt: time.Date(2023, time.Month(3), 11, 1, 10, 30, 0, timezone1),
+				User:       "395fd5f4-964d-4135-9a55-fbf91c4a163b",
+			},
+			{
+				ID:         "12345678903",
+				Status:     "PROCESSED",
 				Accrual:    100,
-				UploadedAt: time.Date(2021, time.Month(2), 21, 1, 10, 30, 0, time.UTC),
-				User:       "12345",
+				UploadedAt: time.Date(2023, time.Month(2), 21, 1, 10, 30, 0, time.UTC),
+				User:       "395fd5f4-964d-4135-9a55-fbf91c4a163b",
+			},
+			{
+				ID:         "252576137",
+				Status:     "INVALID",
+				Accrual:    0,
+				UploadedAt: time.Date(2023, time.Month(2), 10, 1, 10, 30, 0, timezone2),
+				User:       "395fd5f4-964d-4135-9a55-fbf91c4a163b",
 			},
 		}, nil).
 		AnyTimes()
@@ -261,7 +278,7 @@ func TestHandlerGetOrders(t *testing.T) {
 	m.EXPECT().
 		GetUserOrders(
 			gomock.Any(),
-			"12346",
+			"395fd5f4-964d-4135-9a55-fbf91c4a1613",
 		).
 		Return([]*repo.Order{}, nil).
 		AnyTimes()
@@ -270,8 +287,8 @@ func TestHandlerGetOrders(t *testing.T) {
 	loyaltyService := loyalty.NewService(m, &cfg)
 
 	authService := auth.NewService(nil, "yvdUuY)HSX}?&b")
-	jwtToken, _ := authService.GenerateToken(&repo.User{ID: "12345"})
-	jwtToken2, _ := authService.GenerateToken(&repo.User{ID: "12346"})
+	jwtToken, _ := authService.GenerateToken(&repo.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
+	jwtToken2, _ := authService.GenerateToken(&repo.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1613"})
 
 	ts := httptest.NewServer(
 		New(&cfg, authService, loyaltyService),
@@ -357,7 +374,7 @@ func TestHandlerGetOrders(t *testing.T) {
 			},
 			&want{
 				http.StatusOK,
-				"[{\"number\":\"#11111\",\"status\":\"NEW\",\"accrual\":100,\"uploaded_at\":\"2021-02-21T01:10:30Z\",\"user_id\":\"12345\"}]\n",
+				"[{\"number\":\"2774311589\",\"status\":\"NEW\",\"accrual\":0,\"uploaded_at\":\"2023-03-11T01:10:30-08:00\"},{\"number\":\"12345678903\",\"status\":\"PROCESSED\",\"accrual\":100,\"uploaded_at\":\"2023-02-21T01:10:30+00:00\"},{\"number\":\"252576137\",\"status\":\"INVALID\",\"accrual\":0,\"uploaded_at\":\"2023-02-10T01:10:30+05:00\"}]\n",
 				"application/json",
 			},
 		},

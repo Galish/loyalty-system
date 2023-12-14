@@ -75,8 +75,8 @@ func (s *psqlStore) Bootstrap(ctx context.Context) error {
 			CREATE TABLE IF NOT EXISTS balance (
 				_id SERIAL PRIMARY KEY,
 				user_id VARCHAR(36) NOT NULL,
-				current NUMERIC DEFAULT 0,
-				withdrawn NUMERIC DEFAULT 0,
+				current NUMERIC DEFAULT 0 CHECK (current >= 0),
+				withdrawn NUMERIC DEFAULT 0  CHECK (withdrawn >= 0),
 				updated_at TIMESTAMPTZ NOT NULL
 			)
 		`,
