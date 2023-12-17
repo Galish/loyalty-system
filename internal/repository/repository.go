@@ -25,8 +25,7 @@ type LoyaltyRepository interface {
 	UpdateOrder(context.Context, *Order) error
 
 	GetUserBalance(context.Context, string) (*Balance, error)
-	UpdateBalance(context.Context, *BalanceEnrollment) error
-
+	Enroll(context.Context, *Enrollment) error
 	Withdraw(context.Context, *Withdrawal) error
 	GetWithdrawals(context.Context, string) ([]*Withdrawal, error)
 }
@@ -53,7 +52,7 @@ type Balance struct {
 	UpdatedAt time.Time
 }
 
-type BalanceEnrollment struct {
+type Enrollment struct {
 	User        string
 	Sum         float32
 	ProcessedAt time.Time

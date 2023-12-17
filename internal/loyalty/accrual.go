@@ -61,9 +61,9 @@ func (s *LoyaltyService) getOrderAccrual(order *Order) {
 			return
 		}
 
-		err = s.repo.UpdateBalance(
+		err = s.repo.Enroll(
 			context.Background(),
-			&repo.BalanceEnrollment{
+			&repo.Enrollment{
 				User:        order.User,
 				Sum:         payload.Accrual,
 				ProcessedAt: time.Now(),

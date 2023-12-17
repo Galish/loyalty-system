@@ -6,7 +6,7 @@ import (
 	repo "github.com/Galish/loyalty-system/internal/repository"
 )
 
-func (s *psqlStore) UpdateBalance(ctx context.Context, enroll *repo.BalanceEnrollment) error {
+func (s *psqlStore) Enroll(ctx context.Context, enroll *repo.Enrollment) error {
 	_, err := s.db.ExecContext(
 		ctx,
 		`
