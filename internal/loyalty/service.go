@@ -7,6 +7,8 @@ import (
 	"github.com/Galish/loyalty-system/internal/repository"
 )
 
+const limiterInterval = 1 * time.Second
+
 type LoyaltyService struct {
 	repo    repository.LoyaltyRepository
 	cfg     *config.Config
@@ -25,27 +27,46 @@ func NewService(repo repository.LoyaltyRepository, cfg *config.Config) *LoyaltyS
 	return &service
 }
 
-func (s *LoyaltyService) flushMessages() {
-	limiter := NewLimiter(1 * time.Second)
-
-	for order := range s.orderCh {
-		<-limiter
-		s.getOrderAccrual(order)
-	}
+func (s *LoyaltyService) Close() {
+	close(s.orderCh)
 }
 
-func NewLimiter(duration time.Duration) chan struct{} {
-	ch := make(chan struct{})
+func (s *LoyaltyService) flushMessages() {
+	limiter := NewLimiter(limiterInterval)
+
+	for order := range s.orderCh {
+		<-limiter.C
+		s.getOrderAccrual(order)
+	}
+
+	limiter.Close()
+}
+
+type Limiter struct {
+	C        chan struct{}
+	ticker   *time.Ticker
+	interval time.Duration
+}
+
+func NewLimiter(interval time.Duration) *Limiter {
+	limiter := Limiter{
+		interval: interval,
+		C:        make(chan struct{}),
+	}
 
 	go func() {
-		ch <- struct{}{}
+		limiter.C <- struct{}{}
 
-		ticker := time.NewTicker(duration)
+		limiter.ticker = time.NewTicker(limiter.interval)
 
-		for range ticker.C {
-			ch <- struct{}{}
+		for range limiter.ticker.C {
+			limiter.C <- struct{}{}
 		}
 	}()
 
-	return ch
+	return &limiter
+}
+
+func (l *Limiter) Close() {
+	l.ticker.Stop()
 }

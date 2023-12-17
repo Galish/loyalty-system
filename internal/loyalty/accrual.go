@@ -24,15 +24,6 @@ func (s *LoyaltyService) getOrderAccrual(order *Order) {
 		return
 	}
 
-	// fmt.Println("Resp:", resp, "-", err)
-
-	// if resp.StatusCode == 204 {
-	// 	// go func() {
-	// 	// 	s.orderCh <- order
-	// 	// }()
-	// 	return
-	// }
-
 	var payload Order
 	err = json.NewDecoder(resp.Body).Decode(&payload)
 	if err != nil {

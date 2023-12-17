@@ -19,15 +19,22 @@ type UserRepository interface {
 	GetUserByLogin(context.Context, string) (*User, error)
 }
 
-type LoyaltyRepository interface {
+type OrderRepository interface {
 	CreateOrder(context.Context, *Order) error
 	UserOrders(context.Context, string) ([]*Order, error)
 	UpdateOrder(context.Context, *Order) error
+}
 
+type BalanceRepository interface {
 	UserBalance(context.Context, string) (*Balance, error)
 	Enroll(context.Context, *Enrollment) error
 	Withdraw(context.Context, *Withdrawal) error
 	Withdrawals(context.Context, string) ([]*Withdrawal, error)
+}
+
+type LoyaltyRepository interface {
+	OrderRepository
+	BalanceRepository
 }
 
 type User struct {
