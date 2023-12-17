@@ -41,7 +41,7 @@ func (s *LoyaltyService) AddOrder(ctx context.Context, order *Order) error {
 	repoOrder := repo.Order{
 		ID:         order.ID.String(),
 		Status:     string(StatusNew),
-		UploadedAt: time.Now().Round(time.Microsecond),
+		UploadedAt: time.Now(),
 		User:       order.User,
 	}
 

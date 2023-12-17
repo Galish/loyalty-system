@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/Galish/loyalty-system/internal/logger"
 	repo "github.com/Galish/loyalty-system/internal/repository"
 )
 
@@ -21,7 +20,7 @@ func (s *psqlStore) CreateOrder(ctx context.Context, order *repo.Order) error {
 		order.ID,
 		order.Status,
 		order.Accrual,
-		order.UploadedAt,
+		order.UploadedAt.Round(time.Microsecond),
 		order.User,
 	)
 
@@ -34,19 +33,13 @@ func (s *psqlStore) CreateOrder(ctx context.Context, order *repo.Order) error {
 		return err
 	}
 
-	logger.WithFields(logger.Fields{
-		"Order":      order,
-		"UploadedAt": uploadedAt,
-		"User":       user,
-	}).Debug("creating order error")
-
-	if !order.UploadedAt.Equal(uploadedAt) {
-		if order.User != user {
-			return repo.ErrOrderConflict
-		}
-
-		return repo.ErrOrderExists
+	if order.UploadedAt.Round(time.Microsecond).Equal(uploadedAt) {
+		return nil
 	}
 
-	return nil
+	if order.User != user {
+		return repo.ErrOrderConflict
+	}
+
+	return repo.ErrOrderExists
 }
