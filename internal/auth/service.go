@@ -14,6 +14,8 @@ const (
 	AuthHeaderName = "X-User"
 )
 
+var ErrIncorrectLoginPassword = errors.New("incorrect login/password pair")
+
 type AuthService struct {
 	repo      repository.UserRepository
 	secretKey string
@@ -58,7 +60,7 @@ func (as *AuthService) Authenticate(ctx context.Context, creds Credentials) (str
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(creds.Password))
 	if err != nil {
-		return "", errors.New("incorrect login/password pair")
+		return "", ErrIncorrectLoginPassword
 	}
 
 	token, err := as.GenerateToken(user)

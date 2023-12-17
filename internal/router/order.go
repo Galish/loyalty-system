@@ -13,34 +13,38 @@ import (
 )
 
 func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
-	number, err := io.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		logger.WithError(err).Debug("unable to read request body")
 		http.Error(w, "unable to read request body", http.StatusBadRequest)
 		return
 	}
 
-	userID := r.Header.Get(auth.AuthHeaderName)
+	newOrder := loyalty.Order{
+		ID:   loyalty.OrderNumber(string(body)),
+		User: r.Header.Get(auth.AuthHeaderName),
+	}
 
-	_, err = h.loyaltyService.AddOrder(r.Context(), string(number), userID)
+	err = h.loyaltyService.AddOrder(r.Context(), &newOrder)
 	if err != nil {
-		if errors.Is(loyalty.ErrInvalidOrderNumber, err) {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+		logger.WithError(err).Debug("unable to add order")
+
+		if errors.Is(err, loyalty.ErrIncorrectOrderNumber) {
+			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 			return
 		}
 
-		if errors.Is(repository.ErrOrderConflict, err) {
+		if errors.Is(err, repository.ErrOrderConflict) {
 			http.Error(w, err.Error(), http.StatusConflict)
 			return
 		}
 
-		if errors.Is(repository.ErrOrderExists, err) {
+		if errors.Is(err, repository.ErrOrderExists) {
 			w.WriteHeader(http.StatusOK)
 			w.Write([]byte(err.Error()))
 			return
 		}
 
-		logger.WithError(err).Debug("unable to add order")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -68,7 +72,7 @@ func (h *httpHandler) GetOrders(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewEncoder(w).Encode(orders); err != nil {
 		logger.WithError(err).Debug("cannot encode request JSON body")
-		http.Error(w, "cannot encode request JSON body", http.StatusBadRequest)
+		http.Error(w, "cannot encode request JSON body", http.StatusInternalServerError)
 		return
 	}
 }

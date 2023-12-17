@@ -33,12 +33,11 @@ func (h *httpHandler) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token, err := h.authService.Register(r.Context(), creds)
-	if err != nil && errors.Is(err, repo.ErrUserConflict) {
+	if errors.Is(err, repo.ErrUserConflict) {
 		logger.WithError(err).Debug("unable to write to repository")
 		http.Error(w, err.Error(), http.StatusConflict)
 		return
 	}
-
 	if err != nil {
 		logger.WithError(err).Debug("unable to write to repository")
 		http.Error(w, "unable to write to repository", http.StatusInternalServerError)
@@ -72,9 +71,14 @@ func (h *httpHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token, err := h.authService.Authenticate(r.Context(), creds)
-	if err != nil {
-		logger.WithError(err).Debug("unable to write to repository")
+	if errors.Is(err, auth.ErrIncorrectLoginPassword) || errors.Is(err, repo.ErrUserNotFound) {
+		logger.WithError(err).Debug("unable to authenticate")
 		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	if err != nil {
+		logger.WithError(err).Debug("unable to authenticate")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

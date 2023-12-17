@@ -7,10 +7,11 @@ import (
 )
 
 var (
-	ErrOrderExists   = errors.New("order has already been added")
-	ErrOrderConflict = errors.New("order has already been added by another user")
-	ErrUserConflict  = errors.New("user already exists")
-	ErrUserNotFound  = errors.New("user not found")
+	ErrOrderExists       = errors.New("order has already been added")
+	ErrOrderConflict     = errors.New("order has already been added by another user")
+	ErrUserConflict      = errors.New("user already exists")
+	ErrUserNotFound      = errors.New("user not found")
+	ErrInsufficientFunds = errors.New("insufficient funds in the account")
 )
 
 type UserRepository interface {
@@ -18,24 +19,55 @@ type UserRepository interface {
 	GetUserByLogin(context.Context, string) (*User, error)
 }
 
-type LoyaltyRepository interface {
+type OrderRepository interface {
 	CreateOrder(context.Context, *Order) error
-	GetUserOrders(context.Context, string) ([]*Order, error)
+	UserOrders(context.Context, string) ([]*Order, error)
 	UpdateOrder(context.Context, *Order) error
-	UpdateBalance(context.Context, string, int) error
+}
+
+type BalanceRepository interface {
+	UserBalance(context.Context, string) (*Balance, error)
+	Enroll(context.Context, *Enrollment) error
+	Withdraw(context.Context, *Withdrawal) error
+	Withdrawals(context.Context, string) ([]*Withdrawal, error)
+}
+
+type LoyaltyRepository interface {
+	OrderRepository
+	BalanceRepository
 }
 
 type User struct {
-	ID       string `json:"uuid"`
-	Login    string `json:"login"`
-	Password string `json:"password"`
-	IsActive bool   `json:"is_active"`
+	ID       string
+	Login    string
+	Password string
+	IsActive bool
 }
 
 type Order struct {
-	ID         string    `json:"uuid"`
-	Status     string    `json:"status"`
-	Accrual    uint      `json:"accrual"`
-	UploadedAt time.Time `json:"uploaded_at"`
-	User       string    `json:"user_id"`
+	ID         string
+	Status     string
+	Accrual    float32
+	UploadedAt time.Time
+	User       string
+}
+
+type Balance struct {
+	User      string
+	Current   float32
+	Withdrawn float32
+	UpdatedAt time.Time
+}
+
+type Enrollment struct {
+	User        string
+	Sum         float32
+	ProcessedAt time.Time
+}
+
+type Withdrawal struct {
+	Order       string
+	User        string
+	Sum         float32
+	ProcessedAt time.Time
 }

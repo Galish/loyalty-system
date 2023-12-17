@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/Galish/loyalty-system/internal/logger"
 	repo "github.com/Galish/loyalty-system/internal/repository"
@@ -37,7 +38,7 @@ func (s *LoyaltyService) getOrderAccrual(order *Order) {
 		err := s.repo.UpdateOrder(
 			context.Background(),
 			&repo.Order{
-				ID:      order.ID,
+				ID:      order.ID.String(),
 				Status:  string(payload.Status),
 				Accrual: payload.Accrual,
 			},
@@ -51,10 +52,13 @@ func (s *LoyaltyService) getOrderAccrual(order *Order) {
 			return
 		}
 
-		err = s.repo.UpdateBalance(
+		err = s.repo.Enroll(
 			context.Background(),
-			order.User,
-			int(payload.Accrual),
+			&repo.Enrollment{
+				User:        order.User,
+				Sum:         payload.Accrual,
+				ProcessedAt: time.Now(),
+			},
 		)
 		if err != nil {
 			logger.WithError(err).Debug("unable to update balance")

@@ -6,7 +6,7 @@ import (
 	repo "github.com/Galish/loyalty-system/internal/repository"
 )
 
-func (s *psqlStore) GetUserOrders(ctx context.Context, userID string) ([]*repo.Order, error) {
+func (s *psqlStore) UserOrders(ctx context.Context, userID string) ([]*repo.Order, error) {
 	rows, err := s.db.QueryContext(
 		ctx,
 		"SELECT uuid, status, accrual, uploaded_at, user_id FROM orders WHERE user_id = $1;",
