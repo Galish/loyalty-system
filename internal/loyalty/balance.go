@@ -20,7 +20,7 @@ type Withdrawal struct {
 }
 
 func (s *LoyaltyService) GetBalance(ctx context.Context, user string) (*Balance, error) {
-	balance, err := s.repo.GetUserBalance(ctx, user)
+	balance, err := s.repo.UserBalance(ctx, user)
 	if err != nil {
 		return nil, err
 	}
@@ -52,8 +52,8 @@ func (s *LoyaltyService) Withdraw(ctx context.Context, withdrawn *Withdrawal) er
 	return nil
 }
 
-func (s *LoyaltyService) GetWithdrawals(ctx context.Context, user string) ([]*Withdrawal, error) {
-	withdrawals, err := s.repo.GetWithdrawals(ctx, user)
+func (s *LoyaltyService) Withdrawals(ctx context.Context, user string) ([]*Withdrawal, error) {
+	withdrawals, err := s.repo.Withdrawals(ctx, user)
 	if err != nil {
 		return []*Withdrawal{}, err
 	}

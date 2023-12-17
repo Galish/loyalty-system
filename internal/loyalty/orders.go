@@ -57,7 +57,7 @@ func (s *LoyaltyService) AddOrder(ctx context.Context, order *Order) error {
 }
 
 func (s *LoyaltyService) GetOrders(ctx context.Context, userID string) ([]*Order, error) {
-	orders, err := s.repo.GetUserOrders(ctx, userID)
+	orders, err := s.repo.UserOrders(ctx, userID)
 	if err != nil {
 		return []*Order{}, nil
 	}

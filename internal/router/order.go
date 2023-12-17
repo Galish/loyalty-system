@@ -27,6 +27,8 @@ func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 
 	err = h.loyaltyService.AddOrder(r.Context(), &newOrder)
 	if err != nil {
+		logger.WithError(err).Debug("unable to add order")
+
 		if errors.Is(err, loyalty.ErrIncorrectOrderNumber) {
 			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 			return
@@ -43,7 +45,6 @@ func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		logger.WithError(err).Debug("unable to add order")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

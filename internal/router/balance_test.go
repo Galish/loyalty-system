@@ -28,7 +28,7 @@ func TestHandlerGetBalance(t *testing.T) {
 	m := mocks.NewMockLoyaltyRepository(ctrl)
 
 	m.EXPECT().
-		GetUserBalance(
+		UserBalance(
 			gomock.Any(),
 			"395fd5f4-964d-4135-9a55-fbf91c4a163b",
 		).
@@ -39,7 +39,7 @@ func TestHandlerGetBalance(t *testing.T) {
 		AnyTimes()
 
 	m.EXPECT().
-		GetUserBalance(
+		UserBalance(
 			gomock.Any(),
 			"395fd5f4-964d-4135-9a55-fbf91c4a1614",
 		).
@@ -433,7 +433,7 @@ func TestHandlerWithdraw(t *testing.T) {
 	}
 }
 
-func TestHandlerGetWithdrawals(t *testing.T) {
+func TestHandlerWithdrawals(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -443,7 +443,7 @@ func TestHandlerGetWithdrawals(t *testing.T) {
 	m := mocks.NewMockLoyaltyRepository(ctrl)
 
 	m.EXPECT().
-		GetWithdrawals(
+		Withdrawals(
 			gomock.Any(),
 			"395fd5f4-964d-4135-9a55-fbf91c4a163b",
 		).
@@ -470,7 +470,7 @@ func TestHandlerGetWithdrawals(t *testing.T) {
 		AnyTimes()
 
 	m.EXPECT().
-		GetWithdrawals(
+		Withdrawals(
 			gomock.Any(),
 			"395fd5f4-964d-4135-9a55-fbf91c4a1614",
 		).
@@ -478,7 +478,7 @@ func TestHandlerGetWithdrawals(t *testing.T) {
 		AnyTimes()
 
 	m.EXPECT().
-		GetWithdrawals(
+		Withdrawals(
 			gomock.Any(),
 			"395fd5f4-964d-4135-9a55-fbf91c4a1615",
 		).

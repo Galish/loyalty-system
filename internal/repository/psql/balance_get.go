@@ -6,7 +6,7 @@ import (
 	repo "github.com/Galish/loyalty-system/internal/repository"
 )
 
-func (s *psqlStore) GetUserBalance(ctx context.Context, user string) (*repo.Balance, error) {
+func (s *psqlStore) UserBalance(ctx context.Context, user string) (*repo.Balance, error) {
 	row := s.db.QueryRowContext(
 		ctx,
 		`

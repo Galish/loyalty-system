@@ -246,7 +246,7 @@ func TestHandlerGetOrders(t *testing.T) {
 	timezone2 := time.FixedZone("UTC+5", 5*60*60)
 
 	m.EXPECT().
-		GetUserOrders(
+		UserOrders(
 			gomock.Any(),
 			"395fd5f4-964d-4135-9a55-fbf91c4a163b",
 		).
@@ -276,7 +276,7 @@ func TestHandlerGetOrders(t *testing.T) {
 		AnyTimes()
 
 	m.EXPECT().
-		GetUserOrders(
+		UserOrders(
 			gomock.Any(),
 			"395fd5f4-964d-4135-9a55-fbf91c4a1613",
 		).

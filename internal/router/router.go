@@ -34,7 +34,7 @@ func New(
 
 			r.Get("/balance", handler.GetBalance)
 			r.Post("/balance/withdraw", handler.Withdraw)
-			r.Get("/withdrawals", handler.GetWithdrawals)
+			r.Get("/withdrawals", handler.Withdrawals)
 		})
 	})
 

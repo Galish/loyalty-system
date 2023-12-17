@@ -62,9 +62,9 @@ func (h *httpHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (h *httpHandler) GetWithdrawals(w http.ResponseWriter, r *http.Request) {
+func (h *httpHandler) Withdrawals(w http.ResponseWriter, r *http.Request) {
 	user := r.Header.Get(auth.AuthHeaderName)
-	withdrawals, err := h.loyaltyService.GetWithdrawals(r.Context(), user)
+	withdrawals, err := h.loyaltyService.Withdrawals(r.Context(), user)
 	if err != nil {
 		logger.WithError(err).Debug("unable to get withdrawals")
 		http.Error(w, "unable to get withdrawals", http.StatusInternalServerError)

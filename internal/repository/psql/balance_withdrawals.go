@@ -6,7 +6,7 @@ import (
 	repo "github.com/Galish/loyalty-system/internal/repository"
 )
 
-func (s *psqlStore) GetWithdrawals(ctx context.Context, user string) ([]*repo.Withdrawal, error) {
+func (s *psqlStore) Withdrawals(ctx context.Context, user string) ([]*repo.Withdrawal, error) {
 	rows, err := s.db.QueryContext(
 		ctx,
 		`

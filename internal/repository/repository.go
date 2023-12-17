@@ -21,13 +21,13 @@ type UserRepository interface {
 
 type LoyaltyRepository interface {
 	CreateOrder(context.Context, *Order) error
-	GetUserOrders(context.Context, string) ([]*Order, error)
+	UserOrders(context.Context, string) ([]*Order, error)
 	UpdateOrder(context.Context, *Order) error
 
-	GetUserBalance(context.Context, string) (*Balance, error)
+	UserBalance(context.Context, string) (*Balance, error)
 	Enroll(context.Context, *Enrollment) error
 	Withdraw(context.Context, *Withdrawal) error
-	GetWithdrawals(context.Context, string) ([]*Withdrawal, error)
+	Withdrawals(context.Context, string) ([]*Withdrawal, error)
 }
 
 type User struct {
