@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -46,6 +47,15 @@ func TestHandlerRegister(t *testing.T) {
 			gomock.Any(),
 		).
 		Return(nil, repository.ErrUserConflict).
+		AnyTimes()
+
+	m.EXPECT().
+		CreateUser(
+			gomock.Any(),
+			"user.error",
+			gomock.Any(),
+		).
+		Return(nil, errors.New("an unknown error occurred")).
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}
@@ -148,22 +158,6 @@ func TestHandlerRegister(t *testing.T) {
 			},
 		},
 		{
-			"successful registration",
-			&request{
-				"/api/user/register",
-				"POST",
-				&credentials{
-					Login:    "username",
-					Password: "123456",
-				},
-			},
-			&want{
-				http.StatusOK,
-				"",
-				"",
-			},
-		},
-		{
 			"user already exists",
 			&request{
 				"/api/user/register",
@@ -177,6 +171,38 @@ func TestHandlerRegister(t *testing.T) {
 				http.StatusConflict,
 				"user already exists\n",
 				"text/plain; charset=utf-8",
+			},
+		},
+		{
+			"internal server error",
+			&request{
+				"/api/user/register",
+				"POST",
+				&credentials{
+					Login:    "user.error",
+					Password: "123456",
+				},
+			},
+			&want{
+				http.StatusInternalServerError,
+				"unable to write to repository\n",
+				"text/plain; charset=utf-8",
+			},
+		},
+		{
+			"successful registration",
+			&request{
+				"/api/user/register",
+				"POST",
+				&credentials{
+					Login:    "username",
+					Password: "123456",
+				},
+			},
+			&want{
+				http.StatusOK,
+				"",
+				"",
 			},
 		},
 	}
@@ -252,6 +278,14 @@ func TestHandlerLogin(t *testing.T) {
 			"user",
 		).
 		Return(nil, repository.ErrUserNotFound).
+		AnyTimes()
+
+	m.EXPECT().
+		GetUserByLogin(
+			gomock.Any(),
+			"user.error",
+		).
+		Return(nil, errors.New("an unknown error occurred")).
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}
@@ -354,22 +388,6 @@ func TestHandlerLogin(t *testing.T) {
 			},
 		},
 		{
-			"successful login",
-			&request{
-				"/api/user/login",
-				"POST",
-				&credentials{
-					Login:    "username",
-					Password: "123456",
-				},
-			},
-			&want{
-				http.StatusOK,
-				"",
-				"",
-			},
-		},
-		{
 			"user not found",
 			&request{
 				"/api/user/login",
@@ -399,6 +417,38 @@ func TestHandlerLogin(t *testing.T) {
 				http.StatusUnauthorized,
 				"incorrect login/password pair\n",
 				"text/plain; charset=utf-8",
+			},
+		},
+		{
+			"internal server error",
+			&request{
+				"/api/user/login",
+				"POST",
+				&credentials{
+					Login:    "user.error",
+					Password: "123456",
+				},
+			},
+			&want{
+				http.StatusInternalServerError,
+				"an unknown error occurred\n",
+				"text/plain; charset=utf-8",
+			},
+		},
+		{
+			"successful login",
+			&request{
+				"/api/user/login",
+				"POST",
+				&credentials{
+					Login:    "username",
+					Password: "123456",
+				},
+			},
+			&want{
+				http.StatusOK,
+				"",
+				"",
 			},
 		},
 	}

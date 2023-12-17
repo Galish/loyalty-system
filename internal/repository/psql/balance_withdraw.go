@@ -9,7 +9,7 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
-func (s *psqlStore) Withdraw(ctx context.Context, withdraw *repo.Withdraw) error {
+func (s *psqlStore) Withdraw(ctx context.Context, withdraw *repo.Withdrawal) error {
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err

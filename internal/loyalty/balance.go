@@ -2,7 +2,6 @@ package loyalty
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	repo "github.com/Galish/loyalty-system/internal/repository"
@@ -13,14 +12,12 @@ type Balance struct {
 	Withdrawn float32 `json:"withdrawn"`
 }
 
-type Withdraw struct {
-	Order       string  `json:"order"`
-	Sum         float32 `json:"sum"`
-	User        string  `json:"user,omitempty"`
-	ProcessedAt string  `json:"processed_at"`
+type Withdrawal struct {
+	Order       OrderNumber `json:"order"`
+	Sum         float32     `json:"sum"`
+	User        string      `json:"user,omitempty"`
+	ProcessedAt string      `json:"processed_at"`
 }
-
-var ErrInsufficientFunds = errors.New("insufficient funds in the account")
 
 func (s *LoyaltyService) GetBalance(ctx context.Context, user string) (*Balance, error) {
 	balance, err := s.repo.GetUserBalance(ctx, user)
@@ -34,23 +31,20 @@ func (s *LoyaltyService) GetBalance(ctx context.Context, user string) (*Balance,
 	}, nil
 }
 
-func (s *LoyaltyService) Withdraw(ctx context.Context, withdrawn *Withdraw) error {
-	if !s.ValidateOrderNumber(withdrawn.Order) {
-		return ErrInvalidOrderNumber
+func (s *LoyaltyService) Withdraw(ctx context.Context, withdrawn *Withdrawal) error {
+	if !withdrawn.Order.isValid() {
+		return ErrIncorrectOrderNumber
 	}
 
 	err := s.repo.Withdraw(
 		ctx,
-		&repo.Withdraw{
-			Order:       withdrawn.Order,
+		&repo.Withdrawal{
+			Order:       withdrawn.Order.String(),
 			User:        withdrawn.User,
 			Sum:         withdrawn.Sum,
 			ProcessedAt: time.Now(),
 		},
 	)
-	if err != nil && errors.Is(err, repo.ErrInsufficientFunds) {
-		return err
-	}
 	if err != nil {
 		return err
 	}
@@ -58,18 +52,18 @@ func (s *LoyaltyService) Withdraw(ctx context.Context, withdrawn *Withdraw) erro
 	return nil
 }
 
-func (s *LoyaltyService) GetWithdrawals(ctx context.Context, user string) ([]*Withdraw, error) {
+func (s *LoyaltyService) GetWithdrawals(ctx context.Context, user string) ([]*Withdrawal, error) {
 	withdrawals, err := s.repo.GetWithdrawals(ctx, user)
 	if err != nil {
-		return []*Withdraw{}, err
+		return []*Withdrawal{}, err
 	}
 
-	var results []*Withdraw
+	var results []*Withdrawal
 	for _, w := range withdrawals {
 		results = append(
 			results,
-			&Withdraw{
-				Order:       w.Order,
+			&Withdrawal{
+				Order:       OrderNumber(w.Order),
 				Sum:         w.Sum,
 				ProcessedAt: w.ProcessedAt.Format(TimeLayout),
 			},

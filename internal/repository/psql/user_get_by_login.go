@@ -2,11 +2,10 @@ package psql
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 
 	repo "github.com/Galish/loyalty-system/internal/repository"
-
-	"github.com/jackc/pgx/v5"
 )
 
 func (s *psqlStore) GetUserByLogin(ctx context.Context, login string) (*repo.User, error) {
@@ -24,7 +23,7 @@ func (s *psqlStore) GetUserByLogin(ctx context.Context, login string) (*repo.Use
 		&user.IsActive,
 	)
 
-	if err != nil && errors.Is(pgx.ErrNoRows, err) {
+	if errors.Is(err, sql.ErrNoRows) {
 		return nil, repo.ErrUserNotFound
 	}
 

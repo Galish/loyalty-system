@@ -193,7 +193,7 @@ func TestHandlerWithdraw(t *testing.T) {
 			gomock.Any(),
 			gomock.Any(),
 		).
-		DoAndReturn(func(ctx context.Context, withdraw *repo.Withdraw) error {
+		DoAndReturn(func(ctx context.Context, withdraw *repo.Withdrawal) error {
 			if withdraw.Sum >= 700 {
 				return errors.New("internal server error")
 			}
@@ -447,7 +447,7 @@ func TestHandlerGetWithdrawals(t *testing.T) {
 			gomock.Any(),
 			"395fd5f4-964d-4135-9a55-fbf91c4a163b",
 		).
-		Return([]*repo.Withdraw{
+		Return([]*repo.Withdrawal{
 			{
 				Order:       "277431151",
 				User:        "395fd5f4-964d-4135-9a55-fbf91c4a163b",
@@ -474,7 +474,7 @@ func TestHandlerGetWithdrawals(t *testing.T) {
 			gomock.Any(),
 			"395fd5f4-964d-4135-9a55-fbf91c4a1614",
 		).
-		Return([]*repo.Withdraw{}, nil).
+		Return([]*repo.Withdrawal{}, nil).
 		AnyTimes()
 
 	m.EXPECT().
@@ -482,7 +482,7 @@ func TestHandlerGetWithdrawals(t *testing.T) {
 			gomock.Any(),
 			"395fd5f4-964d-4135-9a55-fbf91c4a1615",
 		).
-		Return([]*repo.Withdraw{}, errors.New("error occurred")).
+		Return([]*repo.Withdrawal{}, errors.New("error occurred")).
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}

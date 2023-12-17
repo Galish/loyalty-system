@@ -20,21 +20,24 @@ func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := r.Header.Get(auth.AuthHeaderName)
+	newOrder := loyalty.Order{
+		ID:   loyalty.OrderNumber(string(body)),
+		User: r.Header.Get(auth.AuthHeaderName),
+	}
 
-	_, err = h.loyaltyService.AddOrder(r.Context(), string(body), user)
+	err = h.loyaltyService.AddOrder(r.Context(), &newOrder)
 	if err != nil {
-		if errors.Is(loyalty.ErrInvalidOrderNumber, err) {
+		if errors.Is(err, loyalty.ErrIncorrectOrderNumber) {
 			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 			return
 		}
 
-		if errors.Is(repository.ErrOrderConflict, err) {
+		if errors.Is(err, repository.ErrOrderConflict) {
 			http.Error(w, err.Error(), http.StatusConflict)
 			return
 		}
 
-		if errors.Is(repository.ErrOrderExists, err) {
+		if errors.Is(err, repository.ErrOrderExists) {
 			w.WriteHeader(http.StatusOK)
 			w.Write([]byte(err.Error()))
 			return

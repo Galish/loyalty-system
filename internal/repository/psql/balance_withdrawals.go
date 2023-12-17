@@ -6,7 +6,7 @@ import (
 	repo "github.com/Galish/loyalty-system/internal/repository"
 )
 
-func (s *psqlStore) GetWithdrawals(ctx context.Context, user string) ([]*repo.Withdraw, error) {
+func (s *psqlStore) GetWithdrawals(ctx context.Context, user string) ([]*repo.Withdrawal, error) {
 	rows, err := s.db.QueryContext(
 		ctx,
 		`
@@ -17,15 +17,15 @@ func (s *psqlStore) GetWithdrawals(ctx context.Context, user string) ([]*repo.Wi
 		user,
 	)
 	if err != nil {
-		return []*repo.Withdraw{}, err
+		return []*repo.Withdrawal{}, err
 	}
 
 	defer rows.Close()
 
-	var withdrawals []*repo.Withdraw
+	var withdrawals []*repo.Withdrawal
 
 	for rows.Next() {
-		var withdraw repo.Withdraw
+		var withdraw repo.Withdrawal
 
 		if err := rows.Scan(
 			&withdraw.Order,
@@ -33,14 +33,14 @@ func (s *psqlStore) GetWithdrawals(ctx context.Context, user string) ([]*repo.Wi
 			&withdraw.Sum,
 			&withdraw.ProcessedAt,
 		); err != nil {
-			return []*repo.Withdraw{}, err
+			return []*repo.Withdrawal{}, err
 		}
 
 		withdrawals = append(withdrawals, &withdraw)
 	}
 
 	if err := rows.Err(); err != nil {
-		return []*repo.Withdraw{}, err
+		return []*repo.Withdrawal{}, err
 	}
 
 	return withdrawals, nil

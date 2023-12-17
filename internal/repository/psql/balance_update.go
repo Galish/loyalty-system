@@ -19,9 +19,6 @@ func (s *psqlStore) UpdateBalance(ctx context.Context, enroll *repo.BalanceEnrol
 		enroll.User,
 		enroll.Sum,
 		enroll.ProcessedAt,
-		// user,
-		// value,
-		// time.Now(),
 	)
 	if err != nil {
 		return err

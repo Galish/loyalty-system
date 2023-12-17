@@ -133,10 +133,10 @@ func (mr *MockLoyaltyRepositoryMockRecorder) GetUserOrders(arg0, arg1 interface{
 }
 
 // GetWithdrawals mocks base method.
-func (m *MockLoyaltyRepository) GetWithdrawals(arg0 context.Context, arg1 string) ([]*repository.Withdraw, error) {
+func (m *MockLoyaltyRepository) GetWithdrawals(arg0 context.Context, arg1 string) ([]*repository.Withdrawal, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetWithdrawals", arg0, arg1)
-	ret0, _ := ret[0].([]*repository.Withdraw)
+	ret0, _ := ret[0].([]*repository.Withdrawal)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -176,7 +176,7 @@ func (mr *MockLoyaltyRepositoryMockRecorder) UpdateOrder(arg0, arg1 interface{})
 }
 
 // Withdraw mocks base method.
-func (m *MockLoyaltyRepository) Withdraw(arg0 context.Context, arg1 *repository.Withdraw) error {
+func (m *MockLoyaltyRepository) Withdraw(arg0 context.Context, arg1 *repository.Withdrawal) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Withdraw", arg0, arg1)
 	ret0, _ := ret[0].(error)

@@ -47,7 +47,7 @@ func (s *LoyaltyService) getOrderAccrual(order *Order) {
 		err := s.repo.UpdateOrder(
 			context.Background(),
 			&repo.Order{
-				ID:      order.ID,
+				ID:      order.ID.String(),
 				Status:  string(payload.Status),
 				Accrual: payload.Accrual,
 			},

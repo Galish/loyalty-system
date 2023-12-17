@@ -31,17 +31,17 @@ func (h *httpHandler) GetBalance(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *httpHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
-	var withdraw loyalty.Withdraw
-	err := json.NewDecoder(r.Body).Decode(&withdraw)
+	var withdrawal loyalty.Withdrawal
+	err := json.NewDecoder(r.Body).Decode(&withdrawal)
 	if err != nil {
 		logger.WithError(err).Debug("cannot decode request JSON body")
 		http.Error(w, "cannot decode request JSON body", http.StatusBadRequest)
 		return
 	}
 
-	withdraw.User = r.Header.Get(auth.AuthHeaderName)
+	withdrawal.User = r.Header.Get(auth.AuthHeaderName)
 
-	err = h.loyaltyService.Withdraw(r.Context(), &withdraw)
+	err = h.loyaltyService.Withdraw(r.Context(), &withdrawal)
 	if err != nil {
 		logger.WithError(err).Debug("unable to withdraw funds")
 
@@ -50,7 +50,7 @@ func (h *httpHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if errors.Is(err, loyalty.ErrInvalidOrderNumber) {
+		if errors.Is(err, loyalty.ErrIncorrectOrderNumber) {
 			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 			return
 		}

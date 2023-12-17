@@ -10,12 +10,14 @@ import (
 )
 
 type Order struct {
-	ID         string  `json:"number"`
-	Status     Status  `json:"status"`
-	Accrual    float32 `json:"accrual"`
-	UploadedAt string  `json:"uploaded_at"`
-	User       string  `json:"user_id,omitempty"`
+	ID         OrderNumber `json:"number"`
+	Status     Status      `json:"status"`
+	Accrual    float32     `json:"accrual"`
+	UploadedAt string      `json:"uploaded_at"`
+	User       string      `json:"user_id,omitempty"`
 }
+
+type OrderNumber string
 
 type Status string
 
@@ -27,39 +29,31 @@ const (
 	StatusProcessed  = Status("PROCESSED")
 
 	TimeLayout = "2006-01-02T15:04:05-07:00"
-	// time.RFC3339
 )
 
-var (
-	ErrInvalidOrderNumber = errors.New("invalid order number value")
-)
+var ErrIncorrectOrderNumber = errors.New("invalid order number value")
 
-func (s *LoyaltyService) AddOrder(ctx context.Context, id, user string) (*Order, error) {
-	if !s.ValidateOrderNumber(id) {
-		return nil, ErrInvalidOrderNumber
+func (s *LoyaltyService) AddOrder(ctx context.Context, order *Order) error {
+	if !order.ID.isValid() {
+		return ErrIncorrectOrderNumber
 	}
 
 	repoOrder := repo.Order{
-		ID:         id,
+		ID:         order.ID.String(),
 		Status:     string(StatusNew),
 		UploadedAt: time.Now(),
-		User:       user,
+		User:       order.User,
 	}
 
 	if err := s.repo.CreateOrder(ctx, &repoOrder); err != nil {
-		return nil, err
-	}
-
-	order := Order{
-		ID:   repoOrder.ID,
-		User: repoOrder.User,
+		return err
 	}
 
 	go func() {
-		s.orderCh <- &order
+		s.orderCh <- order
 	}()
 
-	return &order, nil
+	return nil
 }
 
 func (s *LoyaltyService) GetOrders(ctx context.Context, userID string) ([]*Order, error) {
@@ -74,7 +68,7 @@ func (s *LoyaltyService) GetOrders(ctx context.Context, userID string) ([]*Order
 		userOrders = append(
 			userOrders,
 			&Order{
-				ID:         order.ID,
+				ID:         OrderNumber(order.ID),
 				Accrual:    order.Accrual,
 				Status:     Status(order.Status),
 				UploadedAt: order.UploadedAt.Format(TimeLayout),
@@ -85,14 +79,18 @@ func (s *LoyaltyService) GetOrders(ctx context.Context, userID string) ([]*Order
 	return userOrders, nil
 }
 
-func (s *LoyaltyService) ValidateOrderNumber(id string) bool {
-	if id == "" {
+func (num OrderNumber) isValid() bool {
+	if num.String() == "" {
 		return false
 	}
 
-	if err := goluhn.Validate(id); err != nil {
+	if err := goluhn.Validate(num.String()); err != nil {
 		return false
 	}
 
 	return true
+}
+
+func (num OrderNumber) String() string {
+	return string(num)
 }
