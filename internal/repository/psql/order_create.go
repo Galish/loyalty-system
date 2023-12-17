@@ -12,12 +12,12 @@ func (s *psqlStore) CreateOrder(ctx context.Context, order *repo.Order) error {
 	row := s.db.QueryRowContext(
 		ctx,
 		`
-		INSERT INTO orders (uuid, status, accrual, uploaded_at, user_id)
-		VALUES ($1, $2, $3, $4, $5)
-		ON CONFLICT (uuid)
-		DO UPDATE SET uuid=excluded.uuid
-		RETURNING uploaded_at, user_id
-	`,
+			INSERT INTO orders (uuid, status, accrual, uploaded_at, user_id)
+			VALUES ($1, $2, $3, $4, $5)
+			ON CONFLICT (uuid)
+			DO UPDATE SET uuid=excluded.uuid
+			RETURNING uploaded_at, user_id
+		`,
 		order.ID,
 		order.Status,
 		order.Accrual,
