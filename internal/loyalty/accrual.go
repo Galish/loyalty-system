@@ -52,6 +52,12 @@ func (c *accrualClient) run() {
 
 		go func(req *accrualRequest) {
 			accrual, err := c.getOrderAccrual(req.order)
+
+			logger.WithFields(logger.Fields{
+				"accrual": accrual,
+				"err":     "err",
+			}).Debug("accrual service response")
+
 			if err != nil || !accrual.Status.isFinal() && !req.isAttemptsExceeded() {
 				c.retry(req)
 				return
