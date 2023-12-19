@@ -14,7 +14,7 @@ import (
 
 const (
 	limiterInterval time.Duration = 1 * time.Second
-	maxAttempts     uint          = 5
+	maxAttempts     uint          = 10
 )
 
 type accrualClient struct {
