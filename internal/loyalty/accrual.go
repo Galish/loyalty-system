@@ -14,7 +14,7 @@ import (
 
 const (
 	limiterInterval time.Duration = 1 * time.Second
-	maxAttempts     uint          = 25
+	maxAttempts     uint          = 10
 )
 
 type accrualClient struct {
@@ -24,8 +24,15 @@ type accrualClient struct {
 }
 
 type accrualRequest struct {
-	order    *Order
+	order    OrderNumber
+	user     string
 	attempts uint
+}
+
+type Accrual struct {
+	ID     OrderNumber `json:"order"`
+	Status Status      `json:"status"`
+	Value  float32     `json:"accrual"`
 }
 
 func (r *accrualRequest) isAttemptsExceeded() bool {
@@ -52,13 +59,12 @@ func (c *accrualClient) run() {
 
 		go func(req *accrualRequest) {
 			accrual, err := c.getOrderAccrual(req.order)
-
 			if err != nil || !accrual.Status.isFinal() && !req.isAttemptsExceeded() {
 				c.retry(req)
 				return
 			}
 
-			c.applyOrderAccrual(accrual)
+			c.applyOrderAccrual(accrual, req.user)
 		}(req)
 	}
 
@@ -67,7 +73,8 @@ func (c *accrualClient) run() {
 
 func (c *accrualClient) newOrder(order *Order) {
 	c.requestCh <- &accrualRequest{
-		order:    order,
+		order:    order.ID,
+		user:     order.User,
 		attempts: 0,
 	}
 }
@@ -81,8 +88,8 @@ func (c *accrualClient) retry(req *accrualRequest) {
 	}
 }
 
-func (c *accrualClient) getOrderAccrual(order *Order) (*Order, error) {
-	url := fmt.Sprintf("%s/api/orders/%s", c.cfg.AccrualAddr, order.ID)
+func (c *accrualClient) getOrderAccrual(order OrderNumber) (*Accrual, error) {
+	url := fmt.Sprintf("%s/api/orders/%s", c.cfg.AccrualAddr, order)
 
 	logger.WithFields(logger.Fields{
 		"URL": url,
@@ -94,8 +101,8 @@ func (c *accrualClient) getOrderAccrual(order *Order) (*Order, error) {
 		return nil, err
 	}
 
-	var payload Order
-	if err := json.NewDecoder(resp.Body).Decode(&payload); err != nil {
+	var accrual Accrual
+	if err := json.NewDecoder(resp.Body).Decode(&accrual); err != nil {
 		logger.WithError(err).Debug("cannot decode request JSON body")
 		return nil, err
 	}
@@ -103,24 +110,21 @@ func (c *accrualClient) getOrderAccrual(order *Order) (*Order, error) {
 	defer resp.Body.Close()
 
 	logger.WithFields(logger.Fields{
-		"payload": payload,
-		"err":     "err",
+		"accrual": accrual,
 	}).Debug("accrual service response")
 
-	payload.User = order.User
-
-	return &payload, nil
+	return &accrual, nil
 }
 
-func (c *accrualClient) applyOrderAccrual(order *Order) error {
+func (c *accrualClient) applyOrderAccrual(accrual *Accrual, user string) error {
 	ctx := context.Background()
 
 	err := c.repo.UpdateOrder(
 		ctx,
 		&repo.Order{
-			ID:      order.ID.String(),
-			Status:  string(order.Status),
-			Accrual: order.Accrual,
+			ID:      accrual.ID.String(),
+			Status:  string(accrual.Status),
+			Accrual: accrual.Value,
 		},
 	)
 	if err != nil {
@@ -131,8 +135,8 @@ func (c *accrualClient) applyOrderAccrual(order *Order) error {
 	err = c.repo.Enroll(
 		ctx,
 		&repo.Enrollment{
-			User:        order.User,
-			Sum:         order.Accrual,
+			User:        user,
+			Sum:         accrual.Value,
 			ProcessedAt: time.Now(),
 		},
 	)
