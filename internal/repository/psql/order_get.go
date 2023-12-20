@@ -3,25 +3,25 @@ package psql
 import (
 	"context"
 
-	repo "github.com/Galish/loyalty-system/internal/repository"
+	"github.com/Galish/loyalty-system/internal/model"
 )
 
-func (s *psqlStore) UserOrders(ctx context.Context, userID string) ([]*repo.Order, error) {
+func (s *psqlStore) UserOrders(ctx context.Context, userID string) ([]*model.Order, error) {
 	rows, err := s.db.QueryContext(
 		ctx,
 		"SELECT uuid, status, accrual, uploaded_at, user_id FROM orders WHERE user_id = $1;",
 		userID,
 	)
 	if err != nil {
-		return []*repo.Order{}, err
+		return []*model.Order{}, err
 	}
 
 	defer rows.Close()
 
-	var orders []*repo.Order
+	var orders []*model.Order
 
 	for rows.Next() {
-		var order repo.Order
+		var order model.Order
 
 		if err := rows.Scan(
 			&order.ID,
@@ -30,14 +30,14 @@ func (s *psqlStore) UserOrders(ctx context.Context, userID string) ([]*repo.Orde
 			&order.UploadedAt,
 			&order.User,
 		); err != nil {
-			return []*repo.Order{}, err
+			return []*model.Order{}, err
 		}
 
 		orders = append(orders, &order)
 	}
 
 	if err := rows.Err(); err != nil {
-		return []*repo.Order{}, err
+		return []*model.Order{}, err
 	}
 
 	return orders, nil

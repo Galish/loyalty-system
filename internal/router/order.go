@@ -9,8 +9,18 @@ import (
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/logger"
 	"github.com/Galish/loyalty-system/internal/loyalty"
+	"github.com/Galish/loyalty-system/internal/model"
 	"github.com/Galish/loyalty-system/internal/repository"
 )
+
+const timeLayout = "2006-01-02T15:04:05-07:00"
+
+type orderResponse struct {
+	ID         string  `json:"number"`
+	Status     string  `json:"status"`
+	Accrual    float32 `json:"accrual"`
+	UploadedAt string  `json:"uploaded_at"`
+}
 
 func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
@@ -20,12 +30,12 @@ func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newOrder := loyalty.Order{
-		ID:   loyalty.OrderNumber(string(body)),
+	newOrder := model.Order{
+		ID:   model.OrderNumber(string(body)),
 		User: r.Header.Get(auth.AuthHeaderName),
 	}
 
-	err = h.loyaltyService.AddOrder(r.Context(), &newOrder)
+	err = h.loyaltyService.AddOrder(r.Context(), newOrder)
 	if err != nil {
 		logger.WithError(err).Debug("unable to add order")
 
@@ -67,10 +77,23 @@ func (h *httpHandler) GetOrders(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	res := []*orderResponse{}
+	for _, order := range orders {
+		res = append(
+			res,
+			&orderResponse{
+				ID:         order.ID.String(),
+				Status:     string(order.Status),
+				Accrual:    order.Accrual,
+				UploadedAt: order.UploadedAt.Format(timeLayout),
+			},
+		)
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
-	if err := json.NewEncoder(w).Encode(orders); err != nil {
+	if err := json.NewEncoder(w).Encode(res); err != nil {
 		logger.WithError(err).Debug("cannot encode request JSON body")
 		http.Error(w, "cannot encode request JSON body", http.StatusInternalServerError)
 		return

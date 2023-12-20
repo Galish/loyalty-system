@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/Galish/loyalty-system/internal/config"
+	"github.com/Galish/loyalty-system/internal/model"
 	"github.com/Galish/loyalty-system/internal/repository"
 )
 
@@ -12,14 +13,14 @@ const limiterInterval = 1 * time.Second
 type LoyaltyService struct {
 	repo    repository.LoyaltyRepository
 	cfg     *config.Config
-	orderCh chan *Order
+	orderCh chan *model.Order
 }
 
 func NewService(repo repository.LoyaltyRepository, cfg *config.Config) *LoyaltyService {
 	service := LoyaltyService{
 		repo:    repo,
 		cfg:     cfg,
-		orderCh: make(chan *Order),
+		orderCh: make(chan *model.Order),
 	}
 
 	go service.flushMessages()

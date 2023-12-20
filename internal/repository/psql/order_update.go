@@ -3,10 +3,10 @@ package psql
 import (
 	"context"
 
-	repo "github.com/Galish/loyalty-system/internal/repository"
+	"github.com/Galish/loyalty-system/internal/model"
 )
 
-func (s *psqlStore) UpdateOrder(ctx context.Context, order *repo.Order) error {
+func (s *psqlStore) UpdateOrder(ctx context.Context, order *model.Order) error {
 	_, err := s.db.ExecContext(
 		ctx,
 		`

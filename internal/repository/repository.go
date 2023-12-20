@@ -22,9 +22,9 @@ type UserRepository interface {
 }
 
 type OrderRepository interface {
-	CreateOrder(context.Context, *Order) error
-	UserOrders(context.Context, string) ([]*Order, error)
-	UpdateOrder(context.Context, *Order) error
+	CreateOrder(context.Context, *model.Order) error
+	UserOrders(context.Context, string) ([]*model.Order, error)
+	UpdateOrder(context.Context, *model.Order) error
 }
 
 type BalanceRepository interface {

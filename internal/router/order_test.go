@@ -31,7 +31,7 @@ func TestHandlerAddOrder(t *testing.T) {
 			gomock.Any(),
 			gomock.Any(),
 		).
-		DoAndReturn(func(ctx context.Context, order *repo.Order) error {
+		DoAndReturn(func(ctx context.Context, order *model.Order) error {
 			if order.ID == "277431151" {
 				return repo.ErrOrderConflict
 			}
@@ -251,7 +251,7 @@ func TestHandlerGetOrders(t *testing.T) {
 			gomock.Any(),
 			"395fd5f4-964d-4135-9a55-fbf91c4a163b",
 		).
-		Return([]*repo.Order{
+		Return([]*model.Order{
 			{
 				ID:         "2774311589",
 				Status:     "NEW",
@@ -281,7 +281,7 @@ func TestHandlerGetOrders(t *testing.T) {
 			gomock.Any(),
 			"395fd5f4-964d-4135-9a55-fbf91c4a1613",
 		).
-		Return([]*repo.Order{}, nil).
+		Return([]*model.Order{}, nil).
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}

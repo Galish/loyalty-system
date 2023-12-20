@@ -8,10 +8,11 @@ import (
 	"time"
 
 	"github.com/Galish/loyalty-system/internal/logger"
+	"github.com/Galish/loyalty-system/internal/model"
 	repo "github.com/Galish/loyalty-system/internal/repository"
 )
 
-func (s *LoyaltyService) getOrderAccrual(order *Order) {
+func (s *LoyaltyService) getOrderAccrual(order *model.Order) {
 	url := fmt.Sprintf("%s/api/orders/%s", s.cfg.AccrualAddr, order.ID)
 
 	logger.WithFields(logger.Fields{
@@ -24,7 +25,7 @@ func (s *LoyaltyService) getOrderAccrual(order *Order) {
 		return
 	}
 
-	var payload Order
+	var payload model.Order
 	err = json.NewDecoder(resp.Body).Decode(&payload)
 	if err != nil {
 		logger.WithError(err).Debug("cannot decode request JSON body")
@@ -34,12 +35,12 @@ func (s *LoyaltyService) getOrderAccrual(order *Order) {
 	defer resp.Body.Close()
 
 	switch payload.Status {
-	case StatusInvalid, StatusProcessed:
+	case model.StatusInvalid, model.StatusProcessed:
 		err := s.repo.UpdateOrder(
 			context.Background(),
-			&repo.Order{
-				ID:      order.ID.String(),
-				Status:  string(payload.Status),
+			&model.Order{
+				ID:      order.ID,
+				Status:  payload.Status,
 				Accrual: payload.Accrual,
 			},
 		)

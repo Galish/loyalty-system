@@ -90,7 +90,7 @@ func (m *MockOrderRepository) EXPECT() *MockOrderRepositoryMockRecorder {
 }
 
 // CreateOrder mocks base method.
-func (m *MockOrderRepository) CreateOrder(arg0 context.Context, arg1 *repository.Order) error {
+func (m *MockOrderRepository) CreateOrder(arg0 context.Context, arg1 *model.Order) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateOrder", arg0, arg1)
 	ret0, _ := ret[0].(error)
@@ -104,7 +104,7 @@ func (mr *MockOrderRepositoryMockRecorder) CreateOrder(arg0, arg1 interface{}) *
 }
 
 // UpdateOrder mocks base method.
-func (m *MockOrderRepository) UpdateOrder(arg0 context.Context, arg1 *repository.Order) error {
+func (m *MockOrderRepository) UpdateOrder(arg0 context.Context, arg1 *model.Order) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateOrder", arg0, arg1)
 	ret0, _ := ret[0].(error)
@@ -118,10 +118,10 @@ func (mr *MockOrderRepositoryMockRecorder) UpdateOrder(arg0, arg1 interface{}) *
 }
 
 // UserOrders mocks base method.
-func (m *MockOrderRepository) UserOrders(arg0 context.Context, arg1 string) ([]*repository.Order, error) {
+func (m *MockOrderRepository) UserOrders(arg0 context.Context, arg1 string) ([]*model.Order, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UserOrders", arg0, arg1)
-	ret0, _ := ret[0].([]*repository.Order)
+	ret0, _ := ret[0].([]*model.Order)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -237,7 +237,7 @@ func (m *MockLoyaltyRepository) EXPECT() *MockLoyaltyRepositoryMockRecorder {
 }
 
 // CreateOrder mocks base method.
-func (m *MockLoyaltyRepository) CreateOrder(arg0 context.Context, arg1 *repository.Order) error {
+func (m *MockLoyaltyRepository) CreateOrder(arg0 context.Context, arg1 *model.Order) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateOrder", arg0, arg1)
 	ret0, _ := ret[0].(error)
@@ -265,7 +265,7 @@ func (mr *MockLoyaltyRepositoryMockRecorder) Enroll(arg0, arg1 interface{}) *gom
 }
 
 // UpdateOrder mocks base method.
-func (m *MockLoyaltyRepository) UpdateOrder(arg0 context.Context, arg1 *repository.Order) error {
+func (m *MockLoyaltyRepository) UpdateOrder(arg0 context.Context, arg1 *model.Order) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateOrder", arg0, arg1)
 	ret0, _ := ret[0].(error)
@@ -294,10 +294,10 @@ func (mr *MockLoyaltyRepositoryMockRecorder) UserBalance(arg0, arg1 interface{})
 }
 
 // UserOrders mocks base method.
-func (m *MockLoyaltyRepository) UserOrders(arg0 context.Context, arg1 string) ([]*repository.Order, error) {
+func (m *MockLoyaltyRepository) UserOrders(arg0 context.Context, arg1 string) ([]*model.Order, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UserOrders", arg0, arg1)
-	ret0, _ := ret[0].([]*repository.Order)
+	ret0, _ := ret[0].([]*model.Order)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

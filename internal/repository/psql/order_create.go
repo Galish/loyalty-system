@@ -4,10 +4,11 @@ import (
 	"context"
 	"time"
 
+	"github.com/Galish/loyalty-system/internal/model"
 	repo "github.com/Galish/loyalty-system/internal/repository"
 )
 
-func (s *psqlStore) CreateOrder(ctx context.Context, order *repo.Order) error {
+func (s *psqlStore) CreateOrder(ctx context.Context, order *model.Order) error {
 	row := s.db.QueryRowContext(
 		ctx,
 		`

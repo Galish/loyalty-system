@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/Galish/loyalty-system/internal/model"
 	repo "github.com/Galish/loyalty-system/internal/repository"
 )
 
@@ -13,10 +14,10 @@ type Balance struct {
 }
 
 type Withdrawal struct {
-	Order       OrderNumber `json:"order"`
-	Sum         float32     `json:"sum"`
-	User        string      `json:"user,omitempty"`
-	ProcessedAt string      `json:"processed_at"`
+	Order       model.OrderNumber `json:"order"`
+	Sum         float32           `json:"sum"`
+	User        string            `json:"user,omitempty"`
+	ProcessedAt string            `json:"processed_at"`
 }
 
 func (s *LoyaltyService) GetBalance(ctx context.Context, user string) (*Balance, error) {
@@ -32,7 +33,7 @@ func (s *LoyaltyService) GetBalance(ctx context.Context, user string) (*Balance,
 }
 
 func (s *LoyaltyService) Withdraw(ctx context.Context, withdrawn *Withdrawal) error {
-	if !withdrawn.Order.isValid() {
+	if !withdrawn.Order.IsValid() {
 		return ErrIncorrectOrderNumber
 	}
 
@@ -63,7 +64,7 @@ func (s *LoyaltyService) Withdrawals(ctx context.Context, user string) ([]*Withd
 		results = append(
 			results,
 			&Withdrawal{
-				Order:       OrderNumber(w.Order),
+				Order:       model.OrderNumber(w.Order),
 				Sum:         w.Sum,
 				ProcessedAt: w.ProcessedAt.Format(TimeLayout),
 			},
