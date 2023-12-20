@@ -8,8 +8,25 @@ import (
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/logger"
 	"github.com/Galish/loyalty-system/internal/loyalty"
+	"github.com/Galish/loyalty-system/internal/model"
 	repo "github.com/Galish/loyalty-system/internal/repository"
 )
+
+type responseBalance struct {
+	Current   float32 `json:"current"`
+	Withdrawn float32 `json:"withdrawn"`
+}
+
+type requestWithdrawal struct {
+	Order string  `json:"order"`
+	Sum   float32 `json:"sum"`
+}
+
+type responseWithdrawal struct {
+	Order       string  `json:"order"`
+	Sum         float32 `json:"sum"`
+	ProcessedAt string  `json:"processed_at"`
+}
 
 func (h *httpHandler) GetBalance(w http.ResponseWriter, r *http.Request) {
 	user := r.Header.Get(auth.AuthHeaderName)
@@ -20,10 +37,15 @@ func (h *httpHandler) GetBalance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	res := responseBalance{
+		Current:   balance.Current,
+		Withdrawn: balance.Withdrawn,
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
-	if err := json.NewEncoder(w).Encode(balance); err != nil {
+	if err := json.NewEncoder(w).Encode(res); err != nil {
 		logger.WithError(err).Debug("cannot encode request JSON body")
 		http.Error(w, "cannot encode request JSON body", http.StatusInternalServerError)
 		return
@@ -31,15 +53,19 @@ func (h *httpHandler) GetBalance(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *httpHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
-	var withdrawal loyalty.Withdrawal
-	err := json.NewDecoder(r.Body).Decode(&withdrawal)
+	var req requestWithdrawal
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		logger.WithError(err).Debug("cannot decode request JSON body")
 		http.Error(w, "cannot decode request JSON body", http.StatusBadRequest)
 		return
 	}
 
-	withdrawal.User = r.Header.Get(auth.AuthHeaderName)
+	withdrawal := model.Withdrawal{
+		Order: model.OrderNumber(req.Order),
+		Sum:   req.Sum,
+		User:  r.Header.Get(auth.AuthHeaderName),
+	}
 
 	err = h.loyaltyService.Withdraw(r.Context(), &withdrawal)
 	if err != nil {
@@ -76,10 +102,23 @@ func (h *httpHandler) Withdrawals(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var res []*responseWithdrawal
+
+	for _, w := range withdrawals {
+		res = append(
+			res,
+			&responseWithdrawal{
+				Order:       w.Order.String(),
+				Sum:         w.Sum,
+				ProcessedAt: w.ProcessedAt.Format(timeLayout),
+			},
+		)
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
-	if err := json.NewEncoder(w).Encode(withdrawals); err != nil {
+	if err := json.NewEncoder(w).Encode(res); err != nil {
 		logger.WithError(err).Debug("cannot encode request JSON body")
 		http.Error(w, "cannot encode request JSON body", http.StatusInternalServerError)
 		return

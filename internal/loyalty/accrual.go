@@ -9,7 +9,6 @@ import (
 
 	"github.com/Galish/loyalty-system/internal/logger"
 	"github.com/Galish/loyalty-system/internal/model"
-	repo "github.com/Galish/loyalty-system/internal/repository"
 )
 
 func (s *LoyaltyService) getOrderAccrual(order *model.Order) {
@@ -55,7 +54,7 @@ func (s *LoyaltyService) getOrderAccrual(order *model.Order) {
 
 		err = s.repo.Enroll(
 			context.Background(),
-			&repo.Enrollment{
+			&model.Enrollment{
 				User:        order.User,
 				Sum:         payload.Accrual,
 				ProcessedAt: time.Now(),

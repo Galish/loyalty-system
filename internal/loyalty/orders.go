@@ -24,9 +24,9 @@ func (s *LoyaltyService) AddOrder(ctx context.Context, order model.Order) error 
 		return err
 	}
 
-	// go func() {
-	// 	s.orderCh <- &order
-	// }()
+	go func() {
+		s.orderCh <- &order
+	}()
 
 	return nil
 }

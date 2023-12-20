@@ -14,11 +14,6 @@ const (
 
 var ErrIncorrectLoginPassword = errors.New("incorrect login/password pair")
 
-type Credentials struct {
-	Login    string `json:"login"`
-	Password string `json:"password"`
-}
-
 func (as *AuthService) Register(ctx context.Context, username, password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {

@@ -3,10 +3,10 @@ package psql
 import (
 	"context"
 
-	repo "github.com/Galish/loyalty-system/internal/repository"
+	"github.com/Galish/loyalty-system/internal/model"
 )
 
-func (s *psqlStore) UserBalance(ctx context.Context, user string) (*repo.Balance, error) {
+func (s *psqlStore) UserBalance(ctx context.Context, user string) (*model.Balance, error) {
 	row := s.db.QueryRowContext(
 		ctx,
 		`
@@ -17,8 +17,7 @@ func (s *psqlStore) UserBalance(ctx context.Context, user string) (*repo.Balance
 		user,
 	)
 
-	var balance repo.Balance
-
+	var balance model.Balance
 	if err := row.Scan(
 		&balance.User,
 		&balance.Current,

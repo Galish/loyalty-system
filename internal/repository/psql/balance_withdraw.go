@@ -4,12 +4,13 @@ import (
 	"context"
 	"errors"
 
+	"github.com/Galish/loyalty-system/internal/model"
 	repo "github.com/Galish/loyalty-system/internal/repository"
 
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
-func (s *psqlStore) Withdraw(ctx context.Context, withdraw *repo.Withdrawal) error {
+func (s *psqlStore) Withdraw(ctx context.Context, withdrawal *model.Withdrawal) error {
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
@@ -21,8 +22,8 @@ func (s *psqlStore) Withdraw(ctx context.Context, withdraw *repo.Withdrawal) err
 			SET current = balance.current - $1, withdrawn = balance.withdrawn + $1
 			WHERE user_id = $2
 		`,
-		withdraw.Sum,
-		withdraw.User,
+		withdrawal.Sum,
+		withdrawal.User,
 	)
 	if err != nil {
 		tx.Rollback()
@@ -53,10 +54,10 @@ func (s *psqlStore) Withdraw(ctx context.Context, withdraw *repo.Withdrawal) err
 			INSERT INTO withdrawals (order_id, user_id, sum, processed_at)
 			VALUES ($1, $2, $3, $4)
 		`,
-		withdraw.Order,
-		withdraw.User,
-		withdraw.Sum,
-		withdraw.ProcessedAt,
+		withdrawal.Order,
+		withdrawal.User,
+		withdrawal.Sum,
+		withdrawal.ProcessedAt,
 	)
 
 	if err != nil {

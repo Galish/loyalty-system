@@ -9,7 +9,6 @@ import (
 	reflect "reflect"
 
 	model "github.com/Galish/loyalty-system/internal/model"
-	repository "github.com/Galish/loyalty-system/internal/repository"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -156,7 +155,7 @@ func (m *MockBalanceRepository) EXPECT() *MockBalanceRepositoryMockRecorder {
 }
 
 // Enroll mocks base method.
-func (m *MockBalanceRepository) Enroll(arg0 context.Context, arg1 *repository.Enrollment) error {
+func (m *MockBalanceRepository) Enroll(arg0 context.Context, arg1 *model.Enrollment) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Enroll", arg0, arg1)
 	ret0, _ := ret[0].(error)
@@ -170,10 +169,10 @@ func (mr *MockBalanceRepositoryMockRecorder) Enroll(arg0, arg1 interface{}) *gom
 }
 
 // UserBalance mocks base method.
-func (m *MockBalanceRepository) UserBalance(arg0 context.Context, arg1 string) (*repository.Balance, error) {
+func (m *MockBalanceRepository) UserBalance(arg0 context.Context, arg1 string) (*model.Balance, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UserBalance", arg0, arg1)
-	ret0, _ := ret[0].(*repository.Balance)
+	ret0, _ := ret[0].(*model.Balance)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -185,7 +184,7 @@ func (mr *MockBalanceRepositoryMockRecorder) UserBalance(arg0, arg1 interface{})
 }
 
 // Withdraw mocks base method.
-func (m *MockBalanceRepository) Withdraw(arg0 context.Context, arg1 *repository.Withdrawal) error {
+func (m *MockBalanceRepository) Withdraw(arg0 context.Context, arg1 *model.Withdrawal) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Withdraw", arg0, arg1)
 	ret0, _ := ret[0].(error)
@@ -199,10 +198,10 @@ func (mr *MockBalanceRepositoryMockRecorder) Withdraw(arg0, arg1 interface{}) *g
 }
 
 // Withdrawals mocks base method.
-func (m *MockBalanceRepository) Withdrawals(arg0 context.Context, arg1 string) ([]*repository.Withdrawal, error) {
+func (m *MockBalanceRepository) Withdrawals(arg0 context.Context, arg1 string) ([]*model.Withdrawal, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Withdrawals", arg0, arg1)
-	ret0, _ := ret[0].([]*repository.Withdrawal)
+	ret0, _ := ret[0].([]*model.Withdrawal)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -251,7 +250,7 @@ func (mr *MockLoyaltyRepositoryMockRecorder) CreateOrder(arg0, arg1 interface{})
 }
 
 // Enroll mocks base method.
-func (m *MockLoyaltyRepository) Enroll(arg0 context.Context, arg1 *repository.Enrollment) error {
+func (m *MockLoyaltyRepository) Enroll(arg0 context.Context, arg1 *model.Enrollment) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Enroll", arg0, arg1)
 	ret0, _ := ret[0].(error)
@@ -279,10 +278,10 @@ func (mr *MockLoyaltyRepositoryMockRecorder) UpdateOrder(arg0, arg1 interface{})
 }
 
 // UserBalance mocks base method.
-func (m *MockLoyaltyRepository) UserBalance(arg0 context.Context, arg1 string) (*repository.Balance, error) {
+func (m *MockLoyaltyRepository) UserBalance(arg0 context.Context, arg1 string) (*model.Balance, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UserBalance", arg0, arg1)
-	ret0, _ := ret[0].(*repository.Balance)
+	ret0, _ := ret[0].(*model.Balance)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -309,7 +308,7 @@ func (mr *MockLoyaltyRepositoryMockRecorder) UserOrders(arg0, arg1 interface{}) 
 }
 
 // Withdraw mocks base method.
-func (m *MockLoyaltyRepository) Withdraw(arg0 context.Context, arg1 *repository.Withdrawal) error {
+func (m *MockLoyaltyRepository) Withdraw(arg0 context.Context, arg1 *model.Withdrawal) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Withdraw", arg0, arg1)
 	ret0, _ := ret[0].(error)
@@ -323,10 +322,10 @@ func (mr *MockLoyaltyRepositoryMockRecorder) Withdraw(arg0, arg1 interface{}) *g
 }
 
 // Withdrawals mocks base method.
-func (m *MockLoyaltyRepository) Withdrawals(arg0 context.Context, arg1 string) ([]*repository.Withdrawal, error) {
+func (m *MockLoyaltyRepository) Withdrawals(arg0 context.Context, arg1 string) ([]*model.Withdrawal, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Withdrawals", arg0, arg1)
-	ret0, _ := ret[0].([]*repository.Withdrawal)
+	ret0, _ := ret[0].([]*model.Withdrawal)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
