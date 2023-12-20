@@ -4,16 +4,17 @@ import (
 	"context"
 	"errors"
 
+	"github.com/Galish/loyalty-system/internal/model"
 	repo "github.com/Galish/loyalty-system/internal/repository"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
-func (s *psqlStore) CreateUser(ctx context.Context, login, password string) (*repo.User, error) {
-	user := repo.User{
+func (s *psqlStore) CreateUser(ctx context.Context, username, password string) (*model.User, error) {
+	user := model.User{
 		ID:       uuid.NewString(),
-		Login:    login,
+		Login:    username,
 		Password: password,
 	}
 	_, err := s.db.ExecContext(

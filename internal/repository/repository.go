@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"time"
+
+	"github.com/Galish/loyalty-system/internal/model"
 )
 
 var (
@@ -15,8 +17,8 @@ var (
 )
 
 type UserRepository interface {
-	CreateUser(context.Context, string, string) (*User, error)
-	GetUserByLogin(context.Context, string) (*User, error)
+	CreateUser(context.Context, string, string) (*model.User, error)
+	GetUserByLogin(context.Context, string) (*model.User, error)
 }
 
 type OrderRepository interface {
@@ -35,13 +37,6 @@ type BalanceRepository interface {
 type LoyaltyRepository interface {
 	OrderRepository
 	BalanceRepository
-}
-
-type User struct {
-	ID       string
-	Login    string
-	Password string
-	IsActive bool
 }
 
 type Order struct {

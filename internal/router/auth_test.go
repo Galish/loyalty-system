@@ -13,6 +13,7 @@ import (
 
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/config"
+	"github.com/Galish/loyalty-system/internal/model"
 	"github.com/Galish/loyalty-system/internal/repository"
 	"github.com/Galish/loyalty-system/internal/repository/mocks"
 	"github.com/golang/mock/gomock"
@@ -32,8 +33,8 @@ func TestHandlerRegister(t *testing.T) {
 			"username",
 			gomock.Any(),
 		).
-		DoAndReturn(func(ctx context.Context, login, password string) (*repository.User, error) {
-			return &repository.User{
+		DoAndReturn(func(ctx context.Context, login, password string) (*model.User, error) {
+			return &model.User{
 				Login:    login,
 				Password: password,
 			}, nil
@@ -264,8 +265,8 @@ func TestHandlerLogin(t *testing.T) {
 			gomock.Any(),
 			"username",
 		).
-		DoAndReturn(func(ctx context.Context, login string) (*repository.User, error) {
-			return &repository.User{
+		DoAndReturn(func(ctx context.Context, login string) (*model.User, error) {
+			return &model.User{
 				Login:    login,
 				Password: "$2a$10$5B2fWcB3sw2ONZ25klPPMe688GlUjjAUHRV.HnCd7xxG.KFX3CwBi",
 			}, nil

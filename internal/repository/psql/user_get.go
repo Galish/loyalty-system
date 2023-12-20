@@ -5,17 +5,18 @@ import (
 	"database/sql"
 	"errors"
 
+	"github.com/Galish/loyalty-system/internal/model"
 	repo "github.com/Galish/loyalty-system/internal/repository"
 )
 
-func (s *psqlStore) GetUserByLogin(ctx context.Context, login string) (*repo.User, error) {
+func (s *psqlStore) GetUserByLogin(ctx context.Context, login string) (*model.User, error) {
 	row := s.db.QueryRowContext(
 		ctx,
 		`SELECT uuid, login, password, is_active FROM users WHERE login=$1;`,
 		login,
 	)
 
-	var user repo.User
+	var user model.User
 	err := row.Scan(
 		&user.ID,
 		&user.Login,

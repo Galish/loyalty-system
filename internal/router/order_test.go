@@ -12,6 +12,7 @@ import (
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/config"
 	"github.com/Galish/loyalty-system/internal/loyalty"
+	"github.com/Galish/loyalty-system/internal/model"
 	repo "github.com/Galish/loyalty-system/internal/repository"
 	"github.com/Galish/loyalty-system/internal/repository/mocks"
 	"github.com/golang/mock/gomock"
@@ -47,7 +48,7 @@ func TestHandlerAddOrder(t *testing.T) {
 	loyaltyService := loyalty.NewService(m, &cfg)
 
 	authService := auth.NewService(nil, "yvdUuY)HSX}?&b")
-	jwtToken, _ := authService.GenerateToken(&repo.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
+	jwtToken, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
 
 	ts := httptest.NewServer(
 		New(&cfg, authService, loyaltyService),
@@ -287,8 +288,8 @@ func TestHandlerGetOrders(t *testing.T) {
 	loyaltyService := loyalty.NewService(m, &cfg)
 
 	authService := auth.NewService(nil, "yvdUuY)HSX}?&b")
-	jwtToken, _ := authService.GenerateToken(&repo.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
-	jwtToken2, _ := authService.GenerateToken(&repo.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1613"})
+	jwtToken, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
+	jwtToken2, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1613"})
 
 	ts := httptest.NewServer(
 		New(&cfg, authService, loyaltyService),
