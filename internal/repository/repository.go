@@ -23,8 +23,3 @@ type BalanceRepository interface {
 	Withdraw(context.Context, *model.Withdrawal) error
 	Withdrawals(context.Context, string) ([]*model.Withdrawal, error)
 }
-
-// type LoyaltyRepository interface {
-// 	OrderRepository
-// 	BalanceRepository
-// }

@@ -10,7 +10,7 @@ import (
 
 var errMissingUserID = errors.New("user id not specified")
 
-func WithAuthChecker(authService *auth.AuthService) func(http.Handler) http.Handler {
+func WithAuthChecker(authManager auth.AuthManager) func(http.Handler) http.Handler {
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			cookie, err := r.Cookie(auth.AuthCookieName)
@@ -20,7 +20,7 @@ func WithAuthChecker(authService *auth.AuthService) func(http.Handler) http.Hand
 				return
 			}
 
-			authData, err := authService.ParseToken(cookie.Value)
+			authData, err := authManager.ParseToken(cookie.Value)
 			if err != nil {
 				logger.WithError(err).Debug("unable to parse auth token")
 				w.WriteHeader(http.StatusUnauthorized)

@@ -12,17 +12,17 @@ import (
 
 type httpHandler struct {
 	cfg            *config.Config
-	authService    *auth.AuthService
-	orderService   *order.OrderService
-	balanceService *balance.BalanceService
+	authService    auth.AuthManager
+	orderService   order.OrderManager
+	balanceService balance.BalanceManager
 	accrualService accrual.AccrualManager
 }
 
 func newHandler(
 	cfg *config.Config,
-	auth *auth.AuthService,
-	order *order.OrderService,
-	balance *balance.BalanceService,
+	auth auth.AuthManager,
+	order order.OrderManager,
+	balance balance.BalanceManager,
 	accrual accrual.AccrualManager,
 ) *httpHandler {
 	return &httpHandler{

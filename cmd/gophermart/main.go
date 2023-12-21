@@ -29,7 +29,13 @@ func main() {
 	accrualService := accrual.NewService(store, store, cfg.AccrualAddr)
 	defer accrualService.Close()
 
-	router := router.New(cfg, authService, orderService, balanceService, accrualService)
+	router := router.New(
+		cfg,
+		authService,
+		orderService,
+		balanceService,
+		accrualService,
+	)
 
 	httpServer := server.New(cfg.SrvAddr, router)
 	if err := httpServer.Run(); err != nil {

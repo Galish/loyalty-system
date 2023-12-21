@@ -54,7 +54,7 @@ func (s *AccrualService) flushMessages() {
 		go func(req *request) {
 			accrual, err := s.fetchAccrual(req)
 			if err != nil || !accrual.Status.IsFinal() && !req.isAttemptsExceeded() {
-				s.retry(req)
+				go s.retry(req)
 				return
 			}
 

@@ -13,9 +13,9 @@ import (
 
 func New(
 	cfg *config.Config,
-	auth *auth.AuthService,
-	order *order.OrderService,
-	balance *balance.BalanceService,
+	auth auth.AuthManager,
+	order order.OrderManager,
+	balance balance.BalanceManager,
 	accrual accrual.AccrualManager,
 ) *chi.Mux {
 	handler := newHandler(cfg, auth, order, balance, accrual)
