@@ -1,4 +1,4 @@
-package router
+package api
 
 import (
 	"bytes"
@@ -55,7 +55,7 @@ func TestHandlerGetBalance(t *testing.T) {
 	jwtToken2, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1614"})
 
 	ts := httptest.NewServer(
-		New(&cfg, authService, nil, balanceService, nil),
+		NewRouter(&cfg, authService, nil, balanceService, nil),
 	)
 	defer ts.Close()
 
@@ -214,7 +214,7 @@ func TestHandlerWithdraw(t *testing.T) {
 	jwtToken, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
 
 	ts := httptest.NewServer(
-		New(&cfg, authService, nil, balanceService, nil),
+		NewRouter(&cfg, authService, nil, balanceService, nil),
 	)
 	defer ts.Close()
 
@@ -495,7 +495,7 @@ func TestHandlerWithdrawals(t *testing.T) {
 	jwtToken3, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1615"})
 
 	ts := httptest.NewServer(
-		New(&cfg, authService, nil, balanceService, nil),
+		NewRouter(&cfg, authService, nil, balanceService, nil),
 	)
 	defer ts.Close()
 

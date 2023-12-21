@@ -1,4 +1,4 @@
-package router
+package api
 
 import (
 	"bytes"
@@ -16,6 +16,7 @@ import (
 	"github.com/Galish/loyalty-system/internal/model"
 	"github.com/Galish/loyalty-system/internal/repository"
 	"github.com/Galish/loyalty-system/internal/repository/mocks"
+
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -63,7 +64,7 @@ func TestHandlerRegister(t *testing.T) {
 	authService := auth.NewService(m, "yvdUuY)HSX}?&b")
 
 	ts := httptest.NewServer(
-		New(&cfg, authService, nil, nil, nil),
+		NewRouter(&cfg, authService, nil, nil, nil),
 	)
 	defer ts.Close()
 
@@ -293,7 +294,7 @@ func TestHandlerLogin(t *testing.T) {
 	authService := auth.NewService(m, "yvdUuY)HSX}?&b")
 
 	ts := httptest.NewServer(
-		New(&cfg, authService, nil, nil, nil),
+		NewRouter(&cfg, authService, nil, nil, nil),
 	)
 	defer ts.Close()
 

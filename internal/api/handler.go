@@ -1,8 +1,6 @@
-package router
+package api
 
 import (
-	"net/http"
-
 	"github.com/Galish/loyalty-system/internal/accrual"
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/balance"
@@ -32,8 +30,4 @@ func newHandler(
 		balanceService: balance,
 		accrualService: accrual,
 	}
-}
-
-func (h *httpHandler) Ping(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
 }

@@ -1,4 +1,4 @@
-package router
+package api
 
 var (
 	errAddOrder               = "unable to add order"

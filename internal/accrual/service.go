@@ -7,7 +7,10 @@ import (
 	repo "github.com/Galish/loyalty-system/internal/repository"
 )
 
-const limiterInterval time.Duration = 1 * time.Second
+const (
+	limiterInterval time.Duration = 1 * time.Second
+	maxAttempts     uint          = 10
+)
 
 type AccrualManager interface {
 	GetAccrual(order *model.Order)

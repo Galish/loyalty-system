@@ -1,4 +1,4 @@
-package router
+package api
 
 import (
 	"bytes"
@@ -55,7 +55,7 @@ func TestHandlerAddOrder(t *testing.T) {
 	jwtToken, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
 
 	ts := httptest.NewServer(
-		New(&cfg, authService, orderService, nil, accrualMock),
+		NewRouter(&cfg, authService, orderService, nil, accrualMock),
 	)
 	defer ts.Close()
 
@@ -296,7 +296,7 @@ func TestHandlerGetOrders(t *testing.T) {
 	jwtToken2, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1613"})
 
 	ts := httptest.NewServer(
-		New(&cfg, authService, orderService, nil, nil),
+		NewRouter(&cfg, authService, orderService, nil, nil),
 	)
 	defer ts.Close()
 
