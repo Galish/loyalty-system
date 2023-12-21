@@ -9,12 +9,13 @@ import (
 	"testing"
 	"time"
 
+	accrualMocks "github.com/Galish/loyalty-system/internal/accrual/mocks"
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/config"
-	"github.com/Galish/loyalty-system/internal/loyalty"
 	"github.com/Galish/loyalty-system/internal/model"
+	"github.com/Galish/loyalty-system/internal/order"
 	repo "github.com/Galish/loyalty-system/internal/repository"
-	"github.com/Galish/loyalty-system/internal/repository/mocks"
+	repoMocks "github.com/Galish/loyalty-system/internal/repository/mocks"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -24,9 +25,9 @@ func TestHandlerAddOrder(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m := mocks.NewMockLoyaltyRepository(ctrl)
+	orderMock := repoMocks.NewMockOrderRepository(ctrl)
 
-	m.EXPECT().
+	orderMock.EXPECT().
 		CreateOrder(
 			gomock.Any(),
 			gomock.Any(),
@@ -44,14 +45,17 @@ func TestHandlerAddOrder(t *testing.T) {
 		}).
 		AnyTimes()
 
+	accrualMock := accrualMocks.NewMockAccrualManager(ctrl)
+	accrualMock.EXPECT().GetAccrual(gomock.Any())
+
 	cfg := config.Config{SrvAddr: "8000"}
-	loyaltyService := loyalty.NewService(m, &cfg)
+	orderService := order.NewService(orderMock)
 
 	authService := auth.NewService(nil, "yvdUuY)HSX}?&b")
 	jwtToken, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
 
 	ts := httptest.NewServer(
-		New(&cfg, authService, loyaltyService),
+		New(&cfg, authService, orderService, nil, accrualMock),
 	)
 	defer ts.Close()
 
@@ -241,7 +245,7 @@ func TestHandlerGetOrders(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m := mocks.NewMockLoyaltyRepository(ctrl)
+	m := repoMocks.NewMockOrderRepository(ctrl)
 
 	timezone1 := time.FixedZone("UTC-8", -8*60*60)
 	timezone2 := time.FixedZone("UTC+5", 5*60*60)
@@ -285,14 +289,14 @@ func TestHandlerGetOrders(t *testing.T) {
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}
-	loyaltyService := loyalty.NewService(m, &cfg)
+	orderService := order.NewService(m)
 
 	authService := auth.NewService(nil, "yvdUuY)HSX}?&b")
 	jwtToken, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
 	jwtToken2, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1613"})
 
 	ts := httptest.NewServer(
-		New(&cfg, authService, loyaltyService),
+		New(&cfg, authService, orderService, nil, nil),
 	)
 	defer ts.Close()
 

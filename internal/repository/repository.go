@@ -2,17 +2,8 @@ package repository
 
 import (
 	"context"
-	"errors"
 
 	"github.com/Galish/loyalty-system/internal/model"
-)
-
-var (
-	ErrOrderExists       = errors.New("order has already been added")
-	ErrOrderConflict     = errors.New("order has already been added by another user")
-	ErrUserConflict      = errors.New("user already exists")
-	ErrUserNotFound      = errors.New("user not found")
-	ErrInsufficientFunds = errors.New("insufficient funds in the account")
 )
 
 type UserRepository interface {
@@ -33,7 +24,7 @@ type BalanceRepository interface {
 	Withdrawals(context.Context, string) ([]*model.Withdrawal, error)
 }
 
-type LoyaltyRepository interface {
-	OrderRepository
-	BalanceRepository
-}
+// type LoyaltyRepository interface {
+// 	OrderRepository
+// 	BalanceRepository
+// }

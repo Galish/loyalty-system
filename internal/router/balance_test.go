@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/Galish/loyalty-system/internal/auth"
+	"github.com/Galish/loyalty-system/internal/balance"
 	"github.com/Galish/loyalty-system/internal/config"
-	"github.com/Galish/loyalty-system/internal/loyalty"
 	"github.com/Galish/loyalty-system/internal/model"
 	repo "github.com/Galish/loyalty-system/internal/repository"
 	"github.com/Galish/loyalty-system/internal/repository/mocks"
@@ -26,7 +26,7 @@ func TestHandlerGetBalance(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m := mocks.NewMockLoyaltyRepository(ctrl)
+	m := mocks.NewMockBalanceRepository(ctrl)
 
 	m.EXPECT().
 		UserBalance(
@@ -48,14 +48,14 @@ func TestHandlerGetBalance(t *testing.T) {
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}
-	loyaltyService := loyalty.NewService(m, &cfg)
+	balanceService := balance.NewService(m)
 
 	authService := auth.NewService(nil, "yvdUuY)HSX}?&b")
 	jwtToken, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
 	jwtToken2, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1614"})
 
 	ts := httptest.NewServer(
-		New(&cfg, authService, loyaltyService),
+		New(&cfg, authService, nil, balanceService, nil),
 	)
 	defer ts.Close()
 
@@ -187,7 +187,7 @@ func TestHandlerWithdraw(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m := mocks.NewMockLoyaltyRepository(ctrl)
+	m := mocks.NewMockBalanceRepository(ctrl)
 
 	m.EXPECT().
 		Withdraw(
@@ -208,13 +208,13 @@ func TestHandlerWithdraw(t *testing.T) {
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}
-	loyaltyService := loyalty.NewService(m, &cfg)
+	balanceService := balance.NewService(m)
 
 	authService := auth.NewService(nil, "yvdUuY)HSX}?&b")
 	jwtToken, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
 
 	ts := httptest.NewServer(
-		New(&cfg, authService, loyaltyService),
+		New(&cfg, authService, nil, balanceService, nil),
 	)
 	defer ts.Close()
 
@@ -441,7 +441,7 @@ func TestHandlerWithdrawals(t *testing.T) {
 	timezone1 := time.FixedZone("UTC-8", -8*60*60)
 	timezone2 := time.FixedZone("UTC+5", 5*60*60)
 
-	m := mocks.NewMockLoyaltyRepository(ctrl)
+	m := mocks.NewMockBalanceRepository(ctrl)
 
 	m.EXPECT().
 		Withdrawals(
@@ -487,7 +487,7 @@ func TestHandlerWithdrawals(t *testing.T) {
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}
-	loyaltyService := loyalty.NewService(m, &cfg)
+	balanceService := balance.NewService(m)
 
 	authService := auth.NewService(nil, "yvdUuY)HSX}?&b")
 	jwtToken, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
@@ -495,7 +495,7 @@ func TestHandlerWithdrawals(t *testing.T) {
 	jwtToken3, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1615"})
 
 	ts := httptest.NewServer(
-		New(&cfg, authService, loyaltyService),
+		New(&cfg, authService, nil, balanceService, nil),
 	)
 	defer ts.Close()
 

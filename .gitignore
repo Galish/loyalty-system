@@ -25,3 +25,4 @@ vendor/
 run.sh
 cmd/accrual/main.go
 Todo
+.DS_Store

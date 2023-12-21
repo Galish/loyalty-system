@@ -7,7 +7,6 @@ import (
 
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/logger"
-	"github.com/Galish/loyalty-system/internal/loyalty"
 	"github.com/Galish/loyalty-system/internal/model"
 	repo "github.com/Galish/loyalty-system/internal/repository"
 )
@@ -31,7 +30,7 @@ type responseWithdrawal struct {
 func (h *httpHandler) GetBalance(w http.ResponseWriter, r *http.Request) {
 	user := r.Header.Get(auth.AuthHeaderName)
 
-	balance, err := h.loyaltyService.GetBalance(r.Context(), user)
+	balance, err := h.balanceService.GetBalance(r.Context(), user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -46,8 +45,8 @@ func (h *httpHandler) GetBalance(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(res); err != nil {
-		logger.WithError(err).Debug("cannot encode request JSON body")
-		http.Error(w, "cannot encode request JSON body", http.StatusInternalServerError)
+		logger.WithError(err).Debug(errEncodeResponseBody)
+		http.Error(w, errEncodeResponseBody, http.StatusInternalServerError)
 		return
 	}
 }
@@ -56,32 +55,33 @@ func (h *httpHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
 	var req requestWithdrawal
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		logger.WithError(err).Debug("cannot decode request JSON body")
-		http.Error(w, "cannot decode request JSON body", http.StatusBadRequest)
+		logger.WithError(err).Debug(errDecodeRequestBody)
+		http.Error(w, errDecodeRequestBody, http.StatusBadRequest)
+		return
+	}
+
+	orderNumber := model.OrderNumber(req.Order)
+	if !orderNumber.IsValid() {
+		http.Error(w, errInvalidOrderNumber, http.StatusUnprocessableEntity)
 		return
 	}
 
 	withdrawal := model.Withdrawal{
-		Order: model.OrderNumber(req.Order),
+		Order: orderNumber,
 		Sum:   req.Sum,
 		User:  r.Header.Get(auth.AuthHeaderName),
 	}
 
-	err = h.loyaltyService.Withdraw(r.Context(), &withdrawal)
+	err = h.balanceService.Withdraw(r.Context(), &withdrawal)
 	if err != nil {
-		logger.WithError(err).Debug("unable to withdraw funds")
+		logger.WithError(err).Debug(errWithdrawFunds)
 
 		if errors.Is(err, repo.ErrInsufficientFunds) {
 			http.Error(w, err.Error(), http.StatusPaymentRequired)
 			return
 		}
 
-		if errors.Is(err, loyalty.ErrIncorrectOrderNumber) {
-			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
-			return
-		}
-
-		http.Error(w, "unable to withdraw funds", http.StatusInternalServerError)
+		http.Error(w, errWithdrawFunds, http.StatusInternalServerError)
 		return
 	}
 
@@ -90,10 +90,10 @@ func (h *httpHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
 
 func (h *httpHandler) Withdrawals(w http.ResponseWriter, r *http.Request) {
 	user := r.Header.Get(auth.AuthHeaderName)
-	withdrawals, err := h.loyaltyService.Withdrawals(r.Context(), user)
+	withdrawals, err := h.balanceService.Withdrawals(r.Context(), user)
 	if err != nil {
-		logger.WithError(err).Debug("unable to get withdrawals")
-		http.Error(w, "unable to get withdrawals", http.StatusInternalServerError)
+		logger.WithError(err).Debug(errGetWithdrawals)
+		http.Error(w, errGetWithdrawals, http.StatusInternalServerError)
 		return
 	}
 
@@ -119,8 +119,8 @@ func (h *httpHandler) Withdrawals(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(res); err != nil {
-		logger.WithError(err).Debug("cannot encode request JSON body")
-		http.Error(w, "cannot encode request JSON body", http.StatusInternalServerError)
+		logger.WithError(err).Debug(errEncodeResponseBody)
+		http.Error(w, errEncodeResponseBody, http.StatusInternalServerError)
 		return
 	}
 }

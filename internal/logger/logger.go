@@ -30,6 +30,10 @@ func Debug(args ...interface{}) {
 	logger.Log(log.DebugLevel, args...)
 }
 
+func Error(args ...interface{}) {
+	logger.Log(log.ErrorLevel, args...)
+}
+
 func Info(args ...interface{}) {
 	logger.Log(log.InfoLevel, args...)
 }

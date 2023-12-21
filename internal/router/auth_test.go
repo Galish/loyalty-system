@@ -63,7 +63,7 @@ func TestHandlerRegister(t *testing.T) {
 	authService := auth.NewService(m, "yvdUuY)HSX}?&b")
 
 	ts := httptest.NewServer(
-		New(&cfg, authService, nil),
+		New(&cfg, authService, nil, nil, nil),
 	)
 	defer ts.Close()
 
@@ -186,7 +186,7 @@ func TestHandlerRegister(t *testing.T) {
 			},
 			&want{
 				http.StatusInternalServerError,
-				"unable to write to repository\n",
+				"unable to register user\n",
 				"text/plain; charset=utf-8",
 			},
 		},
@@ -293,7 +293,7 @@ func TestHandlerLogin(t *testing.T) {
 	authService := auth.NewService(m, "yvdUuY)HSX}?&b")
 
 	ts := httptest.NewServer(
-		New(&cfg, authService, nil),
+		New(&cfg, authService, nil, nil, nil),
 	)
 	defer ts.Close()
 

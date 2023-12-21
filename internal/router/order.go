@@ -8,7 +8,6 @@ import (
 
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/logger"
-	"github.com/Galish/loyalty-system/internal/loyalty"
 	"github.com/Galish/loyalty-system/internal/model"
 	"github.com/Galish/loyalty-system/internal/repository"
 )
@@ -25,24 +24,25 @@ type orderResponse struct {
 func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		logger.WithError(err).Debug("unable to read request body")
-		http.Error(w, "unable to read request body", http.StatusBadRequest)
+		logger.WithError(err).Debug(errReadRequestBody)
+		http.Error(w, errReadRequestBody, http.StatusBadRequest)
+		return
+	}
+
+	number := model.OrderNumber(string(body))
+	if !number.IsValid() {
+		http.Error(w, errInvalidOrderNumber, http.StatusUnprocessableEntity)
 		return
 	}
 
 	newOrder := model.Order{
-		ID:   model.OrderNumber(string(body)),
+		ID:   number,
 		User: r.Header.Get(auth.AuthHeaderName),
 	}
 
-	err = h.loyaltyService.AddOrder(r.Context(), newOrder)
+	err = h.orderService.AddOrder(r.Context(), newOrder)
 	if err != nil {
-		logger.WithError(err).Debug("unable to add order")
-
-		if errors.Is(err, loyalty.ErrIncorrectOrderNumber) {
-			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
-			return
-		}
+		logger.WithError(err).Debug(errAddOrder)
 
 		if errors.Is(err, repository.ErrOrderConflict) {
 			http.Error(w, err.Error(), http.StatusConflict)
@@ -59,16 +59,18 @@ func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	go h.accrualService.GetAccrual(&newOrder)
+
 	w.WriteHeader(http.StatusAccepted)
 }
 
 func (h *httpHandler) GetOrders(w http.ResponseWriter, r *http.Request) {
 	userID := r.Header.Get(auth.AuthHeaderName)
 
-	orders, err := h.loyaltyService.GetOrders(r.Context(), userID)
+	orders, err := h.orderService.GetOrders(r.Context(), userID)
 	if err != nil {
-		logger.WithError(err).Debug("unable to read from repository")
-		http.Error(w, "unable to read from repository", http.StatusInternalServerError)
+		logger.WithError(err).Debug(errReadFromRepo)
+		http.Error(w, errReadFromRepo, http.StatusInternalServerError)
 		return
 	}
 
@@ -94,8 +96,8 @@ func (h *httpHandler) GetOrders(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(res); err != nil {
-		logger.WithError(err).Debug("cannot encode request JSON body")
-		http.Error(w, "cannot encode request JSON body", http.StatusInternalServerError)
+		logger.WithError(err).Debug(errEncodeResponseBody)
+		http.Error(w, errEncodeResponseBody, http.StatusInternalServerError)
 		return
 	}
 }

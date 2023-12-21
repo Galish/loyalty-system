@@ -1,4 +1,4 @@
-package loyalty
+package balance
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"github.com/Galish/loyalty-system/internal/model"
 )
 
-func (s *LoyaltyService) GetBalance(ctx context.Context, user string) (*model.Balance, error) {
+func (s *BalanceService) GetBalance(ctx context.Context, user string) (*model.Balance, error) {
 	balance, err := s.repo.UserBalance(ctx, user)
 	if err != nil {
 		return nil, err
@@ -16,11 +16,7 @@ func (s *LoyaltyService) GetBalance(ctx context.Context, user string) (*model.Ba
 	return balance, nil
 }
 
-func (s *LoyaltyService) Withdraw(ctx context.Context, withdrawal *model.Withdrawal) error {
-	if !withdrawal.Order.IsValid() {
-		return ErrIncorrectOrderNumber
-	}
-
+func (s *BalanceService) Withdraw(ctx context.Context, withdrawal *model.Withdrawal) error {
 	err := s.repo.Withdraw(
 		ctx,
 		&model.Withdrawal{
@@ -37,7 +33,7 @@ func (s *LoyaltyService) Withdraw(ctx context.Context, withdrawal *model.Withdra
 	return nil
 }
 
-func (s *LoyaltyService) Withdrawals(ctx context.Context, user string) ([]*model.Withdrawal, error) {
+func (s *BalanceService) Withdrawals(ctx context.Context, user string) ([]*model.Withdrawal, error) {
 	withdrawals, err := s.repo.Withdrawals(ctx, user)
 	if err != nil {
 		return []*model.Withdrawal{}, err
