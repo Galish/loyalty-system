@@ -8,10 +8,6 @@ import (
 )
 
 func (s *OrderService) AddOrder(ctx context.Context, order model.Order) error {
-	if !order.ID.IsValid() {
-		return ErrIncorrectOrderNumber
-	}
-
 	order.Status = model.StatusNew
 	order.UploadedAt = time.Now()
 

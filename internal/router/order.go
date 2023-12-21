@@ -9,7 +9,6 @@ import (
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/logger"
 	"github.com/Galish/loyalty-system/internal/model"
-	"github.com/Galish/loyalty-system/internal/order"
 	"github.com/Galish/loyalty-system/internal/repository"
 )
 
@@ -30,19 +29,20 @@ func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	number := model.OrderNumber(string(body))
+	if !number.IsValid() {
+		http.Error(w, "invalid order number value", http.StatusUnprocessableEntity)
+		return
+	}
+
 	newOrder := model.Order{
-		ID:   model.OrderNumber(string(body)),
+		ID:   number,
 		User: r.Header.Get(auth.AuthHeaderName),
 	}
 
 	err = h.orderService.AddOrder(r.Context(), newOrder)
 	if err != nil {
 		logger.WithError(err).Debug("unable to add order")
-
-		if errors.Is(err, order.ErrIncorrectOrderNumber) {
-			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
-			return
-		}
 
 		if errors.Is(err, repository.ErrOrderConflict) {
 			http.Error(w, err.Error(), http.StatusConflict)

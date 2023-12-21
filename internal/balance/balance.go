@@ -2,13 +2,10 @@ package balance
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/Galish/loyalty-system/internal/model"
 )
-
-var ErrIncorrectOrderNumber = errors.New("invalid order number value")
 
 func (s *BalanceService) GetBalance(ctx context.Context, user string) (*model.Balance, error) {
 	balance, err := s.repo.UserBalance(ctx, user)
@@ -20,10 +17,6 @@ func (s *BalanceService) GetBalance(ctx context.Context, user string) (*model.Ba
 }
 
 func (s *BalanceService) Withdraw(ctx context.Context, withdrawal *model.Withdrawal) error {
-	if !withdrawal.Order.IsValid() {
-		return ErrIncorrectOrderNumber
-	}
-
 	err := s.repo.Withdraw(
 		ctx,
 		&model.Withdrawal{

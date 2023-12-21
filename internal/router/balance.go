@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/Galish/loyalty-system/internal/auth"
-	"github.com/Galish/loyalty-system/internal/balance"
 	"github.com/Galish/loyalty-system/internal/logger"
 	"github.com/Galish/loyalty-system/internal/model"
 	repo "github.com/Galish/loyalty-system/internal/repository"
@@ -61,8 +60,14 @@ func (h *httpHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	orderNumber := model.OrderNumber(req.Order)
+	if !orderNumber.IsValid() {
+		http.Error(w, "invalid order number value", http.StatusUnprocessableEntity)
+		return
+	}
+
 	withdrawal := model.Withdrawal{
-		Order: model.OrderNumber(req.Order),
+		Order: orderNumber,
 		Sum:   req.Sum,
 		User:  r.Header.Get(auth.AuthHeaderName),
 	}
@@ -73,11 +78,6 @@ func (h *httpHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
 
 		if errors.Is(err, repo.ErrInsufficientFunds) {
 			http.Error(w, err.Error(), http.StatusPaymentRequired)
-			return
-		}
-
-		if errors.Is(err, balance.ErrIncorrectOrderNumber) {
-			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 			return
 		}
 
