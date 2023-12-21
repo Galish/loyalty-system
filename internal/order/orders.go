@@ -9,7 +9,7 @@ import (
 
 func (s *OrderService) AddOrder(ctx context.Context, order model.Order) error {
 	order.Status = model.StatusNew
-	order.UploadedAt = time.Now()
+	order.UploadedAt = model.Time(time.Now())
 
 	if err := s.repo.CreateOrder(ctx, &order); err != nil {
 		return err

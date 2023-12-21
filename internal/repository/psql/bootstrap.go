@@ -68,7 +68,6 @@ func (s *psqlStore) Bootstrap(ctx context.Context) error {
 	}
 
 	// balance
-
 	_, err = tx.ExecContext(
 		ctx,
 		`
@@ -95,7 +94,6 @@ func (s *psqlStore) Bootstrap(ctx context.Context) error {
 	}
 
 	// withdrawals
-
 	_, err = tx.ExecContext(
 		ctx,
 		`

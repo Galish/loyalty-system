@@ -1,7 +1,5 @@
 package accrual
 
-const maxAttempts uint = 10
-
 type request struct {
 	order    string
 	user     string

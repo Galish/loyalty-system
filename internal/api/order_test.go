@@ -1,4 +1,4 @@
-package router
+package api
 
 import (
 	"bytes"
@@ -46,7 +46,7 @@ func TestHandlerAddOrder(t *testing.T) {
 		AnyTimes()
 
 	accrualMock := accrualMocks.NewMockAccrualManager(ctrl)
-	accrualMock.EXPECT().GetAccrual(gomock.Any())
+	accrualMock.EXPECT().GetAccrual(gomock.Any(), gomock.Any())
 
 	cfg := config.Config{SrvAddr: "8000"}
 	orderService := order.NewService(orderMock)
@@ -55,7 +55,7 @@ func TestHandlerAddOrder(t *testing.T) {
 	jwtToken, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
 
 	ts := httptest.NewServer(
-		New(&cfg, authService, orderService, nil, accrualMock),
+		NewRouter(&cfg, authService, orderService, nil, accrualMock),
 	)
 	defer ts.Close()
 
@@ -260,21 +260,21 @@ func TestHandlerGetOrders(t *testing.T) {
 				ID:         "2774311589",
 				Status:     "NEW",
 				Accrual:    0,
-				UploadedAt: time.Date(2023, time.Month(3), 11, 1, 10, 30, 0, timezone1),
+				UploadedAt: model.Time(time.Date(2023, time.Month(3), 11, 1, 10, 30, 0, timezone1)),
 				User:       "395fd5f4-964d-4135-9a55-fbf91c4a163b",
 			},
 			{
 				ID:         "12345678903",
 				Status:     "PROCESSED",
 				Accrual:    100,
-				UploadedAt: time.Date(2023, time.Month(2), 21, 1, 10, 30, 0, time.UTC),
+				UploadedAt: model.Time(time.Date(2023, time.Month(2), 21, 1, 10, 30, 0, time.UTC)),
 				User:       "395fd5f4-964d-4135-9a55-fbf91c4a163b",
 			},
 			{
 				ID:         "252576137",
 				Status:     "INVALID",
 				Accrual:    0,
-				UploadedAt: time.Date(2023, time.Month(2), 10, 1, 10, 30, 0, timezone2),
+				UploadedAt: model.Time(time.Date(2023, time.Month(2), 10, 1, 10, 30, 0, timezone2)),
 				User:       "395fd5f4-964d-4135-9a55-fbf91c4a163b",
 			},
 		}, nil).
@@ -296,7 +296,7 @@ func TestHandlerGetOrders(t *testing.T) {
 	jwtToken2, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1613"})
 
 	ts := httptest.NewServer(
-		New(&cfg, authService, orderService, nil, nil),
+		NewRouter(&cfg, authService, orderService, nil, nil),
 	)
 	defer ts.Close()
 

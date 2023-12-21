@@ -1,4 +1,4 @@
-package router
+package api
 
 import (
 	"encoding/json"
@@ -104,13 +104,13 @@ func (h *httpHandler) Withdrawals(w http.ResponseWriter, r *http.Request) {
 
 	var res []*responseWithdrawal
 
-	for _, w := range withdrawals {
+	for _, withdrawal := range withdrawals {
 		res = append(
 			res,
 			&responseWithdrawal{
-				Order:       w.Order.String(),
-				Sum:         w.Sum,
-				ProcessedAt: w.ProcessedAt.Format(timeLayout),
+				Order:       withdrawal.Order.String(),
+				Sum:         withdrawal.Sum,
+				ProcessedAt: withdrawal.ProcessedAt.Format(),
 			},
 		)
 	}

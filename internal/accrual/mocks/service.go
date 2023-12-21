@@ -5,6 +5,7 @@
 package mocks
 
 import (
+	context "context"
 	reflect "reflect"
 
 	model "github.com/Galish/loyalty-system/internal/model"
@@ -35,13 +36,13 @@ func (m *MockAccrualManager) EXPECT() *MockAccrualManagerMockRecorder {
 }
 
 // GetAccrual mocks base method.
-func (m *MockAccrualManager) GetAccrual(order *model.Order) {
+func (m *MockAccrualManager) GetAccrual(arg0 context.Context, arg1 *model.Order) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "GetAccrual", order)
+	m.ctrl.Call(m, "GetAccrual", arg0, arg1)
 }
 
 // GetAccrual indicates an expected call of GetAccrual.
-func (mr *MockAccrualManagerMockRecorder) GetAccrual(order interface{}) *gomock.Call {
+func (mr *MockAccrualManagerMockRecorder) GetAccrual(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccrual", reflect.TypeOf((*MockAccrualManager)(nil).GetAccrual), order)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccrual", reflect.TypeOf((*MockAccrualManager)(nil).GetAccrual), arg0, arg1)
 }

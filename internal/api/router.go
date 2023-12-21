@@ -1,4 +1,4 @@
-package router
+package api
 
 import (
 	"github.com/Galish/loyalty-system/internal/accrual"
@@ -11,11 +11,11 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func New(
+func NewRouter(
 	cfg *config.Config,
-	auth *auth.AuthService,
-	order *order.OrderService,
-	balance *balance.BalanceService,
+	auth auth.AuthManager,
+	order order.OrderManager,
+	balance balance.BalanceManager,
 	accrual accrual.AccrualManager,
 ) *chi.Mux {
 	handler := newHandler(cfg, auth, order, balance, accrual)
@@ -45,7 +45,7 @@ func New(
 	router.Group(func(r chi.Router) {
 		r.Use(middleware.WithRequestLogger)
 
-		r.Get("/ping", handler.Ping)
+		r.Get("/ping", handler.Health)
 	})
 
 	return router

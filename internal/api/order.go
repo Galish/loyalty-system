@@ -1,6 +1,7 @@
-package router
+package api
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"io"
@@ -11,8 +12,6 @@ import (
 	"github.com/Galish/loyalty-system/internal/model"
 	"github.com/Galish/loyalty-system/internal/repository"
 )
-
-const timeLayout = "2006-01-02T15:04:05-07:00"
 
 type orderResponse struct {
 	ID         string  `json:"number"`
@@ -59,7 +58,7 @@ func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	go h.accrualService.GetAccrual(&newOrder)
+	go h.accrualService.GetAccrual(context.Background(), &newOrder)
 
 	w.WriteHeader(http.StatusAccepted)
 }
@@ -87,7 +86,7 @@ func (h *httpHandler) GetOrders(w http.ResponseWriter, r *http.Request) {
 				ID:         order.ID.String(),
 				Status:     string(order.Status),
 				Accrual:    order.Accrual,
-				UploadedAt: order.UploadedAt.Format(timeLayout),
+				UploadedAt: order.UploadedAt.Format(),
 			},
 		)
 	}

@@ -29,7 +29,7 @@ func (s *psqlStore) CreateUser(ctx context.Context, username, password string) (
 	)
 
 	var pgErr *pgconn.PgError
-	if err != nil && errors.As(err, &pgErr) && pgErr.Code == "23505" {
+	if err != nil && errors.As(err, &pgErr) && pgErr.Code == errCodeConflict {
 		return nil, repo.ErrUserConflict
 	}
 	if err != nil {
