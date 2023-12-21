@@ -8,8 +8,8 @@ import (
 
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/logger"
-	"github.com/Galish/loyalty-system/internal/loyalty"
 	"github.com/Galish/loyalty-system/internal/model"
+	"github.com/Galish/loyalty-system/internal/order"
 	"github.com/Galish/loyalty-system/internal/repository"
 )
 
@@ -35,11 +35,11 @@ func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 		User: r.Header.Get(auth.AuthHeaderName),
 	}
 
-	err = h.loyaltyService.AddOrder(r.Context(), newOrder)
+	err = h.orderService.AddOrder(r.Context(), newOrder)
 	if err != nil {
 		logger.WithError(err).Debug("unable to add order")
 
-		if errors.Is(err, loyalty.ErrIncorrectOrderNumber) {
+		if errors.Is(err, order.ErrIncorrectOrderNumber) {
 			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 			return
 		}
@@ -67,7 +67,7 @@ func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 func (h *httpHandler) GetOrders(w http.ResponseWriter, r *http.Request) {
 	userID := r.Header.Get(auth.AuthHeaderName)
 
-	orders, err := h.loyaltyService.GetOrders(r.Context(), userID)
+	orders, err := h.orderService.GetOrders(r.Context(), userID)
 	if err != nil {
 		logger.WithError(err).Debug("unable to read from repository")
 		http.Error(w, "unable to read from repository", http.StatusInternalServerError)

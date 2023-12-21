@@ -1,4 +1,4 @@
-package loyalty
+package order
 
 import (
 	"context"
@@ -7,9 +7,7 @@ import (
 	"github.com/Galish/loyalty-system/internal/model"
 )
 
-const TimeLayout = "2006-01-02T15:04:05-07:00"
-
-func (s *LoyaltyService) AddOrder(ctx context.Context, order model.Order) error {
+func (s *OrderService) AddOrder(ctx context.Context, order model.Order) error {
 	if !order.ID.IsValid() {
 		return ErrIncorrectOrderNumber
 	}
@@ -24,7 +22,7 @@ func (s *LoyaltyService) AddOrder(ctx context.Context, order model.Order) error 
 	return nil
 }
 
-func (s *LoyaltyService) GetOrders(ctx context.Context, userID string) ([]*model.Order, error) {
+func (s *OrderService) GetOrders(ctx context.Context, userID string) ([]*model.Order, error) {
 	orders, err := s.repo.UserOrders(ctx, userID)
 	if err != nil {
 		return []*model.Order{}, nil

@@ -63,7 +63,7 @@ func TestHandlerRegister(t *testing.T) {
 	authService := auth.NewService(m, "yvdUuY)HSX}?&b")
 
 	ts := httptest.NewServer(
-		New(&cfg, authService, nil, nil),
+		New(&cfg, authService, nil, nil, nil),
 	)
 	defer ts.Close()
 
@@ -293,7 +293,7 @@ func TestHandlerLogin(t *testing.T) {
 	authService := auth.NewService(m, "yvdUuY)HSX}?&b")
 
 	ts := httptest.NewServer(
-		New(&cfg, authService, nil, nil),
+		New(&cfg, authService, nil, nil, nil),
 	)
 	defer ts.Close()
 

@@ -3,7 +3,6 @@ package accrual
 import (
 	"time"
 
-	"github.com/Galish/loyalty-system/internal/config"
 	"github.com/Galish/loyalty-system/internal/model"
 	repo "github.com/Galish/loyalty-system/internal/repository"
 )
@@ -15,16 +14,22 @@ type AccrualManager interface {
 }
 
 type AccrualService struct {
-	repo      repo.LoyaltyRepository
-	addr      string
-	requestCh chan *request
+	orderRepo   repo.OrderRepository
+	balanceRepo repo.BalanceRepository
+	addr        string
+	requestCh   chan *request
 }
 
-func NewService(repo repo.LoyaltyRepository, cfg *config.Config) *AccrualService {
+func NewService(
+	orderRepo repo.OrderRepository,
+	balanceRepo repo.BalanceRepository,
+	addr string,
+) *AccrualService {
 	service := &AccrualService{
-		repo:      repo,
-		addr:      cfg.AccrualAddr,
-		requestCh: make(chan *request),
+		orderRepo:   orderRepo,
+		balanceRepo: balanceRepo,
+		addr:        addr,
+		requestCh:   make(chan *request),
 	}
 
 	go service.flushMessages()

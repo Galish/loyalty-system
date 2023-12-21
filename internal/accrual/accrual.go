@@ -53,7 +53,7 @@ func (s *AccrualService) fetchAccrual(req *request) (*model.Accrual, error) {
 func (s *AccrualService) applyAccrual(accrual *model.Accrual) error {
 	ctx := context.Background()
 
-	err := s.repo.UpdateOrder(
+	err := s.orderRepo.UpdateOrder(
 		ctx,
 		&model.Order{
 			ID:      accrual.Order,
@@ -66,7 +66,7 @@ func (s *AccrualService) applyAccrual(accrual *model.Accrual) error {
 		return err
 	}
 
-	err = s.repo.Enroll(
+	err = s.balanceRepo.Enroll(
 		ctx,
 		&model.Enrollment{
 			User:        accrual.User,

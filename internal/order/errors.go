@@ -1,4 +1,4 @@
-package loyalty
+package order
 
 import "errors"
 

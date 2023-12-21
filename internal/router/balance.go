@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/Galish/loyalty-system/internal/auth"
+	"github.com/Galish/loyalty-system/internal/balance"
 	"github.com/Galish/loyalty-system/internal/logger"
-	"github.com/Galish/loyalty-system/internal/loyalty"
 	"github.com/Galish/loyalty-system/internal/model"
 	repo "github.com/Galish/loyalty-system/internal/repository"
 )
@@ -31,7 +31,7 @@ type responseWithdrawal struct {
 func (h *httpHandler) GetBalance(w http.ResponseWriter, r *http.Request) {
 	user := r.Header.Get(auth.AuthHeaderName)
 
-	balance, err := h.loyaltyService.GetBalance(r.Context(), user)
+	balance, err := h.balanceService.GetBalance(r.Context(), user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -67,7 +67,7 @@ func (h *httpHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
 		User:  r.Header.Get(auth.AuthHeaderName),
 	}
 
-	err = h.loyaltyService.Withdraw(r.Context(), &withdrawal)
+	err = h.balanceService.Withdraw(r.Context(), &withdrawal)
 	if err != nil {
 		logger.WithError(err).Debug("unable to withdraw funds")
 
@@ -76,7 +76,7 @@ func (h *httpHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if errors.Is(err, loyalty.ErrIncorrectOrderNumber) {
+		if errors.Is(err, balance.ErrIncorrectOrderNumber) {
 			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 			return
 		}
@@ -90,7 +90,7 @@ func (h *httpHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
 
 func (h *httpHandler) Withdrawals(w http.ResponseWriter, r *http.Request) {
 	user := r.Header.Get(auth.AuthHeaderName)
-	withdrawals, err := h.loyaltyService.Withdrawals(r.Context(), user)
+	withdrawals, err := h.balanceService.Withdrawals(r.Context(), user)
 	if err != nil {
 		logger.WithError(err).Debug("unable to get withdrawals")
 		http.Error(w, "unable to get withdrawals", http.StatusInternalServerError)
