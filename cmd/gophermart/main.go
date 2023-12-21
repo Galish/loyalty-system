@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/Galish/loyalty-system/internal/accrual"
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/config"
 	"github.com/Galish/loyalty-system/internal/logger"
@@ -23,9 +24,10 @@ func main() {
 
 	authService := auth.NewService(store, cfg.SecretKey)
 	loyaltyService := loyalty.NewService(store, cfg)
-	defer loyaltyService.Close()
+	accrualService := accrual.NewService(store, cfg)
+	defer accrualService.Close()
 
-	router := router.New(cfg, authService, loyaltyService)
+	router := router.New(cfg, authService, loyaltyService, accrualService)
 
 	httpServer := server.New(cfg.SrvAddr, router)
 	if err := httpServer.Run(); err != nil {

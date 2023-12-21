@@ -9,12 +9,14 @@ import (
 	"testing"
 	"time"
 
+	accrualMocks "github.com/Galish/loyalty-system/internal/accrual/mocks"
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/config"
 	"github.com/Galish/loyalty-system/internal/loyalty"
 	"github.com/Galish/loyalty-system/internal/model"
 	repo "github.com/Galish/loyalty-system/internal/repository"
 	"github.com/Galish/loyalty-system/internal/repository/mocks"
+	repoMocks "github.com/Galish/loyalty-system/internal/repository/mocks"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -24,9 +26,9 @@ func TestHandlerAddOrder(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m := mocks.NewMockLoyaltyRepository(ctrl)
+	repoMock := repoMocks.NewMockLoyaltyRepository(ctrl)
 
-	m.EXPECT().
+	repoMock.EXPECT().
 		CreateOrder(
 			gomock.Any(),
 			gomock.Any(),
@@ -44,14 +46,17 @@ func TestHandlerAddOrder(t *testing.T) {
 		}).
 		AnyTimes()
 
+	accrualMock := accrualMocks.NewMockAccrualManager(ctrl)
+	accrualMock.EXPECT().GetAccrual(gomock.Any())
+
 	cfg := config.Config{SrvAddr: "8000"}
-	loyaltyService := loyalty.NewService(m, &cfg)
+	loyaltyService := loyalty.NewService(repoMock, &cfg)
 
 	authService := auth.NewService(nil, "yvdUuY)HSX}?&b")
 	jwtToken, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
 
 	ts := httptest.NewServer(
-		New(&cfg, authService, loyaltyService),
+		New(&cfg, authService, loyaltyService, accrualMock),
 	)
 	defer ts.Close()
 
@@ -292,7 +297,7 @@ func TestHandlerGetOrders(t *testing.T) {
 	jwtToken2, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1613"})
 
 	ts := httptest.NewServer(
-		New(&cfg, authService, loyaltyService),
+		New(&cfg, authService, loyaltyService, nil),
 	)
 	defer ts.Close()
 

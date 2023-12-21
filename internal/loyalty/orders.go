@@ -2,15 +2,12 @@ package loyalty
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/Galish/loyalty-system/internal/model"
 )
 
 const TimeLayout = "2006-01-02T15:04:05-07:00"
-
-var ErrIncorrectOrderNumber = errors.New("invalid order number value")
 
 func (s *LoyaltyService) AddOrder(ctx context.Context, order model.Order) error {
 	if !order.ID.IsValid() {
@@ -23,10 +20,6 @@ func (s *LoyaltyService) AddOrder(ctx context.Context, order model.Order) error 
 	if err := s.repo.CreateOrder(ctx, &order); err != nil {
 		return err
 	}
-
-	go func() {
-		s.orderCh <- &order
-	}()
 
 	return nil
 }

@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/Galish/loyalty-system/internal/accrual"
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/config"
 	"github.com/Galish/loyalty-system/internal/loyalty"
@@ -13,8 +14,9 @@ func New(
 	cfg *config.Config,
 	auth *auth.AuthService,
 	loyalty *loyalty.LoyaltyService,
+	accrual accrual.AccrualManager,
 ) *chi.Mux {
-	handler := newHandler(cfg, auth, loyalty)
+	handler := newHandler(cfg, auth, loyalty, accrual)
 	router := chi.NewRouter()
 
 	router.Route("/api/user", func(r chi.Router) {

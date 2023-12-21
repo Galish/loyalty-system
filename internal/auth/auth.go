@@ -2,7 +2,6 @@ package auth
 
 import (
 	"context"
-	"errors"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -11,8 +10,6 @@ const (
 	AuthCookieName = "auth"
 	AuthHeaderName = "X-User"
 )
-
-var ErrIncorrectLoginPassword = errors.New("incorrect login/password pair")
 
 func (as *AuthService) Register(ctx context.Context, username, password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)

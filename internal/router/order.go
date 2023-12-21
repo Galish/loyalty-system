@@ -59,6 +59,8 @@ func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	go h.accrualService.GetAccrual(&newOrder)
+
 	w.WriteHeader(http.StatusAccepted)
 }
 
