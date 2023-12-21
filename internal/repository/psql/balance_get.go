@@ -2,8 +2,11 @@ package psql
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 
 	"github.com/Galish/loyalty-system/internal/model"
+	repo "github.com/Galish/loyalty-system/internal/repository"
 )
 
 func (s *psqlStore) UserBalance(ctx context.Context, user string) (*model.Balance, error) {
@@ -18,12 +21,16 @@ func (s *psqlStore) UserBalance(ctx context.Context, user string) (*model.Balanc
 	)
 
 	var balance model.Balance
-	if err := row.Scan(
+	err := row.Scan(
 		&balance.User,
 		&balance.Current,
 		&balance.Withdrawn,
 		&balance.UpdatedAt,
-	); err != nil {
+	)
+	if errors.Is(err, sql.ErrNoRows) {
+		return nil, repo.ErrNothingFound
+	}
+	if err != nil {
 		return nil, err
 	}
 

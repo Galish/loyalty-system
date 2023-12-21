@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"io"
@@ -59,7 +60,7 @@ func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	go h.accrualService.GetAccrual(&newOrder)
+	go h.accrualService.GetAccrual(context.Background(), &newOrder)
 
 	w.WriteHeader(http.StatusAccepted)
 }

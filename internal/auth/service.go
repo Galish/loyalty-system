@@ -10,7 +10,7 @@ import (
 type AuthManager interface {
 	Register(context.Context, string, string) (string, error)
 	Authenticate(context.Context, string, string) (string, error)
-	GenerateToken(user *model.User) (string, error)
+	GenerateToken(*model.User) (string, error)
 	ParseToken(tokenString string) (*JWTClaims, error)
 }
 

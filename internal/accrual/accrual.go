@@ -17,7 +17,7 @@ type responseAccrual struct {
 	Value  float32 `json:"accrual"`
 }
 
-func (s *AccrualService) fetchAccrual(req *request) (*model.Accrual, error) {
+func (s *AccrualService) fetchAccrual(ctx context.Context, req *request) (*model.Accrual, error) {
 	url := fmt.Sprintf("%s/api/orders/%s", s.addr, req.order)
 
 	logger.WithFields(logger.Fields{
@@ -50,9 +50,7 @@ func (s *AccrualService) fetchAccrual(req *request) (*model.Accrual, error) {
 	}, nil
 }
 
-func (s *AccrualService) applyAccrual(accrual *model.Accrual) error {
-	ctx := context.Background()
-
+func (s *AccrualService) applyAccrual(ctx context.Context, accrual *model.Accrual) error {
 	err := s.orderRepo.UpdateOrder(
 		ctx,
 		&model.Order{

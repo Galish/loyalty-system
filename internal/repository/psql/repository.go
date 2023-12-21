@@ -11,6 +11,11 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
+const (
+	errCodeConflict       = "23505"
+	errCodeCheckViolation = "23514"
+)
+
 type psqlStore struct {
 	db *sql.DB
 }

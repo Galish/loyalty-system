@@ -29,7 +29,7 @@ func (s *psqlStore) Withdraw(ctx context.Context, withdrawal *model.Withdrawal) 
 		tx.Rollback()
 
 		var pgErr *pgconn.PgError
-		if errors.As(err, &pgErr) && pgErr.Code == "23514" {
+		if errors.As(err, &pgErr) && pgErr.Code == errCodeCheckViolation {
 			return repo.ErrInsufficientFunds
 		}
 

@@ -46,7 +46,7 @@ func TestHandlerAddOrder(t *testing.T) {
 		AnyTimes()
 
 	accrualMock := accrualMocks.NewMockAccrualManager(ctrl)
-	accrualMock.EXPECT().GetAccrual(gomock.Any())
+	accrualMock.EXPECT().GetAccrual(gomock.Any(), gomock.Any())
 
 	cfg := config.Config{SrvAddr: "8000"}
 	orderService := order.NewService(orderMock)

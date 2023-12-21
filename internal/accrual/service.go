@@ -1,6 +1,7 @@
 package accrual
 
 import (
+	"context"
 	"time"
 
 	"github.com/Galish/loyalty-system/internal/model"
@@ -13,7 +14,7 @@ const (
 )
 
 type AccrualManager interface {
-	GetAccrual(order *model.Order)
+	GetAccrual(context.Context, *model.Order)
 }
 
 type AccrualService struct {
@@ -40,7 +41,7 @@ func NewService(
 	return service
 }
 
-func (s *AccrualService) GetAccrual(order *model.Order) {
+func (s *AccrualService) GetAccrual(ctx context.Context, order *model.Order) {
 	s.requestCh <- &request{
 		order:    string(order.ID),
 		user:     order.User,
@@ -55,13 +56,13 @@ func (s *AccrualService) flushMessages() {
 		<-limiter.C
 
 		go func(req *request) {
-			accrual, err := s.fetchAccrual(req)
+			accrual, err := s.fetchAccrual(context.Background(), req)
 			if err != nil || !accrual.Status.IsFinal() && !req.isAttemptsExceeded() {
 				go s.retry(req)
 				return
 			}
 
-			s.applyAccrual(accrual)
+			s.applyAccrual(context.Background(), accrual)
 		}(req)
 	}
 
