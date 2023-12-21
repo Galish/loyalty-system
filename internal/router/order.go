@@ -24,14 +24,14 @@ type orderResponse struct {
 func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		logger.WithError(err).Debug("unable to read request body")
-		http.Error(w, "unable to read request body", http.StatusBadRequest)
+		logger.WithError(err).Debug(errReadRequestBody)
+		http.Error(w, errReadRequestBody, http.StatusBadRequest)
 		return
 	}
 
 	number := model.OrderNumber(string(body))
 	if !number.IsValid() {
-		http.Error(w, "invalid order number value", http.StatusUnprocessableEntity)
+		http.Error(w, errInvalidOrderNumber, http.StatusUnprocessableEntity)
 		return
 	}
 
@@ -42,7 +42,7 @@ func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 
 	err = h.orderService.AddOrder(r.Context(), newOrder)
 	if err != nil {
-		logger.WithError(err).Debug("unable to add order")
+		logger.WithError(err).Debug(errAddOrder)
 
 		if errors.Is(err, repository.ErrOrderConflict) {
 			http.Error(w, err.Error(), http.StatusConflict)
@@ -69,8 +69,8 @@ func (h *httpHandler) GetOrders(w http.ResponseWriter, r *http.Request) {
 
 	orders, err := h.orderService.GetOrders(r.Context(), userID)
 	if err != nil {
-		logger.WithError(err).Debug("unable to read from repository")
-		http.Error(w, "unable to read from repository", http.StatusInternalServerError)
+		logger.WithError(err).Debug(errReadFromRepo)
+		http.Error(w, errReadFromRepo, http.StatusInternalServerError)
 		return
 	}
 
@@ -96,8 +96,8 @@ func (h *httpHandler) GetOrders(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(res); err != nil {
-		logger.WithError(err).Debug("cannot encode request JSON body")
-		http.Error(w, "cannot encode request JSON body", http.StatusInternalServerError)
+		logger.WithError(err).Debug(errEncodeResponseBody)
+		http.Error(w, errEncodeResponseBody, http.StatusInternalServerError)
 		return
 	}
 }

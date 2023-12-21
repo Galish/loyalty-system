@@ -19,33 +19,33 @@ type authRequest struct {
 func (h *httpHandler) Register(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		logger.WithError(err).Debug("unable to read request body")
-		http.Error(w, "unable to read request body", http.StatusInternalServerError)
+		logger.WithError(err).Debug(errReadRequestBody)
+		http.Error(w, errReadRequestBody, http.StatusInternalServerError)
 		return
 	}
 
 	var req authRequest
 	if err := json.Unmarshal(body, &req); err != nil {
-		logger.WithError(err).Debug("cannot decode request JSON body")
-		http.Error(w, "cannot decode request JSON body", http.StatusBadRequest)
+		logger.WithError(err).Debug(errDecodeRequestBody)
+		http.Error(w, errDecodeRequestBody, http.StatusBadRequest)
 		return
 	}
 
 	if req.Login == "" || req.Password == "" {
-		logger.Debug("missing login or password")
-		http.Error(w, "missing login or password", http.StatusBadRequest)
+		logger.Debug(errMissingLoginOrPassword)
+		http.Error(w, errMissingLoginOrPassword, http.StatusBadRequest)
 		return
 	}
 
 	token, err := h.authService.Register(r.Context(), req.Login, req.Password)
 	if errors.Is(err, repo.ErrUserConflict) {
-		logger.WithError(err).Debug("unable to write to repository")
+		logger.WithError(err).Debug(errRegisterUser)
 		http.Error(w, err.Error(), http.StatusConflict)
 		return
 	}
 	if err != nil {
-		logger.WithError(err).Debug("unable to write to repository")
-		http.Error(w, "unable to write to repository", http.StatusInternalServerError)
+		logger.WithError(err).Debug(errRegisterUser)
+		http.Error(w, errRegisterUser, http.StatusInternalServerError)
 		return
 	}
 
@@ -57,32 +57,31 @@ func (h *httpHandler) Register(w http.ResponseWriter, r *http.Request) {
 func (h *httpHandler) Login(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		logger.WithError(err).Debug("unable to read request body")
-		http.Error(w, "unable to read request body", http.StatusInternalServerError)
+		logger.WithError(err).Debug(errReadRequestBody)
+		http.Error(w, errReadRequestBody, http.StatusInternalServerError)
 		return
 	}
 
 	var req authRequest
 	if err := json.Unmarshal(body, &req); err != nil {
-		logger.WithError(err).Debug("cannot decode request JSON body")
-		http.Error(w, "cannot decode request JSON body", http.StatusBadRequest)
+		logger.WithError(err).Debug(errDecodeRequestBody)
+		http.Error(w, errDecodeRequestBody, http.StatusBadRequest)
 		return
 	}
-
 	if req.Login == "" || req.Password == "" {
-		logger.Debug("missing login or password")
-		http.Error(w, "missing login or password", http.StatusBadRequest)
+		logger.Debug(errMissingLoginOrPassword)
+		http.Error(w, errMissingLoginOrPassword, http.StatusBadRequest)
 		return
 	}
 
 	token, err := h.authService.Authenticate(r.Context(), req.Login, req.Password)
 	if errors.Is(err, auth.ErrIncorrectLoginPassword) || errors.Is(err, repo.ErrUserNotFound) {
-		logger.WithError(err).Debug("unable to authenticate")
+		logger.WithError(err).Debug(errAuthenticate)
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 	if err != nil {
-		logger.WithError(err).Debug("unable to authenticate")
+		logger.WithError(err).Debug(errAuthenticate)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

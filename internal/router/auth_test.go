@@ -186,7 +186,7 @@ func TestHandlerRegister(t *testing.T) {
 			},
 			&want{
 				http.StatusInternalServerError,
-				"unable to write to repository\n",
+				"unable to register user\n",
 				"text/plain; charset=utf-8",
 			},
 		},
