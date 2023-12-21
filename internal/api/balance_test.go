@@ -453,19 +453,19 @@ func TestHandlerWithdrawals(t *testing.T) {
 				Order:       "277431151",
 				User:        "395fd5f4-964d-4135-9a55-fbf91c4a163b",
 				Sum:         500,
-				ProcessedAt: time.Date(2023, time.Month(2), 21, 1, 10, 30, 0, time.UTC),
+				ProcessedAt: model.Time(time.Date(2023, time.Month(2), 21, 1, 10, 30, 0, time.UTC)),
 			},
 			{
 				Order:       "277431113",
 				User:        "395fd5f4-964d-4135-9a55-fbf91c4a163b",
 				Sum:         150,
-				ProcessedAt: time.Date(2023, time.Month(5), 21, 1, 10, 30, 0, timezone1),
+				ProcessedAt: model.Time(time.Date(2023, time.Month(5), 21, 1, 10, 30, 0, timezone1)),
 			},
 			{
 				Order:       "277431122",
 				User:        "395fd5f4-964d-4135-9a55-fbf91c4a163b",
 				Sum:         755,
-				ProcessedAt: time.Date(2023, time.Month(6), 21, 1, 10, 30, 0, timezone2),
+				ProcessedAt: model.Time(time.Date(2023, time.Month(6), 21, 1, 10, 30, 0, timezone2)),
 			},
 		}, nil).
 		AnyTimes()

@@ -21,7 +21,7 @@ func (s *psqlStore) CreateOrder(ctx context.Context, order *model.Order) error {
 		order.ID,
 		order.Status,
 		order.Accrual,
-		order.UploadedAt.Round(time.Microsecond),
+		order.UploadedAt.Value(),
 		order.User,
 	)
 
@@ -34,7 +34,7 @@ func (s *psqlStore) CreateOrder(ctx context.Context, order *model.Order) error {
 		return err
 	}
 
-	if order.UploadedAt.Round(time.Microsecond).Equal(uploadedAt) {
+	if order.UploadedAt.Value().Equal(uploadedAt) {
 		return nil
 	}
 

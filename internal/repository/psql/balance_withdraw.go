@@ -19,10 +19,13 @@ func (s *psqlStore) Withdraw(ctx context.Context, withdrawal *model.Withdrawal) 
 	res, err := tx.Exec(
 		`
 			UPDATE balance
-			SET current = balance.current - $1, withdrawn = balance.withdrawn + $1
-			WHERE user_id = $2
+			SET current = balance.current - $1,
+				withdrawn = balance.withdrawn + $1,
+				updated_at = $2
+			WHERE user_id = $3
 		`,
 		withdrawal.Sum,
+		withdrawal.ProcessedAt.Value(),
 		withdrawal.User,
 	)
 	if err != nil {
@@ -57,7 +60,7 @@ func (s *psqlStore) Withdraw(ctx context.Context, withdrawal *model.Withdrawal) 
 		withdrawal.Order,
 		withdrawal.User,
 		withdrawal.Sum,
-		withdrawal.ProcessedAt,
+		withdrawal.ProcessedAt.Value(),
 	)
 
 	if err != nil {

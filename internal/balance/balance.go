@@ -23,7 +23,7 @@ func (s *BalanceService) Withdraw(ctx context.Context, withdrawal *model.Withdra
 			Order:       withdrawal.Order,
 			User:        withdrawal.User,
 			Sum:         withdrawal.Sum,
-			ProcessedAt: time.Now(),
+			ProcessedAt: model.Time(time.Now()),
 		},
 	)
 	if err != nil {

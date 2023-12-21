@@ -13,8 +13,6 @@ import (
 	"github.com/Galish/loyalty-system/internal/repository"
 )
 
-const timeLayout = "2006-01-02T15:04:05-07:00"
-
 type orderResponse struct {
 	ID         string  `json:"number"`
 	Status     string  `json:"status"`
@@ -88,7 +86,7 @@ func (h *httpHandler) GetOrders(w http.ResponseWriter, r *http.Request) {
 				ID:         order.ID.String(),
 				Status:     string(order.Status),
 				Accrual:    order.Accrual,
-				UploadedAt: order.UploadedAt.Format(timeLayout),
+				UploadedAt: order.UploadedAt.Format(),
 			},
 		)
 	}

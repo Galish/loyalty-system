@@ -69,7 +69,7 @@ func (s *AccrualService) applyAccrual(ctx context.Context, accrual *model.Accrua
 		&model.Enrollment{
 			User:        accrual.User,
 			Sum:         accrual.Value,
-			ProcessedAt: time.Now(),
+			ProcessedAt: model.Time(time.Now()),
 		},
 	)
 	if err != nil {
