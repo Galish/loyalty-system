@@ -1,9 +1,10 @@
 package psql
 
 import (
-	"context"
 	"database/sql"
 	"errors"
+	"os"
+	"path/filepath"
 
 	"github.com/Galish/loyalty-system/internal/config"
 	"github.com/Galish/loyalty-system/internal/logger"
@@ -34,11 +35,30 @@ func NewStore(cfg *config.Config) (*psqlStore, error) {
 
 	store := psqlStore{db}
 
-	if err := store.Bootstrap(context.Background()); err != nil {
+	if err := store.init(); err != nil {
 		return nil, err
 	}
 
 	return &store, nil
+}
+
+func (s *psqlStore) init() error {
+	path, err := os.Executable()
+	if err != nil {
+		return err
+	}
+
+	query, err := os.ReadFile(filepath.Join(path, "init.sql"))
+	if err != nil {
+		return err
+	}
+
+	_, err = s.db.Exec(string(query))
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (s *psqlStore) Close() error {
