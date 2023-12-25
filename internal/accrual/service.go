@@ -4,13 +4,13 @@ import (
 	"context"
 	"time"
 
+	"github.com/Galish/loyalty-system/internal/config"
 	"github.com/Galish/loyalty-system/internal/model"
 	repo "github.com/Galish/loyalty-system/internal/repository"
 )
 
 const (
-	limiterInterval time.Duration = 1 * time.Second
-	maxAttempts     uint          = 10
+	maxAttempts uint = 10
 )
 
 type AccrualManager interface {
@@ -18,22 +18,24 @@ type AccrualManager interface {
 }
 
 type AccrualService struct {
-	orderRepo   repo.OrderRepository
-	balanceRepo repo.BalanceRepository
-	addr        string
-	requestCh   chan *request
+	orderRepo       repo.OrderRepository
+	balanceRepo     repo.BalanceRepository
+	addr            string
+	limiterInterval time.Duration
+	requestCh       chan *request
 }
 
 func NewService(
 	orderRepo repo.OrderRepository,
 	balanceRepo repo.BalanceRepository,
-	addr string,
+	cfg *config.Config,
 ) *AccrualService {
 	service := &AccrualService{
-		orderRepo:   orderRepo,
-		balanceRepo: balanceRepo,
-		addr:        addr,
-		requestCh:   make(chan *request),
+		orderRepo:       orderRepo,
+		balanceRepo:     balanceRepo,
+		addr:            cfg.AccrualAddr,
+		limiterInterval: time.Duration(cfg.AccrualInterval) * time.Millisecond,
+		requestCh:       make(chan *request),
 	}
 
 	go service.flushMessages()
@@ -50,7 +52,7 @@ func (s *AccrualService) GetAccrual(ctx context.Context, order *model.Order) {
 }
 
 func (s *AccrualService) flushMessages() {
-	limiter := newLimiter(limiterInterval)
+	limiter := newLimiter(s.limiterInterval)
 
 	for req := range s.requestCh {
 		<-limiter.C

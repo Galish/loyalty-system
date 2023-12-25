@@ -25,7 +25,7 @@ func main() {
 	authService := auth.NewService(store, cfg.SecretKey)
 	orderService := order.NewService(store)
 	balanceService := balance.NewService(store)
-	accrualService := accrual.NewService(store, store, cfg.AccrualAddr)
+	accrualService := accrual.NewService(store, store, cfg)
 	defer accrualService.Close()
 
 	router := api.NewRouter(
