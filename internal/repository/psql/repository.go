@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"os"
-	"path/filepath"
 
 	"github.com/Galish/loyalty-system/internal/config"
 	"github.com/Galish/loyalty-system/internal/logger"
@@ -35,6 +34,8 @@ func NewStore(cfg *config.Config) (*psqlStore, error) {
 
 	store := psqlStore{db}
 
+	logger.Info("database initialization")
+
 	if err := store.init(); err != nil {
 		return nil, err
 	}
@@ -43,12 +44,7 @@ func NewStore(cfg *config.Config) (*psqlStore, error) {
 }
 
 func (s *psqlStore) init() error {
-	path, err := os.Executable()
-	if err != nil {
-		return err
-	}
-
-	query, err := os.ReadFile(filepath.Join(path, "init.sql"))
+	query, err := os.ReadFile("internal/repository/psql/init.sql")
 	if err != nil {
 		return err
 	}
