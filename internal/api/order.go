@@ -97,6 +97,5 @@ func (h *httpHandler) GetOrders(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(res); err != nil {
 		logger.WithError(err).Debug(errEncodeResponseBody)
 		http.Error(w, errEncodeResponseBody, http.StatusInternalServerError)
-		return
 	}
 }

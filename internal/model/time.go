@@ -2,6 +2,8 @@ package model
 
 import "time"
 
+const TimeLayout = "2006-01-02T15:04:05-07:00"
+
 type Time time.Time
 
 func (t Time) Format() string {

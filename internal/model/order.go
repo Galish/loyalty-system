@@ -10,8 +10,6 @@ const (
 	StatusProcessing = Status("PROCESSING")
 	StatusInvalid    = Status("INVALID")
 	StatusProcessed  = Status("PROCESSED")
-
-	TimeLayout = "2006-01-02T15:04:05-07:00"
 )
 
 type Order struct {
