@@ -6,6 +6,7 @@ import (
 
 	"github.com/Galish/loyalty-system/internal/app/entity"
 	repo "github.com/Galish/loyalty-system/internal/app/repository"
+	"github.com/Galish/loyalty-system/internal/app/webapi"
 	"github.com/Galish/loyalty-system/internal/config"
 )
 
@@ -18,6 +19,7 @@ type AccrualManager interface {
 }
 
 type AccrualService struct {
+	accrualAPI      webapi.AccrualGetter
 	orderRepo       repo.OrderRepository
 	balanceRepo     repo.BalanceRepository
 	addr            string
@@ -26,11 +28,13 @@ type AccrualService struct {
 }
 
 func NewService(
+	accrualAPI webapi.AccrualGetter,
 	orderRepo repo.OrderRepository,
 	balanceRepo repo.BalanceRepository,
 	cfg *config.Config,
 ) *AccrualService {
 	service := &AccrualService{
+		accrualAPI:      accrualAPI,
 		orderRepo:       orderRepo,
 		balanceRepo:     balanceRepo,
 		addr:            cfg.AccrualAddr,
@@ -58,11 +62,12 @@ func (s *AccrualService) flushMessages() {
 		<-limiter.C
 
 		go func(req *request) {
-			accrual, err := s.fetchAccrual(context.Background(), req)
+			accrual, err := s.accrualAPI.GetAccrual(context.Background(), req.order)
 			if err != nil || !accrual.Status.IsFinal() && !req.isAttemptsExceeded() {
 				go s.retry(req)
 				return
 			}
+			accrual.User = req.user
 
 			s.applyAccrual(context.Background(), accrual)
 		}(req)

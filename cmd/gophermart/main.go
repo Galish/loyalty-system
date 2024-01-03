@@ -7,6 +7,7 @@ import (
 	"github.com/Galish/loyalty-system/internal/app/services/auth"
 	"github.com/Galish/loyalty-system/internal/app/services/balance"
 	"github.com/Galish/loyalty-system/internal/app/services/order"
+	"github.com/Galish/loyalty-system/internal/app/webapi"
 	"github.com/Galish/loyalty-system/internal/config"
 	"github.com/Galish/loyalty-system/internal/http/httpserver"
 	"github.com/Galish/loyalty-system/internal/logger"
@@ -26,7 +27,7 @@ func main() {
 	authService := auth.NewService(store, cfg.SecretKey)
 	orderService := order.NewService(store)
 	balanceService := balance.NewService(store)
-	accrualService := accrual.NewService(store, store, cfg)
+	accrualService := accrual.NewService(webapi.New(cfg), store, store, cfg)
 	defer accrualService.Close()
 
 	router := handlers.NewRouter(
