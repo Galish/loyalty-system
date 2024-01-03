@@ -68,29 +68,31 @@ func (h *httpHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = h.balanceService.Withdraw(r.Context(), &withdrawal)
-	if err != nil {
-		logger.WithError(err).Debug(errWithdrawFunds)
-
-		if errors.Is(err, validation.ErrInvalidOrderNumber) {
-			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
-			return
-		}
-
-		if errors.Is(err, repo.ErrInsufficientFunds) {
-			http.Error(w, err.Error(), http.StatusPaymentRequired)
-			return
-		}
-
-		http.Error(w, errWithdrawFunds, http.StatusInternalServerError)
+	if err == nil {
+		w.WriteHeader(http.StatusOK)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	logger.WithError(err).Debug(errWithdrawFunds)
+
+	if errors.Is(err, validation.ErrInvalidOrderNumber) {
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+
+	if errors.Is(err, repo.ErrInsufficientFunds) {
+		http.Error(w, err.Error(), http.StatusPaymentRequired)
+		return
+	}
+
+	http.Error(w, errWithdrawFunds, http.StatusInternalServerError)
 }
 
 func (h *httpHandler) Withdrawals(w http.ResponseWriter, r *http.Request) {
-	user := r.Header.Get(auth.AuthHeaderName)
-	withdrawals, err := h.balanceService.Withdrawals(r.Context(), user)
+	withdrawals, err := h.balanceService.Withdrawals(
+		r.Context(),
+		r.Header.Get(auth.AuthHeaderName),
+	)
 	if err != nil {
 		logger.WithError(err).Debug(errGetWithdrawals)
 		http.Error(w, errGetWithdrawals, http.StatusInternalServerError)
@@ -103,7 +105,6 @@ func (h *httpHandler) Withdrawals(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var res []*responseWithdrawal
-
 	for _, withdrawal := range withdrawals {
 		res = append(
 			res,
