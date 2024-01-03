@@ -2,10 +2,11 @@ package main
 
 import (
 	"github.com/Galish/loyalty-system/internal/accrual"
-	"github.com/Galish/loyalty-system/internal/api"
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/balance"
 	"github.com/Galish/loyalty-system/internal/config"
+	"github.com/Galish/loyalty-system/internal/handlers"
+	"github.com/Galish/loyalty-system/internal/httpserver"
 	"github.com/Galish/loyalty-system/internal/logger"
 	"github.com/Galish/loyalty-system/internal/order"
 	"github.com/Galish/loyalty-system/internal/repository/psql"
@@ -28,7 +29,7 @@ func main() {
 	accrualService := accrual.NewService(store, store, cfg)
 	defer accrualService.Close()
 
-	router := api.NewRouter(
+	router := handlers.NewRouter(
 		cfg,
 		authService,
 		orderService,
@@ -36,7 +37,7 @@ func main() {
 		accrualService,
 	)
 
-	httpServer := api.NewServer(cfg.SrvAddr, router)
+	httpServer := httpserver.New(cfg.SrvAddr, router)
 	if err := httpServer.Run(); err != nil {
 		panic(err)
 	}

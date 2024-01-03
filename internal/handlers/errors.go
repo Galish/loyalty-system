@@ -1,4 +1,4 @@
-package api
+package handlers
 
 var (
 	errAddOrder               = "unable to add order"

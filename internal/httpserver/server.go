@@ -1,4 +1,4 @@
-package api
+package httpserver
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ type httpServer struct {
 	handler http.Handler
 }
 
-func NewServer(addr string, handler http.Handler) *httpServer {
+func New(addr string, handler http.Handler) *httpServer {
 	return &httpServer{
 		addr:    addr,
 		handler: handler,

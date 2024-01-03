@@ -1,4 +1,4 @@
-package api
+package handlers
 
 import (
 	"github.com/Galish/loyalty-system/internal/accrual"
