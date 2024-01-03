@@ -28,39 +28,38 @@ func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	number := entity.OrderNumber(string(body))
-	if !number.IsValid() {
-		http.Error(w, errInvalidOrderNumber, http.StatusUnprocessableEntity)
-		return
-	}
-
 	newOrder := entity.Order{
-		ID:   number,
+		ID:   entity.OrderNumber(string(body)),
 		User: r.Header.Get(auth.AuthHeaderName),
 	}
 
 	err = h.orderService.AddOrder(r.Context(), newOrder)
-	if err != nil {
-		logger.WithError(err).Debug(errAddOrder)
+	if err == nil {
+		go h.accrualService.GetAccrual(context.Background(), &newOrder)
 
-		if errors.Is(err, repository.ErrOrderConflict) {
-			http.Error(w, err.Error(), http.StatusConflict)
-			return
-		}
-
-		if errors.Is(err, repository.ErrOrderExists) {
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(err.Error()))
-			return
-		}
-
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.WriteHeader(http.StatusAccepted)
 		return
 	}
 
-	go h.accrualService.GetAccrual(context.Background(), &newOrder)
+	logger.WithError(err).Debug(errAddOrder)
 
-	w.WriteHeader(http.StatusAccepted)
+	if errors.Is(err, entity.ErrInvalidOrderNumber) {
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+
+	if errors.Is(err, repository.ErrOrderConflict) {
+		http.Error(w, err.Error(), http.StatusConflict)
+		return
+	}
+
+	if errors.Is(err, repository.ErrOrderExists) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	http.Error(w, err.Error(), http.StatusInternalServerError)
 }
 
 func (h *httpHandler) GetOrders(w http.ResponseWriter, r *http.Request) {

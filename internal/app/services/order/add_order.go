@@ -8,6 +8,10 @@ import (
 )
 
 func (s *OrderService) AddOrder(ctx context.Context, order entity.Order) error {
+	if err := order.Validate(); err != nil {
+		return err
+	}
+
 	order.Status = entity.StatusNew
 	order.UploadedAt = entity.Time(time.Now())
 
@@ -16,13 +20,4 @@ func (s *OrderService) AddOrder(ctx context.Context, order entity.Order) error {
 	}
 
 	return nil
-}
-
-func (s *OrderService) GetOrders(ctx context.Context, userID string) ([]*entity.Order, error) {
-	orders, err := s.repo.UserOrders(ctx, userID)
-	if err != nil {
-		return []*entity.Order{}, nil
-	}
-
-	return orders, nil
 }

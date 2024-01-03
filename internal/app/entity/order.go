@@ -1,8 +1,12 @@
 package entity
 
 import (
+	"errors"
+
 	"github.com/ShiraazMoollatjie/goluhn"
 )
+
+var ErrInvalidOrderNumber = errors.New("invalid order number value")
 
 const (
 	StatusNew        = Status("NEW")
@@ -18,6 +22,14 @@ type Order struct {
 	Accrual    float32
 	UploadedAt Time
 	User       string
+}
+
+func (o Order) Validate() error {
+	if !o.ID.IsValid() {
+		return ErrInvalidOrderNumber
+	}
+
+	return nil
 }
 
 type Status string
