@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/logger"
+	"github.com/Galish/loyalty-system/internal/services/auth"
 )
 
 var errMissingUserID = errors.New("user id not specified")

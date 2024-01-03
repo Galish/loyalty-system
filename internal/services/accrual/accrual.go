@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/Galish/loyalty-system/internal/entity"
 	"github.com/Galish/loyalty-system/internal/logger"
-	"github.com/Galish/loyalty-system/internal/model"
 )
 
 type responseAccrual struct {
@@ -17,7 +17,7 @@ type responseAccrual struct {
 	Value  float32 `json:"accrual"`
 }
 
-func (s *AccrualService) fetchAccrual(ctx context.Context, req *request) (*model.Accrual, error) {
+func (s *AccrualService) fetchAccrual(ctx context.Context, req *request) (*entity.Accrual, error) {
 	url := fmt.Sprintf("%s/api/orders/%s", s.addr, req.order)
 
 	logger.WithFields(logger.Fields{
@@ -42,18 +42,18 @@ func (s *AccrualService) fetchAccrual(ctx context.Context, req *request) (*model
 		"accrual": res,
 	}).Debug("accrual service response")
 
-	return &model.Accrual{
-		Order:  model.OrderNumber(res.ID),
-		Status: model.Status(res.Status),
+	return &entity.Accrual{
+		Order:  entity.OrderNumber(res.ID),
+		Status: entity.Status(res.Status),
 		Value:  res.Value,
 		User:   req.user,
 	}, nil
 }
 
-func (s *AccrualService) applyAccrual(ctx context.Context, accrual *model.Accrual) error {
+func (s *AccrualService) applyAccrual(ctx context.Context, accrual *entity.Accrual) error {
 	err := s.orderRepo.UpdateOrder(
 		ctx,
-		&model.Order{
+		&entity.Order{
 			ID:      accrual.Order,
 			Status:  accrual.Status,
 			Accrual: accrual.Value,
@@ -66,10 +66,10 @@ func (s *AccrualService) applyAccrual(ctx context.Context, accrual *model.Accrua
 
 	err = s.balanceRepo.Enroll(
 		ctx,
-		&model.Enrollment{
+		&entity.Enrollment{
 			User:        accrual.User,
 			Sum:         accrual.Value,
-			ProcessedAt: model.Time(time.Now()),
+			ProcessedAt: entity.Time(time.Now()),
 		},
 	)
 	if err != nil {

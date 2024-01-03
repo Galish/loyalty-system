@@ -6,9 +6,9 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/logger"
 	repo "github.com/Galish/loyalty-system/internal/repository"
+	"github.com/Galish/loyalty-system/internal/services/auth"
 )
 
 type authRequest struct {

@@ -4,13 +4,13 @@ import (
 	"context"
 	"errors"
 
-	"github.com/Galish/loyalty-system/internal/model"
+	"github.com/Galish/loyalty-system/internal/entity"
 	repo "github.com/Galish/loyalty-system/internal/repository"
 
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
-func (s *psqlStore) Withdraw(ctx context.Context, withdrawal *model.Withdrawal) error {
+func (s *psqlStore) Withdraw(ctx context.Context, withdrawal *entity.Withdrawal) error {
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err

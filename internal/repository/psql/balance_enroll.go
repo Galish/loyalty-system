@@ -3,10 +3,10 @@ package psql
 import (
 	"context"
 
-	"github.com/Galish/loyalty-system/internal/model"
+	"github.com/Galish/loyalty-system/internal/entity"
 )
 
-func (s *psqlStore) Enroll(ctx context.Context, enroll *model.Enrollment) error {
+func (s *psqlStore) Enroll(ctx context.Context, enroll *entity.Enrollment) error {
 	_, err := s.db.ExecContext(
 		ctx,
 		`

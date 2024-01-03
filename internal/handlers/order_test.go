@@ -9,13 +9,13 @@ import (
 	"testing"
 	"time"
 
-	accrualMocks "github.com/Galish/loyalty-system/internal/accrual/mocks"
-	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/config"
-	"github.com/Galish/loyalty-system/internal/model"
-	"github.com/Galish/loyalty-system/internal/order"
+	"github.com/Galish/loyalty-system/internal/entity"
 	repo "github.com/Galish/loyalty-system/internal/repository"
 	repoMocks "github.com/Galish/loyalty-system/internal/repository/mocks"
+	accrualMocks "github.com/Galish/loyalty-system/internal/services/accrual/mocks"
+	"github.com/Galish/loyalty-system/internal/services/auth"
+	"github.com/Galish/loyalty-system/internal/services/order"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -32,7 +32,7 @@ func TestHandlerAddOrder(t *testing.T) {
 			gomock.Any(),
 			gomock.Any(),
 		).
-		DoAndReturn(func(ctx context.Context, order *model.Order) error {
+		DoAndReturn(func(ctx context.Context, order *entity.Order) error {
 			if order.ID == "277431151" {
 				return repo.ErrOrderConflict
 			}
@@ -52,7 +52,7 @@ func TestHandlerAddOrder(t *testing.T) {
 	orderService := order.NewService(orderMock)
 
 	authService := auth.NewService(nil, "yvdUuY)HSX}?&b")
-	jwtToken, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
+	jwtToken, _ := authService.GenerateToken(&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
 
 	ts := httptest.NewServer(
 		NewRouter(&cfg, authService, orderService, nil, accrualMock),
@@ -255,26 +255,26 @@ func TestHandlerGetOrders(t *testing.T) {
 			gomock.Any(),
 			"395fd5f4-964d-4135-9a55-fbf91c4a163b",
 		).
-		Return([]*model.Order{
+		Return([]*entity.Order{
 			{
 				ID:         "2774311589",
 				Status:     "NEW",
 				Accrual:    0,
-				UploadedAt: model.Time(time.Date(2023, time.Month(3), 11, 1, 10, 30, 0, timezone1)),
+				UploadedAt: entity.Time(time.Date(2023, time.Month(3), 11, 1, 10, 30, 0, timezone1)),
 				User:       "395fd5f4-964d-4135-9a55-fbf91c4a163b",
 			},
 			{
 				ID:         "12345678903",
 				Status:     "PROCESSED",
 				Accrual:    100,
-				UploadedAt: model.Time(time.Date(2023, time.Month(2), 21, 1, 10, 30, 0, time.UTC)),
+				UploadedAt: entity.Time(time.Date(2023, time.Month(2), 21, 1, 10, 30, 0, time.UTC)),
 				User:       "395fd5f4-964d-4135-9a55-fbf91c4a163b",
 			},
 			{
 				ID:         "252576137",
 				Status:     "INVALID",
 				Accrual:    0,
-				UploadedAt: model.Time(time.Date(2023, time.Month(2), 10, 1, 10, 30, 0, timezone2)),
+				UploadedAt: entity.Time(time.Date(2023, time.Month(2), 10, 1, 10, 30, 0, timezone2)),
 				User:       "395fd5f4-964d-4135-9a55-fbf91c4a163b",
 			},
 		}, nil).
@@ -285,15 +285,15 @@ func TestHandlerGetOrders(t *testing.T) {
 			gomock.Any(),
 			"395fd5f4-964d-4135-9a55-fbf91c4a1613",
 		).
-		Return([]*model.Order{}, nil).
+		Return([]*entity.Order{}, nil).
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}
 	orderService := order.NewService(m)
 
 	authService := auth.NewService(nil, "yvdUuY)HSX}?&b")
-	jwtToken, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
-	jwtToken2, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1613"})
+	jwtToken, _ := authService.GenerateToken(&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
+	jwtToken2, _ := authService.GenerateToken(&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1613"})
 
 	ts := httptest.NewServer(
 		NewRouter(&cfg, authService, orderService, nil, nil),

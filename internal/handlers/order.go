@@ -7,10 +7,10 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/Galish/loyalty-system/internal/auth"
+	"github.com/Galish/loyalty-system/internal/entity"
 	"github.com/Galish/loyalty-system/internal/logger"
-	"github.com/Galish/loyalty-system/internal/model"
 	"github.com/Galish/loyalty-system/internal/repository"
+	"github.com/Galish/loyalty-system/internal/services/auth"
 )
 
 type orderResponse struct {
@@ -28,13 +28,13 @@ func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	number := model.OrderNumber(string(body))
+	number := entity.OrderNumber(string(body))
 	if !number.IsValid() {
 		http.Error(w, errInvalidOrderNumber, http.StatusUnprocessableEntity)
 		return
 	}
 
-	newOrder := model.Order{
+	newOrder := entity.Order{
 		ID:   number,
 		User: r.Header.Get(auth.AuthHeaderName),
 	}

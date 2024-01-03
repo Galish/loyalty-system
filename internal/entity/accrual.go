@@ -1,4 +1,4 @@
-package model
+package entity
 
 type Accrual struct {
 	Order  OrderNumber

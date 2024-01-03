@@ -5,11 +5,11 @@ import (
 	"database/sql"
 	"errors"
 
-	"github.com/Galish/loyalty-system/internal/model"
+	"github.com/Galish/loyalty-system/internal/entity"
 	repo "github.com/Galish/loyalty-system/internal/repository"
 )
 
-func (s *psqlStore) UserBalance(ctx context.Context, user string) (*model.Balance, error) {
+func (s *psqlStore) UserBalance(ctx context.Context, user string) (*entity.Balance, error) {
 	row := s.db.QueryRowContext(
 		ctx,
 		`
@@ -20,7 +20,7 @@ func (s *psqlStore) UserBalance(ctx context.Context, user string) (*model.Balanc
 		user,
 	)
 
-	var balance model.Balance
+	var balance entity.Balance
 	err := row.Scan(
 		&balance.User,
 		&balance.Current,

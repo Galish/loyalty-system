@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/Galish/loyalty-system/internal/model"
+	"github.com/Galish/loyalty-system/internal/entity"
 )
 
-func (s *BalanceService) GetBalance(ctx context.Context, user string) (*model.Balance, error) {
+func (s *BalanceService) GetBalance(ctx context.Context, user string) (*entity.Balance, error) {
 	balance, err := s.repo.UserBalance(ctx, user)
 	if err != nil {
 		return nil, err
@@ -16,14 +16,14 @@ func (s *BalanceService) GetBalance(ctx context.Context, user string) (*model.Ba
 	return balance, nil
 }
 
-func (s *BalanceService) Withdraw(ctx context.Context, withdrawal *model.Withdrawal) error {
+func (s *BalanceService) Withdraw(ctx context.Context, withdrawal *entity.Withdrawal) error {
 	err := s.repo.Withdraw(
 		ctx,
-		&model.Withdrawal{
+		&entity.Withdrawal{
 			Order:       withdrawal.Order,
 			User:        withdrawal.User,
 			Sum:         withdrawal.Sum,
-			ProcessedAt: model.Time(time.Now()),
+			ProcessedAt: entity.Time(time.Now()),
 		},
 	)
 	if err != nil {
@@ -33,10 +33,10 @@ func (s *BalanceService) Withdraw(ctx context.Context, withdrawal *model.Withdra
 	return nil
 }
 
-func (s *BalanceService) Withdrawals(ctx context.Context, user string) ([]*model.Withdrawal, error) {
+func (s *BalanceService) Withdrawals(ctx context.Context, user string) ([]*entity.Withdrawal, error) {
 	withdrawals, err := s.repo.Withdrawals(ctx, user)
 	if err != nil {
-		return []*model.Withdrawal{}, err
+		return []*entity.Withdrawal{}, err
 	}
 
 	return withdrawals, nil

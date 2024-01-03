@@ -8,7 +8,7 @@ import (
 	context "context"
 	reflect "reflect"
 
-	model "github.com/Galish/loyalty-system/internal/model"
+	entity "github.com/Galish/loyalty-system/internal/entity"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -36,10 +36,10 @@ func (m *MockUserRepository) EXPECT() *MockUserRepositoryMockRecorder {
 }
 
 // CreateUser mocks base method.
-func (m *MockUserRepository) CreateUser(arg0 context.Context, arg1, arg2 string) (*model.User, error) {
+func (m *MockUserRepository) CreateUser(arg0 context.Context, arg1, arg2 string) (*entity.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateUser", arg0, arg1, arg2)
-	ret0, _ := ret[0].(*model.User)
+	ret0, _ := ret[0].(*entity.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -51,10 +51,10 @@ func (mr *MockUserRepositoryMockRecorder) CreateUser(arg0, arg1, arg2 interface{
 }
 
 // GetUserByLogin mocks base method.
-func (m *MockUserRepository) GetUserByLogin(arg0 context.Context, arg1 string) (*model.User, error) {
+func (m *MockUserRepository) GetUserByLogin(arg0 context.Context, arg1 string) (*entity.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserByLogin", arg0, arg1)
-	ret0, _ := ret[0].(*model.User)
+	ret0, _ := ret[0].(*entity.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -89,7 +89,7 @@ func (m *MockOrderRepository) EXPECT() *MockOrderRepositoryMockRecorder {
 }
 
 // CreateOrder mocks base method.
-func (m *MockOrderRepository) CreateOrder(arg0 context.Context, arg1 *model.Order) error {
+func (m *MockOrderRepository) CreateOrder(arg0 context.Context, arg1 *entity.Order) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateOrder", arg0, arg1)
 	ret0, _ := ret[0].(error)
@@ -103,7 +103,7 @@ func (mr *MockOrderRepositoryMockRecorder) CreateOrder(arg0, arg1 interface{}) *
 }
 
 // UpdateOrder mocks base method.
-func (m *MockOrderRepository) UpdateOrder(arg0 context.Context, arg1 *model.Order) error {
+func (m *MockOrderRepository) UpdateOrder(arg0 context.Context, arg1 *entity.Order) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateOrder", arg0, arg1)
 	ret0, _ := ret[0].(error)
@@ -117,10 +117,10 @@ func (mr *MockOrderRepositoryMockRecorder) UpdateOrder(arg0, arg1 interface{}) *
 }
 
 // UserOrders mocks base method.
-func (m *MockOrderRepository) UserOrders(arg0 context.Context, arg1 string) ([]*model.Order, error) {
+func (m *MockOrderRepository) UserOrders(arg0 context.Context, arg1 string) ([]*entity.Order, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UserOrders", arg0, arg1)
-	ret0, _ := ret[0].([]*model.Order)
+	ret0, _ := ret[0].([]*entity.Order)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -155,7 +155,7 @@ func (m *MockBalanceRepository) EXPECT() *MockBalanceRepositoryMockRecorder {
 }
 
 // Enroll mocks base method.
-func (m *MockBalanceRepository) Enroll(arg0 context.Context, arg1 *model.Enrollment) error {
+func (m *MockBalanceRepository) Enroll(arg0 context.Context, arg1 *entity.Enrollment) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Enroll", arg0, arg1)
 	ret0, _ := ret[0].(error)
@@ -169,10 +169,10 @@ func (mr *MockBalanceRepositoryMockRecorder) Enroll(arg0, arg1 interface{}) *gom
 }
 
 // UserBalance mocks base method.
-func (m *MockBalanceRepository) UserBalance(arg0 context.Context, arg1 string) (*model.Balance, error) {
+func (m *MockBalanceRepository) UserBalance(arg0 context.Context, arg1 string) (*entity.Balance, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UserBalance", arg0, arg1)
-	ret0, _ := ret[0].(*model.Balance)
+	ret0, _ := ret[0].(*entity.Balance)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -184,7 +184,7 @@ func (mr *MockBalanceRepositoryMockRecorder) UserBalance(arg0, arg1 interface{})
 }
 
 // Withdraw mocks base method.
-func (m *MockBalanceRepository) Withdraw(arg0 context.Context, arg1 *model.Withdrawal) error {
+func (m *MockBalanceRepository) Withdraw(arg0 context.Context, arg1 *entity.Withdrawal) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Withdraw", arg0, arg1)
 	ret0, _ := ret[0].(error)
@@ -198,10 +198,10 @@ func (mr *MockBalanceRepositoryMockRecorder) Withdraw(arg0, arg1 interface{}) *g
 }
 
 // Withdrawals mocks base method.
-func (m *MockBalanceRepository) Withdrawals(arg0 context.Context, arg1 string) ([]*model.Withdrawal, error) {
+func (m *MockBalanceRepository) Withdrawals(arg0 context.Context, arg1 string) ([]*entity.Withdrawal, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Withdrawals", arg0, arg1)
-	ret0, _ := ret[0].([]*model.Withdrawal)
+	ret0, _ := ret[0].([]*entity.Withdrawal)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

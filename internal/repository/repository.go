@@ -3,23 +3,23 @@ package repository
 import (
 	"context"
 
-	"github.com/Galish/loyalty-system/internal/model"
+	"github.com/Galish/loyalty-system/internal/entity"
 )
 
 type UserRepository interface {
-	CreateUser(context.Context, string, string) (*model.User, error)
-	GetUserByLogin(context.Context, string) (*model.User, error)
+	CreateUser(context.Context, string, string) (*entity.User, error)
+	GetUserByLogin(context.Context, string) (*entity.User, error)
 }
 
 type OrderRepository interface {
-	CreateOrder(context.Context, *model.Order) error
-	UserOrders(context.Context, string) ([]*model.Order, error)
-	UpdateOrder(context.Context, *model.Order) error
+	CreateOrder(context.Context, *entity.Order) error
+	UserOrders(context.Context, string) ([]*entity.Order, error)
+	UpdateOrder(context.Context, *entity.Order) error
 }
 
 type BalanceRepository interface {
-	UserBalance(context.Context, string) (*model.Balance, error)
-	Enroll(context.Context, *model.Enrollment) error
-	Withdraw(context.Context, *model.Withdrawal) error
-	Withdrawals(context.Context, string) ([]*model.Withdrawal, error)
+	UserBalance(context.Context, string) (*entity.Balance, error)
+	Enroll(context.Context, *entity.Enrollment) error
+	Withdraw(context.Context, *entity.Withdrawal) error
+	Withdrawals(context.Context, string) ([]*entity.Withdrawal, error)
 }

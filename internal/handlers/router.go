@@ -1,12 +1,12 @@
 package handlers
 
 import (
-	"github.com/Galish/loyalty-system/internal/accrual"
-	"github.com/Galish/loyalty-system/internal/auth"
-	"github.com/Galish/loyalty-system/internal/balance"
 	"github.com/Galish/loyalty-system/internal/config"
 	"github.com/Galish/loyalty-system/internal/middleware"
-	"github.com/Galish/loyalty-system/internal/order"
+	"github.com/Galish/loyalty-system/internal/services/accrual"
+	"github.com/Galish/loyalty-system/internal/services/auth"
+	"github.com/Galish/loyalty-system/internal/services/balance"
+	"github.com/Galish/loyalty-system/internal/services/order"
 
 	"github.com/go-chi/chi/v5"
 )

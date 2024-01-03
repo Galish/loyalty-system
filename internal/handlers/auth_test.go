@@ -11,11 +11,11 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/config"
-	"github.com/Galish/loyalty-system/internal/model"
+	"github.com/Galish/loyalty-system/internal/entity"
 	"github.com/Galish/loyalty-system/internal/repository"
 	"github.com/Galish/loyalty-system/internal/repository/mocks"
+	"github.com/Galish/loyalty-system/internal/services/auth"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -34,8 +34,8 @@ func TestHandlerRegister(t *testing.T) {
 			"username",
 			gomock.Any(),
 		).
-		DoAndReturn(func(ctx context.Context, login, password string) (*model.User, error) {
-			return &model.User{
+		DoAndReturn(func(ctx context.Context, login, password string) (*entity.User, error) {
+			return &entity.User{
 				Login:    login,
 				Password: password,
 			}, nil
@@ -266,8 +266,8 @@ func TestHandlerLogin(t *testing.T) {
 			gomock.Any(),
 			"username",
 		).
-		DoAndReturn(func(ctx context.Context, login string) (*model.User, error) {
-			return &model.User{
+		DoAndReturn(func(ctx context.Context, login string) (*entity.User, error) {
+			return &entity.User{
 				Login:    login,
 				Password: "$2a$10$5B2fWcB3sw2ONZ25klPPMe688GlUjjAUHRV.HnCd7xxG.KFX3CwBi",
 			}, nil

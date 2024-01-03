@@ -11,12 +11,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Galish/loyalty-system/internal/auth"
-	"github.com/Galish/loyalty-system/internal/balance"
 	"github.com/Galish/loyalty-system/internal/config"
-	"github.com/Galish/loyalty-system/internal/model"
+	"github.com/Galish/loyalty-system/internal/entity"
 	repo "github.com/Galish/loyalty-system/internal/repository"
 	"github.com/Galish/loyalty-system/internal/repository/mocks"
+	"github.com/Galish/loyalty-system/internal/services/auth"
+	"github.com/Galish/loyalty-system/internal/services/balance"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -33,7 +33,7 @@ func TestHandlerGetBalance(t *testing.T) {
 			gomock.Any(),
 			"395fd5f4-964d-4135-9a55-fbf91c4a163b",
 		).
-		Return(&model.Balance{
+		Return(&entity.Balance{
 			Current:   155.01,
 			Withdrawn: 25.88,
 		}, nil).
@@ -51,8 +51,8 @@ func TestHandlerGetBalance(t *testing.T) {
 	balanceService := balance.NewService(m)
 
 	authService := auth.NewService(nil, "yvdUuY)HSX}?&b")
-	jwtToken, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
-	jwtToken2, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1614"})
+	jwtToken, _ := authService.GenerateToken(&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
+	jwtToken2, _ := authService.GenerateToken(&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1614"})
 
 	ts := httptest.NewServer(
 		NewRouter(&cfg, authService, nil, balanceService, nil),
@@ -194,7 +194,7 @@ func TestHandlerWithdraw(t *testing.T) {
 			gomock.Any(),
 			gomock.Any(),
 		).
-		DoAndReturn(func(ctx context.Context, withdraw *model.Withdrawal) error {
+		DoAndReturn(func(ctx context.Context, withdraw *entity.Withdrawal) error {
 			if withdraw.Sum >= 700 {
 				return errors.New("internal server error")
 			}
@@ -211,7 +211,7 @@ func TestHandlerWithdraw(t *testing.T) {
 	balanceService := balance.NewService(m)
 
 	authService := auth.NewService(nil, "yvdUuY)HSX}?&b")
-	jwtToken, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
+	jwtToken, _ := authService.GenerateToken(&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
 
 	ts := httptest.NewServer(
 		NewRouter(&cfg, authService, nil, balanceService, nil),
@@ -448,24 +448,24 @@ func TestHandlerWithdrawals(t *testing.T) {
 			gomock.Any(),
 			"395fd5f4-964d-4135-9a55-fbf91c4a163b",
 		).
-		Return([]*model.Withdrawal{
+		Return([]*entity.Withdrawal{
 			{
 				Order:       "277431151",
 				User:        "395fd5f4-964d-4135-9a55-fbf91c4a163b",
 				Sum:         500,
-				ProcessedAt: model.Time(time.Date(2023, time.Month(2), 21, 1, 10, 30, 0, time.UTC)),
+				ProcessedAt: entity.Time(time.Date(2023, time.Month(2), 21, 1, 10, 30, 0, time.UTC)),
 			},
 			{
 				Order:       "277431113",
 				User:        "395fd5f4-964d-4135-9a55-fbf91c4a163b",
 				Sum:         150,
-				ProcessedAt: model.Time(time.Date(2023, time.Month(5), 21, 1, 10, 30, 0, timezone1)),
+				ProcessedAt: entity.Time(time.Date(2023, time.Month(5), 21, 1, 10, 30, 0, timezone1)),
 			},
 			{
 				Order:       "277431122",
 				User:        "395fd5f4-964d-4135-9a55-fbf91c4a163b",
 				Sum:         755,
-				ProcessedAt: model.Time(time.Date(2023, time.Month(6), 21, 1, 10, 30, 0, timezone2)),
+				ProcessedAt: entity.Time(time.Date(2023, time.Month(6), 21, 1, 10, 30, 0, timezone2)),
 			},
 		}, nil).
 		AnyTimes()
@@ -475,7 +475,7 @@ func TestHandlerWithdrawals(t *testing.T) {
 			gomock.Any(),
 			"395fd5f4-964d-4135-9a55-fbf91c4a1614",
 		).
-		Return([]*model.Withdrawal{}, nil).
+		Return([]*entity.Withdrawal{}, nil).
 		AnyTimes()
 
 	m.EXPECT().
@@ -483,16 +483,16 @@ func TestHandlerWithdrawals(t *testing.T) {
 			gomock.Any(),
 			"395fd5f4-964d-4135-9a55-fbf91c4a1615",
 		).
-		Return([]*model.Withdrawal{}, errors.New("error occurred")).
+		Return([]*entity.Withdrawal{}, errors.New("error occurred")).
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}
 	balanceService := balance.NewService(m)
 
 	authService := auth.NewService(nil, "yvdUuY)HSX}?&b")
-	jwtToken, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
-	jwtToken2, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1614"})
-	jwtToken3, _ := authService.GenerateToken(&model.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1615"})
+	jwtToken, _ := authService.GenerateToken(&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
+	jwtToken2, _ := authService.GenerateToken(&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1614"})
+	jwtToken3, _ := authService.GenerateToken(&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1615"})
 
 	ts := httptest.NewServer(
 		NewRouter(&cfg, authService, nil, balanceService, nil),

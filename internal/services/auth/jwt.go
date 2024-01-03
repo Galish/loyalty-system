@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Galish/loyalty-system/internal/model"
+	"github.com/Galish/loyalty-system/internal/entity"
 	"github.com/golang-jwt/jwt/v4"
 )
 
@@ -13,7 +13,7 @@ type JWTClaims struct {
 	UserID string
 }
 
-func (as *AuthService) GenerateToken(user *model.User) (string, error) {
+func (as *AuthService) GenerateToken(user *entity.User) (string, error) {
 	token := jwt.NewWithClaims(
 		jwt.SigningMethodHS256,
 		&JWTClaims{

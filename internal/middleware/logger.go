@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/logger"
+	"github.com/Galish/loyalty-system/internal/services/auth"
 )
 
 type loggerResponseWriter struct {

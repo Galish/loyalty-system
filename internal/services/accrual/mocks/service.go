@@ -8,7 +8,7 @@ import (
 	context "context"
 	reflect "reflect"
 
-	model "github.com/Galish/loyalty-system/internal/model"
+	entity "github.com/Galish/loyalty-system/internal/entity"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -36,7 +36,7 @@ func (m *MockAccrualManager) EXPECT() *MockAccrualManagerMockRecorder {
 }
 
 // GetAccrual mocks base method.
-func (m *MockAccrualManager) GetAccrual(arg0 context.Context, arg1 *model.Order) {
+func (m *MockAccrualManager) GetAccrual(arg0 context.Context, arg1 *entity.Order) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "GetAccrual", arg0, arg1)
 }

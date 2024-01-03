@@ -5,10 +5,10 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/Galish/loyalty-system/internal/auth"
+	"github.com/Galish/loyalty-system/internal/entity"
 	"github.com/Galish/loyalty-system/internal/logger"
-	"github.com/Galish/loyalty-system/internal/model"
 	repo "github.com/Galish/loyalty-system/internal/repository"
+	"github.com/Galish/loyalty-system/internal/services/auth"
 )
 
 type responseBalance struct {
@@ -60,13 +60,13 @@ func (h *httpHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	orderNumber := model.OrderNumber(req.Order)
+	orderNumber := entity.OrderNumber(req.Order)
 	if !orderNumber.IsValid() {
 		http.Error(w, errInvalidOrderNumber, http.StatusUnprocessableEntity)
 		return
 	}
 
-	withdrawal := model.Withdrawal{
+	withdrawal := entity.Withdrawal{
 		Order: orderNumber,
 		Sum:   req.Sum,
 		User:  r.Header.Get(auth.AuthHeaderName),

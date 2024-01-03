@@ -3,10 +3,10 @@ package psql
 import (
 	"context"
 
-	"github.com/Galish/loyalty-system/internal/model"
+	"github.com/Galish/loyalty-system/internal/entity"
 )
 
-func (s *psqlStore) Withdrawals(ctx context.Context, user string) ([]*model.Withdrawal, error) {
+func (s *psqlStore) Withdrawals(ctx context.Context, user string) ([]*entity.Withdrawal, error) {
 	rows, err := s.db.QueryContext(
 		ctx,
 		`
@@ -17,15 +17,15 @@ func (s *psqlStore) Withdrawals(ctx context.Context, user string) ([]*model.With
 		user,
 	)
 	if err != nil {
-		return []*model.Withdrawal{}, err
+		return []*entity.Withdrawal{}, err
 	}
 
 	defer rows.Close()
 
-	var withdrawals []*model.Withdrawal
+	var withdrawals []*entity.Withdrawal
 
 	for rows.Next() {
-		var withdraw model.Withdrawal
+		var withdraw entity.Withdrawal
 
 		if err := rows.Scan(
 			&withdraw.Order,
@@ -33,14 +33,14 @@ func (s *psqlStore) Withdrawals(ctx context.Context, user string) ([]*model.With
 			&withdraw.Sum,
 			&withdraw.ProcessedAt,
 		); err != nil {
-			return []*model.Withdrawal{}, err
+			return []*entity.Withdrawal{}, err
 		}
 
 		withdrawals = append(withdrawals, &withdraw)
 	}
 
 	if err := rows.Err(); err != nil {
-		return []*model.Withdrawal{}, err
+		return []*entity.Withdrawal{}, err
 	}
 
 	return withdrawals, nil

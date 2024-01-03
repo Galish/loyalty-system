@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/Galish/loyalty-system/internal/config"
-	"github.com/Galish/loyalty-system/internal/model"
+	"github.com/Galish/loyalty-system/internal/entity"
 	repo "github.com/Galish/loyalty-system/internal/repository"
 )
 
@@ -14,7 +14,7 @@ const (
 )
 
 type AccrualManager interface {
-	GetAccrual(context.Context, *model.Order)
+	GetAccrual(context.Context, *entity.Order)
 }
 
 type AccrualService struct {
@@ -43,7 +43,7 @@ func NewService(
 	return service
 }
 
-func (s *AccrualService) GetAccrual(ctx context.Context, order *model.Order) {
+func (s *AccrualService) GetAccrual(ctx context.Context, order *entity.Order) {
 	s.requestCh <- &request{
 		order:    string(order.ID),
 		user:     order.User,
