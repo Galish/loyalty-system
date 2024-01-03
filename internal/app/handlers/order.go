@@ -10,6 +10,7 @@ import (
 	"github.com/Galish/loyalty-system/internal/app/entity"
 	"github.com/Galish/loyalty-system/internal/app/repository"
 	"github.com/Galish/loyalty-system/internal/app/services/auth"
+	"github.com/Galish/loyalty-system/internal/app/validation"
 	"github.com/Galish/loyalty-system/internal/logger"
 )
 
@@ -29,7 +30,7 @@ func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	newOrder := entity.Order{
-		ID:   entity.OrderNumber(string(body)),
+		ID:   (string(body)),
 		User: r.Header.Get(auth.AuthHeaderName),
 	}
 
@@ -43,7 +44,7 @@ func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 
 	logger.WithError(err).Debug(errAddOrder)
 
-	if errors.Is(err, entity.ErrInvalidOrderNumber) {
+	if errors.Is(err, validation.ErrInvalidOrderNumber) {
 		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 		return
 	}
@@ -82,7 +83,7 @@ func (h *httpHandler) GetOrders(w http.ResponseWriter, r *http.Request) {
 		res = append(
 			res,
 			&orderResponse{
-				ID:         order.ID.String(),
+				ID:         order.ID,
 				Status:     string(order.Status),
 				Accrual:    order.Accrual,
 				UploadedAt: order.UploadedAt.Format(),

@@ -8,6 +8,7 @@ import (
 	"github.com/Galish/loyalty-system/internal/app/entity"
 	repo "github.com/Galish/loyalty-system/internal/app/repository"
 	"github.com/Galish/loyalty-system/internal/app/services/auth"
+	"github.com/Galish/loyalty-system/internal/app/validation"
 	"github.com/Galish/loyalty-system/internal/logger"
 )
 
@@ -60,14 +61,8 @@ func (h *httpHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	orderNumber := entity.OrderNumber(req.Order)
-	if !orderNumber.IsValid() {
-		http.Error(w, errInvalidOrderNumber, http.StatusUnprocessableEntity)
-		return
-	}
-
 	withdrawal := entity.Withdrawal{
-		Order: orderNumber,
+		Order: req.Order,
 		Sum:   req.Sum,
 		User:  r.Header.Get(auth.AuthHeaderName),
 	}
@@ -75,6 +70,11 @@ func (h *httpHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
 	err = h.balanceService.Withdraw(r.Context(), &withdrawal)
 	if err != nil {
 		logger.WithError(err).Debug(errWithdrawFunds)
+
+		if errors.Is(err, validation.ErrInvalidOrderNumber) {
+			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+			return
+		}
 
 		if errors.Is(err, repo.ErrInsufficientFunds) {
 			http.Error(w, err.Error(), http.StatusPaymentRequired)
@@ -108,7 +108,7 @@ func (h *httpHandler) Withdrawals(w http.ResponseWriter, r *http.Request) {
 		res = append(
 			res,
 			&responseWithdrawal{
-				Order:       withdrawal.Order.String(),
+				Order:       withdrawal.Order,
 				Sum:         withdrawal.Sum,
 				ProcessedAt: withdrawal.ProcessedAt.Format(),
 			},

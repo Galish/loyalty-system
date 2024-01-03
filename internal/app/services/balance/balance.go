@@ -17,6 +17,10 @@ func (s *BalanceService) GetBalance(ctx context.Context, user string) (*entity.B
 }
 
 func (s *BalanceService) Withdraw(ctx context.Context, withdrawal *entity.Withdrawal) error {
+	if err := withdrawal.Validate(); err != nil {
+		return err
+	}
+
 	err := s.repo.Withdraw(
 		ctx,
 		&entity.Withdrawal{

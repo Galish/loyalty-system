@@ -1,7 +1,7 @@
 package entity
 
 type Accrual struct {
-	Order  OrderNumber
+	Order  string
 	Status Status
 	Value  float32
 	User   string

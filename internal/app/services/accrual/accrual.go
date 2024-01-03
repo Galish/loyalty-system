@@ -43,7 +43,7 @@ func (s *AccrualService) fetchAccrual(ctx context.Context, req *request) (*entit
 	}).Debug("accrual service response")
 
 	return &entity.Accrual{
-		Order:  entity.OrderNumber(res.ID),
+		Order:  res.ID,
 		Status: entity.Status(res.Status),
 		Value:  res.Value,
 		User:   req.user,

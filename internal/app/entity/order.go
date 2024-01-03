@@ -1,12 +1,8 @@
 package entity
 
 import (
-	"errors"
-
-	"github.com/ShiraazMoollatjie/goluhn"
+	"github.com/Galish/loyalty-system/internal/app/validation"
 )
-
-var ErrInvalidOrderNumber = errors.New("invalid order number value")
 
 const (
 	StatusNew        = Status("NEW")
@@ -17,7 +13,7 @@ const (
 )
 
 type Order struct {
-	ID         OrderNumber
+	ID         string
 	Status     Status
 	Accrual    float32
 	UploadedAt Time
@@ -25,11 +21,7 @@ type Order struct {
 }
 
 func (o Order) Validate() error {
-	if !o.ID.IsValid() {
-		return ErrInvalidOrderNumber
-	}
-
-	return nil
+	return validation.LuhnValidate(o.ID)
 }
 
 type Status string
@@ -42,22 +34,4 @@ func (s Status) IsFinal() bool {
 	default:
 		return false
 	}
-}
-
-type OrderNumber string
-
-func (num OrderNumber) IsValid() bool {
-	if num.String() == "" {
-		return false
-	}
-
-	if err := goluhn.Validate(num.String()); err != nil {
-		return false
-	}
-
-	return true
-}
-
-func (num OrderNumber) String() string {
-	return string(num)
 }
