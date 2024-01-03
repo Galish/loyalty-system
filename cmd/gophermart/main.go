@@ -1,15 +1,15 @@
 package main
 
 import (
+	"github.com/Galish/loyalty-system/internal/app/handlers"
+	"github.com/Galish/loyalty-system/internal/app/repository/psql"
+	"github.com/Galish/loyalty-system/internal/app/services/accrual"
+	"github.com/Galish/loyalty-system/internal/app/services/auth"
+	"github.com/Galish/loyalty-system/internal/app/services/balance"
+	"github.com/Galish/loyalty-system/internal/app/services/order"
 	"github.com/Galish/loyalty-system/internal/config"
-	"github.com/Galish/loyalty-system/internal/handlers"
-	"github.com/Galish/loyalty-system/internal/httpserver"
+	"github.com/Galish/loyalty-system/internal/http/httpserver"
 	"github.com/Galish/loyalty-system/internal/logger"
-	"github.com/Galish/loyalty-system/internal/repository/psql"
-	"github.com/Galish/loyalty-system/internal/services/accrual"
-	"github.com/Galish/loyalty-system/internal/services/auth"
-	"github.com/Galish/loyalty-system/internal/services/balance"
-	"github.com/Galish/loyalty-system/internal/services/order"
 )
 
 func main() {
@@ -30,11 +30,14 @@ func main() {
 	defer accrualService.Close()
 
 	router := handlers.NewRouter(
-		cfg,
+		handlers.NewHandler(
+			cfg,
+			authService,
+			orderService,
+			balanceService,
+			accrualService,
+		),
 		authService,
-		orderService,
-		balanceService,
-		accrualService,
 	)
 
 	httpServer := httpserver.New(cfg.SrvAddr, router)
