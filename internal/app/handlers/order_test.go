@@ -55,8 +55,8 @@ func TestHandlerAddOrder(t *testing.T) {
 		SecretKey: "yvdUuY)HSX}?&b",
 	}
 
-	orderService := order.New(orderMock)
-	userService := user.New(nil, cfg.SecretKey)
+	order := order.New(orderMock)
+	user := user.New(nil, cfg.SecretKey)
 
 	jwtToken, _ := auth.GenerateToken(
 		cfg.SecretKey,
@@ -70,8 +70,8 @@ func TestHandlerAddOrder(t *testing.T) {
 				&cfg,
 				&services.Services{
 					Accrual: accrualMock,
-					Order:   orderService,
-					User:    userService,
+					Order:   order,
+					User:    user,
 				},
 			),
 		),
@@ -312,8 +312,8 @@ func TestHandlerGetOrders(t *testing.T) {
 		SecretKey: "yvdUuY)HSX}?&b",
 	}
 
-	orderService := order.New(m)
-	userService := user.New(nil, cfg.SecretKey)
+	order := order.New(m)
+	user := user.New(nil, cfg.SecretKey)
 
 	jwtToken, _ := auth.GenerateToken(
 		cfg.SecretKey,
@@ -328,7 +328,7 @@ func TestHandlerGetOrders(t *testing.T) {
 	ts := httptest.NewServer(
 		NewRouter(
 			&cfg,
-			NewHandler(&cfg, &services.Services{User: userService, Order: orderService}),
+			NewHandler(&cfg, &services.Services{User: user, Order: order}),
 		),
 	)
 	defer ts.Close()

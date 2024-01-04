@@ -53,9 +53,9 @@ func TestHandlerGetBalance(t *testing.T) {
 		SrvAddr:   "8000",
 		SecretKey: "yvdUuY)HSX}?&b",
 	}
-	balanceService := balance.New(m)
+	balance := balance.New(m)
 
-	userService := user.New(nil, cfg.SecretKey)
+	user := user.New(nil, cfg.SecretKey)
 
 	jwtToken, _ := auth.GenerateToken(
 		cfg.SecretKey,
@@ -69,7 +69,7 @@ func TestHandlerGetBalance(t *testing.T) {
 	ts := httptest.NewServer(
 		NewRouter(
 			&cfg,
-			NewHandler(&cfg, &services.Services{User: userService, Balance: balanceService}),
+			NewHandler(&cfg, &services.Services{User: user, Balance: balance}),
 		),
 	)
 	defer ts.Close()
@@ -227,9 +227,9 @@ func TestHandlerWithdraw(t *testing.T) {
 		SecretKey: "yvdUuY)HSX}?&b",
 	}
 
-	balanceService := balance.New(m)
+	balance := balance.New(m)
 
-	userService := user.New(nil, cfg.SecretKey)
+	user := user.New(nil, cfg.SecretKey)
 	jwtToken, _ := auth.GenerateToken(
 		cfg.SecretKey,
 		&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"},
@@ -238,7 +238,7 @@ func TestHandlerWithdraw(t *testing.T) {
 	ts := httptest.NewServer(
 		NewRouter(
 			&cfg,
-			NewHandler(&cfg, &services.Services{User: userService, Balance: balanceService}),
+			NewHandler(&cfg, &services.Services{User: user, Balance: balance}),
 		),
 	)
 	defer ts.Close()
@@ -516,8 +516,8 @@ func TestHandlerWithdrawals(t *testing.T) {
 		SecretKey: "yvdUuY)HSX}?&b",
 	}
 
-	balanceService := balance.New(m)
-	userService := user.New(nil, cfg.SecretKey)
+	balance := balance.New(m)
+	user := user.New(nil, cfg.SecretKey)
 
 	jwtToken, _ := auth.GenerateToken(
 		cfg.SecretKey,
@@ -537,7 +537,7 @@ func TestHandlerWithdrawals(t *testing.T) {
 	ts := httptest.NewServer(
 		NewRouter(
 			&cfg,
-			NewHandler(&cfg, &services.Services{User: userService, Balance: balanceService}),
+			NewHandler(&cfg, &services.Services{User: user, Balance: balance}),
 		),
 	)
 	defer ts.Close()

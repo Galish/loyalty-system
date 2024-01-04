@@ -31,7 +31,7 @@ type responseWithdrawal struct {
 func (h *httpHandler) GetBalance(w http.ResponseWriter, r *http.Request) {
 	user := r.Header.Get(auth.AuthHeaderName)
 
-	balance, err := h.balanceService.GetBalance(r.Context(), user)
+	balance, err := h.balance.GetBalance(r.Context(), user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -67,7 +67,7 @@ func (h *httpHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
 		User:  r.Header.Get(auth.AuthHeaderName),
 	}
 
-	err = h.balanceService.Withdraw(r.Context(), &withdrawal)
+	err = h.balance.Withdraw(r.Context(), &withdrawal)
 	if err == nil {
 		w.WriteHeader(http.StatusOK)
 		return
@@ -89,7 +89,7 @@ func (h *httpHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *httpHandler) Withdrawals(w http.ResponseWriter, r *http.Request) {
-	withdrawals, err := h.balanceService.Withdrawals(
+	withdrawals, err := h.balance.Withdrawals(
 		r.Context(),
 		r.Header.Get(auth.AuthHeaderName),
 	)

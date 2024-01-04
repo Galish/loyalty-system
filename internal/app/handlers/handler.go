@@ -6,11 +6,11 @@ import (
 )
 
 type httpHandler struct {
-	cfg            *config.Config
-	orderService   services.OrderManager
-	balanceService services.BalanceManager
-	accrualService services.AccrualManager
-	userService    services.UserManager
+	cfg     *config.Config
+	order   services.OrderManager
+	balance services.BalanceManager
+	accrual services.AccrualManager
+	user    services.UserManager
 }
 
 func NewHandler(
@@ -18,10 +18,10 @@ func NewHandler(
 	svc *services.Services,
 ) *httpHandler {
 	return &httpHandler{
-		accrualService: svc.Accrual,
-		balanceService: svc.Balance,
-		cfg:            cfg,
-		orderService:   svc.Order,
-		userService:    svc.User,
+		cfg:     cfg,
+		accrual: svc.Accrual,
+		balance: svc.Balance,
+		order:   svc.Order,
+		user:    svc.User,
 	}
 }

@@ -63,12 +63,12 @@ func TestHandlerRegister(t *testing.T) {
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000", SecretKey: "yvdUuY)HSX}?&b"}
-	userService := user.New(m, cfg.SecretKey)
+	user := user.New(m, cfg.SecretKey)
 
 	ts := httptest.NewServer(
 		NewRouter(
 			&cfg,
-			NewHandler(&cfg, &services.Services{User: userService}),
+			NewHandler(&cfg, &services.Services{User: user}),
 		),
 	)
 	defer ts.Close()
@@ -296,12 +296,12 @@ func TestHandlerLogin(t *testing.T) {
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000", SecretKey: "yvdUuY)HSX}?&b"}
-	userService := user.New(m, cfg.SecretKey)
+	user := user.New(m, cfg.SecretKey)
 
 	ts := httptest.NewServer(
 		NewRouter(
 			&cfg,
-			NewHandler(&cfg, &services.Services{User: userService}),
+			NewHandler(&cfg, &services.Services{User: user}),
 		),
 	)
 	defer ts.Close()
