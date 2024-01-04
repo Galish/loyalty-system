@@ -13,7 +13,7 @@ type JWTClaims struct {
 	UserID string
 }
 
-func (as *AuthService) GenerateToken(user *entity.User) (string, error) {
+func (as *authService) GenerateToken(user *entity.User) (string, error) {
 	token := jwt.NewWithClaims(
 		jwt.SigningMethodHS256,
 		&JWTClaims{
@@ -29,7 +29,7 @@ func (as *AuthService) GenerateToken(user *entity.User) (string, error) {
 	return tokenString, nil
 }
 
-func (as *AuthService) ParseToken(tokenString string) (*JWTClaims, error) {
+func (as *authService) ParseToken(tokenString string) (*JWTClaims, error) {
 	var claims JWTClaims
 
 	token, err := jwt.ParseWithClaims(

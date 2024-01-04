@@ -7,7 +7,7 @@ import (
 	"github.com/Galish/loyalty-system/internal/app/entity"
 )
 
-func (s *BalanceService) Withdraw(ctx context.Context, withdrawal *entity.Withdrawal) error {
+func (s *balanceService) Withdraw(ctx context.Context, withdrawal *entity.Withdrawal) error {
 	if err := withdrawal.Validate(); err != nil {
 		return err
 	}

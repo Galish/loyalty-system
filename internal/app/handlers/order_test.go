@@ -12,6 +12,7 @@ import (
 	"github.com/Galish/loyalty-system/internal/app/entity"
 	repo "github.com/Galish/loyalty-system/internal/app/repository"
 	repoMocks "github.com/Galish/loyalty-system/internal/app/repository/mocks"
+	"github.com/Galish/loyalty-system/internal/app/services"
 	accrualMocks "github.com/Galish/loyalty-system/internal/app/services/accrual/mocks"
 	"github.com/Galish/loyalty-system/internal/app/services/auth"
 	"github.com/Galish/loyalty-system/internal/app/services/order"
@@ -49,14 +50,20 @@ func TestHandlerAddOrder(t *testing.T) {
 	accrualMock.EXPECT().GetAccrual(gomock.Any(), gomock.Any())
 
 	cfg := config.Config{SrvAddr: "8000"}
-	orderService := order.NewService(orderMock)
+	orderService := order.New(orderMock)
 
-	authService := auth.NewService(nil, "yvdUuY)HSX}?&b")
+	authService := auth.New(nil, "yvdUuY)HSX}?&b")
 	jwtToken, _ := authService.GenerateToken(&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
 
 	ts := httptest.NewServer(
 		NewRouter(
-			NewHandler(&cfg, authService, orderService, nil, accrualMock),
+			NewHandler(
+				&cfg,
+				&services.Services{
+					Accrual: accrualMock,
+					Auth:    authService,
+					Order:   orderService,
+				}),
 			authService,
 		),
 	)
@@ -292,15 +299,15 @@ func TestHandlerGetOrders(t *testing.T) {
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}
-	orderService := order.NewService(m)
+	orderService := order.New(m)
 
-	authService := auth.NewService(nil, "yvdUuY)HSX}?&b")
+	authService := auth.New(nil, "yvdUuY)HSX}?&b")
 	jwtToken, _ := authService.GenerateToken(&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
 	jwtToken2, _ := authService.GenerateToken(&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1613"})
 
 	ts := httptest.NewServer(
 		NewRouter(
-			NewHandler(&cfg, authService, orderService, nil, nil),
+			NewHandler(&cfg, &services.Services{Auth: authService, Order: orderService}),
 			authService,
 		),
 	)

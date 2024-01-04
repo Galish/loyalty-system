@@ -8,7 +8,7 @@ import (
 	"github.com/Galish/loyalty-system/internal/logger"
 )
 
-func (s *AccrualService) applyAccrual(ctx context.Context, accrual *entity.Accrual) error {
+func (s *accrualService) applyAccrual(ctx context.Context, accrual *entity.Accrual) error {
 	err := s.orderRepo.UpdateOrder(
 		ctx,
 		&entity.Order{

@@ -13,12 +13,12 @@ type BalanceManager interface {
 	Withdrawals(context.Context, string) ([]*entity.Withdrawal, error)
 }
 
-type BalanceService struct {
+type balanceService struct {
 	repo repository.BalanceRepository
 }
 
-func NewService(repo repository.BalanceRepository) *BalanceService {
-	return &BalanceService{
+func New(repo repository.BalanceRepository) *balanceService {
+	return &balanceService{
 		repo: repo,
 	}
 }

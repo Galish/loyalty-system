@@ -14,6 +14,7 @@ import (
 	"github.com/Galish/loyalty-system/internal/app/entity"
 	"github.com/Galish/loyalty-system/internal/app/repository"
 	"github.com/Galish/loyalty-system/internal/app/repository/mocks"
+	"github.com/Galish/loyalty-system/internal/app/services"
 	"github.com/Galish/loyalty-system/internal/app/services/auth"
 	"github.com/Galish/loyalty-system/internal/config"
 
@@ -61,11 +62,11 @@ func TestHandlerRegister(t *testing.T) {
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}
-	authService := auth.NewService(m, "yvdUuY)HSX}?&b")
+	authService := auth.New(m, "yvdUuY)HSX}?&b")
 
 	ts := httptest.NewServer(
 		NewRouter(
-			NewHandler(&cfg, authService, nil, nil, nil),
+			NewHandler(&cfg, &services.Services{Auth: authService}),
 			authService,
 		),
 	)
@@ -294,11 +295,11 @@ func TestHandlerLogin(t *testing.T) {
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}
-	authService := auth.NewService(m, "yvdUuY)HSX}?&b")
+	authService := auth.New(m, "yvdUuY)HSX}?&b")
 
 	ts := httptest.NewServer(
 		NewRouter(
-			NewHandler(&cfg, authService, nil, nil, nil),
+			NewHandler(&cfg, &services.Services{Auth: authService}),
 			authService,
 		),
 	)

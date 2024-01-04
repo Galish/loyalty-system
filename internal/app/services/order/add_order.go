@@ -7,7 +7,7 @@ import (
 	"github.com/Galish/loyalty-system/internal/app/entity"
 )
 
-func (s *OrderService) AddOrder(ctx context.Context, order entity.Order) error {
+func (s *orderService) AddOrder(ctx context.Context, order entity.Order) error {
 	if err := order.Validate(); err != nil {
 		return err
 	}

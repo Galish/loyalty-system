@@ -16,7 +16,7 @@ type responseAccrual struct {
 	Value  float32 `json:"accrual"`
 }
 
-func (w *WebAPI) GetAccrual(ctx context.Context, order string) (*entity.Accrual, error) {
+func (w *webAPI) GetAccrual(ctx context.Context, order string) (*entity.Accrual, error) {
 	url := fmt.Sprintf("%s/api/orders/%s", w.accrualAddr, order)
 
 	logger.WithFields(logger.Fields{

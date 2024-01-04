@@ -14,6 +14,7 @@ import (
 	"github.com/Galish/loyalty-system/internal/app/entity"
 	repo "github.com/Galish/loyalty-system/internal/app/repository"
 	"github.com/Galish/loyalty-system/internal/app/repository/mocks"
+	"github.com/Galish/loyalty-system/internal/app/services"
 	"github.com/Galish/loyalty-system/internal/app/services/auth"
 	"github.com/Galish/loyalty-system/internal/app/services/balance"
 	"github.com/Galish/loyalty-system/internal/config"
@@ -48,15 +49,15 @@ func TestHandlerGetBalance(t *testing.T) {
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}
-	balanceService := balance.NewService(m)
+	balanceService := balance.New(m)
 
-	authService := auth.NewService(nil, "yvdUuY)HSX}?&b")
+	authService := auth.New(nil, "yvdUuY)HSX}?&b")
 	jwtToken, _ := authService.GenerateToken(&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
 	jwtToken2, _ := authService.GenerateToken(&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1614"})
 
 	ts := httptest.NewServer(
 		NewRouter(
-			NewHandler(&cfg, authService, nil, balanceService, nil),
+			NewHandler(&cfg, &services.Services{Auth: authService, Balance: balanceService}),
 			authService,
 		),
 	)
@@ -211,14 +212,14 @@ func TestHandlerWithdraw(t *testing.T) {
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}
-	balanceService := balance.NewService(m)
+	balanceService := balance.New(m)
 
-	authService := auth.NewService(nil, "yvdUuY)HSX}?&b")
+	authService := auth.New(nil, "yvdUuY)HSX}?&b")
 	jwtToken, _ := authService.GenerateToken(&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
 
 	ts := httptest.NewServer(
 		NewRouter(
-			NewHandler(&cfg, authService, nil, balanceService, nil),
+			NewHandler(&cfg, &services.Services{Auth: authService, Balance: balanceService}),
 			authService,
 		),
 	)
@@ -493,16 +494,16 @@ func TestHandlerWithdrawals(t *testing.T) {
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000"}
-	balanceService := balance.NewService(m)
+	balanceService := balance.New(m)
 
-	authService := auth.NewService(nil, "yvdUuY)HSX}?&b")
+	authService := auth.New(nil, "yvdUuY)HSX}?&b")
 	jwtToken, _ := authService.GenerateToken(&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
 	jwtToken2, _ := authService.GenerateToken(&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1614"})
 	jwtToken3, _ := authService.GenerateToken(&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1615"})
 
 	ts := httptest.NewServer(
 		NewRouter(
-			NewHandler(&cfg, authService, nil, balanceService, nil),
+			NewHandler(&cfg, &services.Services{Auth: authService, Balance: balanceService}),
 			authService,
 		),
 	)

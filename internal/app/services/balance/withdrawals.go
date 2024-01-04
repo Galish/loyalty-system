@@ -6,7 +6,7 @@ import (
 	"github.com/Galish/loyalty-system/internal/app/entity"
 )
 
-func (s *BalanceService) Withdrawals(ctx context.Context, user string) ([]*entity.Withdrawal, error) {
+func (s *balanceService) Withdrawals(ctx context.Context, user string) ([]*entity.Withdrawal, error) {
 	withdrawals, err := s.repo.Withdrawals(ctx, user)
 	if err != nil {
 		return []*entity.Withdrawal{}, err

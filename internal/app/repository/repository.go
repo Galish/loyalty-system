@@ -23,3 +23,9 @@ type BalanceRepository interface {
 	Withdraw(context.Context, *entity.Withdrawal) error
 	Withdrawals(context.Context, string) ([]*entity.Withdrawal, error)
 }
+
+type Repository interface {
+	UserRepository
+	OrderRepository
+	BalanceRepository
+}

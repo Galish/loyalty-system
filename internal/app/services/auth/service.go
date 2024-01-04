@@ -14,13 +14,13 @@ type AuthManager interface {
 	ParseToken(tokenString string) (*JWTClaims, error)
 }
 
-type AuthService struct {
+type authService struct {
 	repo      repository.UserRepository
 	secretKey string
 }
 
-func NewService(repo repository.UserRepository, secretKey string) *AuthService {
-	return &AuthService{
+func New(repo repository.UserRepository, secretKey string) *authService {
+	return &authService{
 		repo:      repo,
 		secretKey: secretKey,
 	}

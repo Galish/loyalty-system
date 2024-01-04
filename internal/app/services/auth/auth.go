@@ -11,7 +11,7 @@ const (
 	AuthHeaderName = "X-User"
 )
 
-func (as *AuthService) Register(ctx context.Context, username, password string) (string, error) {
+func (as *authService) Register(ctx context.Context, username, password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", err
@@ -30,7 +30,7 @@ func (as *AuthService) Register(ctx context.Context, username, password string) 
 	return token, nil
 }
 
-func (as *AuthService) Authenticate(ctx context.Context, username, password string) (string, error) {
+func (as *authService) Authenticate(ctx context.Context, username, password string) (string, error) {
 	user, err := as.repo.GetUserByLogin(ctx, username)
 	if err != nil {
 		return "", err

@@ -3,10 +3,7 @@ package main
 import (
 	"github.com/Galish/loyalty-system/internal/app/handlers"
 	"github.com/Galish/loyalty-system/internal/app/repository/psql"
-	"github.com/Galish/loyalty-system/internal/app/services/accrual"
-	"github.com/Galish/loyalty-system/internal/app/services/auth"
-	"github.com/Galish/loyalty-system/internal/app/services/balance"
-	"github.com/Galish/loyalty-system/internal/app/services/order"
+	"github.com/Galish/loyalty-system/internal/app/services"
 	"github.com/Galish/loyalty-system/internal/app/webapi"
 	"github.com/Galish/loyalty-system/internal/config"
 	"github.com/Galish/loyalty-system/internal/http/httpserver"
@@ -24,22 +21,15 @@ func main() {
 	}
 	defer store.Close()
 
-	authService := auth.NewService(store, cfg.SecretKey)
-	orderService := order.NewService(store)
-	balanceService := balance.NewService(store)
-	accrualService := accrual.NewService(webapi.New(cfg), store, store, cfg)
-	defer accrualService.Close()
-
-	router := handlers.NewRouter(
-		handlers.NewHandler(
-			cfg,
-			authService,
-			orderService,
-			balanceService,
-			accrualService,
-		),
-		authService,
+	svc := services.New(
+		cfg,
+		store,
+		webapi.New(cfg),
 	)
+	defer svc.Close()
+
+	handler := handlers.NewHandler(cfg, svc)
+	router := handlers.NewRouter(handler, svc.Auth)
 
 	httpServer := httpserver.New(cfg.SrvAddr, router)
 	if err := httpServer.Run(); err != nil {

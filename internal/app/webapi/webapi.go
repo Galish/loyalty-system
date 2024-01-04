@@ -11,12 +11,12 @@ type AccrualGetter interface {
 	GetAccrual(context.Context, string) (*entity.Accrual, error)
 }
 
-type WebAPI struct {
+type webAPI struct {
 	accrualAddr string
 }
 
-func New(cfg *config.Config) *WebAPI {
-	return &WebAPI{
+func New(cfg *config.Config) *webAPI {
+	return &webAPI{
 		accrualAddr: cfg.AccrualAddr,
 	}
 }

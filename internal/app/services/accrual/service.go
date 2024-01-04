@@ -16,9 +16,10 @@ const (
 
 type AccrualManager interface {
 	GetAccrual(context.Context, *entity.Order)
+	Close()
 }
 
-type AccrualService struct {
+type accrualService struct {
 	accrualAPI      webapi.AccrualGetter
 	orderRepo       repo.OrderRepository
 	balanceRepo     repo.BalanceRepository
@@ -27,13 +28,13 @@ type AccrualService struct {
 	requestCh       chan *request
 }
 
-func NewService(
+func New(
 	accrualAPI webapi.AccrualGetter,
 	orderRepo repo.OrderRepository,
 	balanceRepo repo.BalanceRepository,
 	cfg *config.Config,
-) *AccrualService {
-	service := &AccrualService{
+) *accrualService {
+	service := &accrualService{
 		accrualAPI:      accrualAPI,
 		orderRepo:       orderRepo,
 		balanceRepo:     balanceRepo,
@@ -47,7 +48,7 @@ func NewService(
 	return service
 }
 
-func (s *AccrualService) GetAccrual(ctx context.Context, order *entity.Order) {
+func (s *accrualService) GetAccrual(ctx context.Context, order *entity.Order) {
 	s.requestCh <- &request{
 		order:    string(order.ID),
 		user:     order.User,
@@ -55,7 +56,7 @@ func (s *AccrualService) GetAccrual(ctx context.Context, order *entity.Order) {
 	}
 }
 
-func (s *AccrualService) flushMessages() {
+func (s *accrualService) flushMessages() {
 	limiter := newLimiter(s.limiterInterval)
 
 	for req := range s.requestCh {
@@ -76,6 +77,6 @@ func (s *AccrualService) flushMessages() {
 	limiter.Close()
 }
 
-func (s *AccrualService) Close() {
+func (s *accrualService) Close() {
 	close(s.requestCh)
 }
