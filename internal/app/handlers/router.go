@@ -1,13 +1,13 @@
 package handlers
 
 import (
-	"github.com/Galish/loyalty-system/internal/app/services/auth"
+	"github.com/Galish/loyalty-system/internal/config"
 	"github.com/Galish/loyalty-system/internal/http/middleware"
 
 	"github.com/go-chi/chi/v5"
 )
 
-func NewRouter(handler *httpHandler, authService auth.AuthManager) *chi.Mux {
+func NewRouter(cfg *config.Config, handler *httpHandler) *chi.Mux {
 	router := chi.NewRouter()
 
 	router.Route("/api/user", func(r chi.Router) {
@@ -19,7 +19,7 @@ func NewRouter(handler *httpHandler, authService auth.AuthManager) *chi.Mux {
 		})
 
 		r.Group(func(r chi.Router) {
-			r.Use(middleware.WithAuthChecker(authService))
+			r.Use(middleware.WithAuthChecker(cfg.SecretKey))
 			r.Use(middleware.WithRequestLogger)
 
 			r.Post("/orders", handler.AddOrder)

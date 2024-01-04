@@ -14,8 +14,9 @@ import (
 	repoMocks "github.com/Galish/loyalty-system/internal/app/repository/mocks"
 	"github.com/Galish/loyalty-system/internal/app/services"
 	accrualMocks "github.com/Galish/loyalty-system/internal/app/services/accrual/mocks"
-	"github.com/Galish/loyalty-system/internal/app/services/auth"
 	"github.com/Galish/loyalty-system/internal/app/services/order"
+	"github.com/Galish/loyalty-system/internal/app/services/user"
+	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/config"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -49,22 +50,30 @@ func TestHandlerAddOrder(t *testing.T) {
 	accrualMock := accrualMocks.NewMockAccrualManager(ctrl)
 	accrualMock.EXPECT().GetAccrual(gomock.Any(), gomock.Any())
 
-	cfg := config.Config{SrvAddr: "8000"}
-	orderService := order.New(orderMock)
+	cfg := config.Config{
+		SrvAddr:   "8000",
+		SecretKey: "yvdUuY)HSX}?&b",
+	}
 
-	authService := auth.New(nil, "yvdUuY)HSX}?&b")
-	jwtToken, _ := authService.GenerateToken(&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
+	orderService := order.New(orderMock)
+	userService := user.New(nil, cfg.SecretKey)
+
+	jwtToken, _ := auth.GenerateToken(
+		cfg.SecretKey,
+		&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"},
+	)
 
 	ts := httptest.NewServer(
 		NewRouter(
+			&cfg,
 			NewHandler(
 				&cfg,
 				&services.Services{
 					Accrual: accrualMock,
-					Auth:    authService,
 					Order:   orderService,
-				}),
-			authService,
+					User:    userService,
+				},
+			),
 		),
 	)
 	defer ts.Close()
@@ -298,17 +307,28 @@ func TestHandlerGetOrders(t *testing.T) {
 		Return([]*entity.Order{}, nil).
 		AnyTimes()
 
-	cfg := config.Config{SrvAddr: "8000"}
-	orderService := order.New(m)
+	cfg := config.Config{
+		SrvAddr:   "8000",
+		SecretKey: "yvdUuY)HSX}?&b",
+	}
 
-	authService := auth.New(nil, "yvdUuY)HSX}?&b")
-	jwtToken, _ := authService.GenerateToken(&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"})
-	jwtToken2, _ := authService.GenerateToken(&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1613"})
+	orderService := order.New(m)
+	userService := user.New(nil, cfg.SecretKey)
+
+	jwtToken, _ := auth.GenerateToken(
+		cfg.SecretKey,
+		&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"},
+	)
+
+	jwtToken2, _ := auth.GenerateToken(
+		cfg.SecretKey,
+		&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a1613"},
+	)
 
 	ts := httptest.NewServer(
 		NewRouter(
-			NewHandler(&cfg, &services.Services{Auth: authService, Order: orderService}),
-			authService,
+			&cfg,
+			NewHandler(&cfg, &services.Services{User: userService, Order: orderService}),
 		),
 	)
 	defer ts.Close()

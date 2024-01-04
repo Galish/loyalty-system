@@ -3,18 +3,18 @@ package services
 import (
 	"github.com/Galish/loyalty-system/internal/app/repository"
 	"github.com/Galish/loyalty-system/internal/app/services/accrual"
-	"github.com/Galish/loyalty-system/internal/app/services/auth"
 	"github.com/Galish/loyalty-system/internal/app/services/balance"
 	"github.com/Galish/loyalty-system/internal/app/services/order"
+	"github.com/Galish/loyalty-system/internal/app/services/user"
 	"github.com/Galish/loyalty-system/internal/app/webapi"
 	"github.com/Galish/loyalty-system/internal/config"
 )
 
 type Services struct {
 	Accrual accrual.AccrualManager
-	Auth    auth.AuthManager
 	Balance balance.BalanceManager
 	Order   order.OrderManager
+	User    user.UserManager
 }
 
 func New(
@@ -24,9 +24,9 @@ func New(
 ) *Services {
 	return &Services{
 		Accrual: accrual.New(webAPI, store, store, cfg),
-		Auth:    auth.New(store, cfg.SecretKey),
 		Balance: balance.New(store),
 		Order:   order.New(store),
+		User:    user.New(store, cfg.SecretKey),
 	}
 }
 

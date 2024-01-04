@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Galish/loyalty-system/internal/app/services/auth"
+	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/logger"
 )
 

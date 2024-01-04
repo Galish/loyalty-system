@@ -4,13 +4,13 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/Galish/loyalty-system/internal/app/services/auth"
+	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/logger"
 )
 
 var errMissingUserID = errors.New("user id not specified")
 
-func WithAuthChecker(authManager auth.AuthManager) func(http.Handler) http.Handler {
+func WithAuthChecker(secretKey string) func(http.Handler) http.Handler {
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			cookie, err := r.Cookie(auth.AuthCookieName)
@@ -20,7 +20,7 @@ func WithAuthChecker(authManager auth.AuthManager) func(http.Handler) http.Handl
 				return
 			}
 
-			authData, err := authManager.ParseToken(cookie.Value)
+			authData, err := auth.ParseToken(secretKey, cookie.Value)
 			if err != nil {
 				logger.WithError(err).Debug("unable to parse auth token")
 				w.WriteHeader(http.StatusUnauthorized)

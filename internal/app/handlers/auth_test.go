@@ -15,7 +15,8 @@ import (
 	"github.com/Galish/loyalty-system/internal/app/repository"
 	"github.com/Galish/loyalty-system/internal/app/repository/mocks"
 	"github.com/Galish/loyalty-system/internal/app/services"
-	"github.com/Galish/loyalty-system/internal/app/services/auth"
+	"github.com/Galish/loyalty-system/internal/app/services/user"
+	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/config"
 
 	"github.com/golang/mock/gomock"
@@ -61,13 +62,13 @@ func TestHandlerRegister(t *testing.T) {
 		Return(nil, errors.New("an unknown error occurred")).
 		AnyTimes()
 
-	cfg := config.Config{SrvAddr: "8000"}
-	authService := auth.New(m, "yvdUuY)HSX}?&b")
+	cfg := config.Config{SrvAddr: "8000", SecretKey: "yvdUuY)HSX}?&b"}
+	userService := user.New(m, cfg.SecretKey)
 
 	ts := httptest.NewServer(
 		NewRouter(
-			NewHandler(&cfg, &services.Services{Auth: authService}),
-			authService,
+			&cfg,
+			NewHandler(&cfg, &services.Services{User: userService}),
 		),
 	)
 	defer ts.Close()
@@ -294,13 +295,13 @@ func TestHandlerLogin(t *testing.T) {
 		Return(nil, errors.New("an unknown error occurred")).
 		AnyTimes()
 
-	cfg := config.Config{SrvAddr: "8000"}
-	authService := auth.New(m, "yvdUuY)HSX}?&b")
+	cfg := config.Config{SrvAddr: "8000", SecretKey: "yvdUuY)HSX}?&b"}
+	userService := user.New(m, cfg.SecretKey)
 
 	ts := httptest.NewServer(
 		NewRouter(
-			NewHandler(&cfg, &services.Services{Auth: authService}),
-			authService,
+			&cfg,
+			NewHandler(&cfg, &services.Services{User: userService}),
 		),
 	)
 	defer ts.Close()

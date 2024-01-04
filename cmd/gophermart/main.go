@@ -29,7 +29,7 @@ func main() {
 	defer svc.Close()
 
 	handler := handlers.NewHandler(cfg, svc)
-	router := handlers.NewRouter(handler, svc.Auth)
+	router := handlers.NewRouter(cfg, handler)
 
 	httpServer := httpserver.New(cfg.SrvAddr, router)
 	if err := httpServer.Run(); err != nil {

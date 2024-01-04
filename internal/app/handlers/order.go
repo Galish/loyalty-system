@@ -9,8 +9,8 @@ import (
 
 	"github.com/Galish/loyalty-system/internal/app/entity"
 	"github.com/Galish/loyalty-system/internal/app/repository"
-	"github.com/Galish/loyalty-system/internal/app/services/auth"
 	"github.com/Galish/loyalty-system/internal/app/validation"
+	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/logger"
 )
 

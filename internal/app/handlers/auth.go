@@ -7,7 +7,8 @@ import (
 	"net/http"
 
 	repo "github.com/Galish/loyalty-system/internal/app/repository"
-	"github.com/Galish/loyalty-system/internal/app/services/auth"
+	"github.com/Galish/loyalty-system/internal/app/services/user"
+	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/logger"
 )
 
@@ -37,7 +38,7 @@ func (h *httpHandler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := h.authService.Register(r.Context(), req.Login, req.Password)
+	token, err := h.userService.Register(r.Context(), req.Login, req.Password)
 	if errors.Is(err, repo.ErrUserConflict) {
 		logger.WithError(err).Debug(errRegisterUser)
 		http.Error(w, err.Error(), http.StatusConflict)
@@ -74,8 +75,8 @@ func (h *httpHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := h.authService.Authenticate(r.Context(), req.Login, req.Password)
-	if errors.Is(err, auth.ErrIncorrectLoginPassword) || errors.Is(err, repo.ErrUserNotFound) {
+	token, err := h.userService.Authenticate(r.Context(), req.Login, req.Password)
+	if errors.Is(err, user.ErrIncorrectLoginPassword) || errors.Is(err, repo.ErrUserNotFound) {
 		logger.WithError(err).Debug(errAuthenticate)
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
