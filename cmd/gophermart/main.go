@@ -6,7 +6,7 @@ import (
 	"github.com/Galish/loyalty-system/internal/app/services"
 	"github.com/Galish/loyalty-system/internal/app/webapi"
 	"github.com/Galish/loyalty-system/internal/config"
-	"github.com/Galish/loyalty-system/internal/http/httpserver"
+	httpserver "github.com/Galish/loyalty-system/internal/http/server"
 	"github.com/Galish/loyalty-system/internal/logger"
 )
 

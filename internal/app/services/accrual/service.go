@@ -14,11 +14,6 @@ const (
 	maxAttempts uint = 10
 )
 
-type AccrualManager interface {
-	GetAccrual(context.Context, *entity.Order)
-	Close()
-}
-
 type accrualService struct {
 	accrualAPI      webapi.AccrualGetter
 	orderRepo       repo.OrderRepository

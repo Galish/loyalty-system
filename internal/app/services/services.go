@@ -1,6 +1,9 @@
 package services
 
 import (
+	"context"
+
+	"github.com/Galish/loyalty-system/internal/app/entity"
 	"github.com/Galish/loyalty-system/internal/app/repository"
 	"github.com/Galish/loyalty-system/internal/app/services/accrual"
 	"github.com/Galish/loyalty-system/internal/app/services/balance"
@@ -10,11 +13,32 @@ import (
 	"github.com/Galish/loyalty-system/internal/config"
 )
 
+type AccrualManager interface {
+	GetAccrual(context.Context, *entity.Order)
+	Close()
+}
+
+type BalanceManager interface {
+	GetBalance(context.Context, string) (*entity.Balance, error)
+	Withdraw(context.Context, *entity.Withdrawal) error
+	Withdrawals(context.Context, string) ([]*entity.Withdrawal, error)
+}
+
+type OrderManager interface {
+	AddOrder(context.Context, entity.Order) error
+	GetOrders(context.Context, string) ([]*entity.Order, error)
+}
+
+type UserManager interface {
+	Register(context.Context, string, string) (string, error)
+	Authenticate(context.Context, string, string) (string, error)
+}
+
 type Services struct {
-	Accrual accrual.AccrualManager
-	Balance balance.BalanceManager
-	Order   order.OrderManager
-	User    user.UserManager
+	Accrual AccrualManager
+	Balance BalanceManager
+	Order   OrderManager
+	User    UserManager
 }
 
 func New(
