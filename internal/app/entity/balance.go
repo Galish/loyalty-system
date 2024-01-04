@@ -1,6 +1,6 @@
 package entity
 
-import "github.com/Galish/loyalty-system/internal/app/validation"
+import "github.com/Galish/loyalty-system/internal/validation"
 
 type Balance struct {
 	User      string
@@ -16,8 +16,8 @@ type Withdrawal struct {
 	ProcessedAt Time
 }
 
-func (w Withdrawal) Validate() error {
-	return validation.LuhnValidate(w.Order)
+func (w Withdrawal) IsValid() bool {
+	return validation.IsValidLuhn(w.Order)
 }
 
 type Enrollment struct {

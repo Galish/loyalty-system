@@ -356,7 +356,7 @@ func TestHandlerWithdraw(t *testing.T) {
 			},
 			&want{
 				http.StatusUnprocessableEntity,
-				"invalid order number value\n",
+				"invalid withdrawal order number\n",
 				"text/plain; charset=utf-8",
 			},
 		},

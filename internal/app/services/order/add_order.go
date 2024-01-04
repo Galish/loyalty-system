@@ -2,14 +2,17 @@ package order
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/Galish/loyalty-system/internal/app/entity"
 )
 
+var ErrInvalidOrderNumber = errors.New("invalid order number value")
+
 func (s *orderService) AddOrder(ctx context.Context, order entity.Order) error {
-	if err := order.Validate(); err != nil {
-		return err
+	if !order.IsValid() {
+		return ErrInvalidOrderNumber
 	}
 
 	order.Status = entity.StatusNew

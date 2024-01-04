@@ -9,7 +9,7 @@ import (
 
 	"github.com/Galish/loyalty-system/internal/app/entity"
 	"github.com/Galish/loyalty-system/internal/app/repository"
-	"github.com/Galish/loyalty-system/internal/app/validation"
+	"github.com/Galish/loyalty-system/internal/app/services/order"
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/logger"
 )
@@ -44,7 +44,7 @@ func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 
 	logger.WithError(err).Debug(errAddOrder)
 
-	if errors.Is(err, validation.ErrInvalidOrderNumber) {
+	if errors.Is(err, order.ErrInvalidOrderNumber) {
 		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 		return
 	}

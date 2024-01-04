@@ -7,7 +7,7 @@ import (
 
 	"github.com/Galish/loyalty-system/internal/app/entity"
 	repo "github.com/Galish/loyalty-system/internal/app/repository"
-	"github.com/Galish/loyalty-system/internal/app/validation"
+	"github.com/Galish/loyalty-system/internal/app/services/balance"
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/logger"
 )
@@ -75,7 +75,7 @@ func (h *httpHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
 
 	logger.WithError(err).Debug(errWithdrawFunds)
 
-	if errors.Is(err, validation.ErrInvalidOrderNumber) {
+	if errors.Is(err, balance.ErrInvalidOrderNumber) {
 		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 		return
 	}

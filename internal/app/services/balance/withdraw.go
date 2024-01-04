@@ -2,14 +2,17 @@ package balance
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/Galish/loyalty-system/internal/app/entity"
 )
 
+var ErrInvalidOrderNumber = errors.New("invalid withdrawal order number")
+
 func (s *balanceService) Withdraw(ctx context.Context, withdrawal *entity.Withdrawal) error {
-	if err := withdrawal.Validate(); err != nil {
-		return err
+	if !withdrawal.IsValid() {
+		return ErrInvalidOrderNumber
 	}
 
 	err := s.repo.Withdraw(

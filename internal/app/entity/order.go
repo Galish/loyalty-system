@@ -1,7 +1,7 @@
 package entity
 
 import (
-	"github.com/Galish/loyalty-system/internal/app/validation"
+	"github.com/Galish/loyalty-system/internal/validation"
 )
 
 type Order struct {
@@ -12,6 +12,6 @@ type Order struct {
 	User       string
 }
 
-func (o Order) Validate() error {
-	return validation.LuhnValidate(o.ID)
+func (o Order) IsValid() bool {
+	return validation.IsValidLuhn(o.ID)
 }
