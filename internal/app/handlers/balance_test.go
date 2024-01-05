@@ -14,9 +14,8 @@ import (
 	"github.com/Galish/loyalty-system/internal/app/entity"
 	repo "github.com/Galish/loyalty-system/internal/app/repository"
 	"github.com/Galish/loyalty-system/internal/app/repository/mocks"
-	"github.com/Galish/loyalty-system/internal/app/services"
-	"github.com/Galish/loyalty-system/internal/app/services/balance"
-	"github.com/Galish/loyalty-system/internal/app/services/user"
+	"github.com/Galish/loyalty-system/internal/app/usecase/balance"
+	"github.com/Galish/loyalty-system/internal/app/usecase/user"
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/config"
 	"github.com/golang/mock/gomock"
@@ -53,9 +52,9 @@ func TestHandlerGetBalance(t *testing.T) {
 		SrvAddr:   "8000",
 		SecretKey: "yvdUuY)HSX}?&b",
 	}
-	balance := balance.New(m)
 
-	user := user.New(nil, cfg.SecretKey)
+	balanceUseCase := balance.New(m)
+	userUseCase := user.New(nil, cfg.SecretKey)
 
 	jwtToken, _ := auth.GenerateToken(
 		cfg.SecretKey,
@@ -69,7 +68,7 @@ func TestHandlerGetBalance(t *testing.T) {
 	ts := httptest.NewServer(
 		NewRouter(
 			&cfg,
-			NewHandler(&cfg, &services.Services{User: user, Balance: balance}),
+			NewHandler(&cfg, nil, balanceUseCase, nil, userUseCase),
 		),
 	)
 	defer ts.Close()
@@ -227,9 +226,9 @@ func TestHandlerWithdraw(t *testing.T) {
 		SecretKey: "yvdUuY)HSX}?&b",
 	}
 
-	balance := balance.New(m)
+	balanceUseCase := balance.New(m)
+	userUseCase := user.New(nil, cfg.SecretKey)
 
-	user := user.New(nil, cfg.SecretKey)
 	jwtToken, _ := auth.GenerateToken(
 		cfg.SecretKey,
 		&entity.User{ID: "395fd5f4-964d-4135-9a55-fbf91c4a163b"},
@@ -238,7 +237,7 @@ func TestHandlerWithdraw(t *testing.T) {
 	ts := httptest.NewServer(
 		NewRouter(
 			&cfg,
-			NewHandler(&cfg, &services.Services{User: user, Balance: balance}),
+			NewHandler(&cfg, nil, balanceUseCase, nil, userUseCase),
 		),
 	)
 	defer ts.Close()
@@ -516,8 +515,8 @@ func TestHandlerWithdrawals(t *testing.T) {
 		SecretKey: "yvdUuY)HSX}?&b",
 	}
 
-	balance := balance.New(m)
-	user := user.New(nil, cfg.SecretKey)
+	balanceUseCase := balance.New(m)
+	userUseCase := user.New(nil, cfg.SecretKey)
 
 	jwtToken, _ := auth.GenerateToken(
 		cfg.SecretKey,
@@ -537,7 +536,7 @@ func TestHandlerWithdrawals(t *testing.T) {
 	ts := httptest.NewServer(
 		NewRouter(
 			&cfg,
-			NewHandler(&cfg, &services.Services{User: user, Balance: balance}),
+			NewHandler(&cfg, nil, balanceUseCase, nil, userUseCase),
 		),
 	)
 	defer ts.Close()

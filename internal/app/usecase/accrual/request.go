@@ -10,9 +10,9 @@ func (r *request) isAttemptsExceeded() bool {
 	return r.attempts >= maxAttempts-1
 }
 
-func (s *accrualService) retry(req *request) {
+func (uc *accrualUseCase) retry(req *request) {
 	if !req.isAttemptsExceeded() {
-		s.requestCh <- &request{
+		uc.requestCh <- &request{
 			order:    req.order,
 			attempts: req.attempts + 1,
 		}

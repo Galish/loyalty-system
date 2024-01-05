@@ -3,7 +3,10 @@ package main
 import (
 	"github.com/Galish/loyalty-system/internal/app/handlers"
 	"github.com/Galish/loyalty-system/internal/app/repository/psql"
-	"github.com/Galish/loyalty-system/internal/app/services"
+	"github.com/Galish/loyalty-system/internal/app/usecase/accrual"
+	"github.com/Galish/loyalty-system/internal/app/usecase/balance"
+	"github.com/Galish/loyalty-system/internal/app/usecase/order"
+	"github.com/Galish/loyalty-system/internal/app/usecase/user"
 	"github.com/Galish/loyalty-system/internal/app/webapi"
 	"github.com/Galish/loyalty-system/internal/config"
 	httpserver "github.com/Galish/loyalty-system/internal/http/server"
@@ -21,14 +24,23 @@ func main() {
 	}
 	defer store.Close()
 
-	svc := services.New(
-		cfg,
-		store,
-		webapi.New(cfg),
-	)
-	defer svc.Close()
+	webAPI := webapi.New(cfg)
 
-	handler := handlers.NewHandler(cfg, svc)
+	accrualUseCase := accrual.New(webAPI, store, store, cfg)
+	defer accrualUseCase.Close()
+
+	balanceUseCase := balance.New(store)
+	orderUseCase := order.New(store)
+	userUseCase := user.New(store, cfg.SecretKey)
+
+	handler := handlers.NewHandler(
+		cfg,
+		accrualUseCase,
+		balanceUseCase,
+		orderUseCase,
+		userUseCase,
+	)
+
 	router := handlers.NewRouter(cfg, handler)
 
 	httpServer := httpserver.New(cfg.SrvAddr, router)

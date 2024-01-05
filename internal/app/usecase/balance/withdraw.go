@@ -10,12 +10,12 @@ import (
 
 var ErrInvalidOrderNumber = errors.New("invalid withdrawal order number")
 
-func (s *balanceService) Withdraw(ctx context.Context, withdrawal *entity.Withdrawal) error {
+func (uc *balanceUseCase) Withdraw(ctx context.Context, withdrawal *entity.Withdrawal) error {
 	if !withdrawal.IsValid() {
 		return ErrInvalidOrderNumber
 	}
 
-	err := s.repo.Withdraw(
+	err := uc.repo.Withdraw(
 		ctx,
 		&entity.Withdrawal{
 			Order:       withdrawal.Order,

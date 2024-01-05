@@ -4,13 +4,13 @@ import (
 	"github.com/Galish/loyalty-system/internal/app/repository"
 )
 
-type authService struct {
+type userUseCase struct {
 	repo      repository.UserRepository
 	secretKey string
 }
 
-func New(repo repository.UserRepository, secretKey string) *authService {
-	return &authService{
+func New(repo repository.UserRepository, secretKey string) *userUseCase {
+	return &userUseCase{
 		repo:      repo,
 		secretKey: secretKey,
 	}

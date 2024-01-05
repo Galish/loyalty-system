@@ -4,12 +4,12 @@ import (
 	"github.com/Galish/loyalty-system/internal/app/repository"
 )
 
-type orderService struct {
+type orderUseCase struct {
 	repo repository.OrderRepository
 }
 
-func New(repo repository.OrderRepository) *orderService {
-	return &orderService{
+func New(repo repository.OrderRepository) *orderUseCase {
+	return &orderUseCase{
 		repo: repo,
 	}
 }

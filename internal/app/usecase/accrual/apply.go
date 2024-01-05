@@ -8,8 +8,8 @@ import (
 	"github.com/Galish/loyalty-system/internal/logger"
 )
 
-func (s *accrualService) applyAccrual(ctx context.Context, accrual *entity.Accrual) error {
-	err := s.orderRepo.UpdateOrder(
+func (uc *accrualUseCase) applyAccrual(ctx context.Context, accrual *entity.Accrual) error {
+	err := uc.orderRepo.UpdateOrder(
 		ctx,
 		&entity.Order{
 			ID:      accrual.Order,
@@ -22,7 +22,7 @@ func (s *accrualService) applyAccrual(ctx context.Context, accrual *entity.Accru
 		return err
 	}
 
-	err = s.balanceRepo.Enroll(
+	err = uc.balanceRepo.Enroll(
 		ctx,
 		&entity.Enrollment{
 			User:        accrual.User,

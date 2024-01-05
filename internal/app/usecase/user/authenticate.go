@@ -7,8 +7,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func (as *authService) Authenticate(ctx context.Context, username, password string) (string, error) {
-	user, err := as.repo.GetUserByLogin(ctx, username)
+func (uc *userUseCase) Authenticate(ctx context.Context, username, password string) (string, error) {
+	user, err := uc.repo.GetUserByLogin(ctx, username)
 	if err != nil {
 		return "", err
 	}
@@ -18,7 +18,7 @@ func (as *authService) Authenticate(ctx context.Context, username, password stri
 		return "", ErrIncorrectLoginPassword
 	}
 
-	token, err := auth.GenerateToken(as.secretKey, user)
+	token, err := auth.GenerateToken(uc.secretKey, user)
 	if err != nil {
 		return "", err
 	}

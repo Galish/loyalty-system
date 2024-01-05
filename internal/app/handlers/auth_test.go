@@ -14,8 +14,7 @@ import (
 	"github.com/Galish/loyalty-system/internal/app/entity"
 	"github.com/Galish/loyalty-system/internal/app/repository"
 	"github.com/Galish/loyalty-system/internal/app/repository/mocks"
-	"github.com/Galish/loyalty-system/internal/app/services"
-	"github.com/Galish/loyalty-system/internal/app/services/user"
+	"github.com/Galish/loyalty-system/internal/app/usecase/user"
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/config"
 
@@ -63,12 +62,12 @@ func TestHandlerRegister(t *testing.T) {
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000", SecretKey: "yvdUuY)HSX}?&b"}
-	user := user.New(m, cfg.SecretKey)
+	userUseCase := user.New(m, cfg.SecretKey)
 
 	ts := httptest.NewServer(
 		NewRouter(
 			&cfg,
-			NewHandler(&cfg, &services.Services{User: user}),
+			NewHandler(&cfg, nil, nil, nil, userUseCase),
 		),
 	)
 	defer ts.Close()
@@ -296,12 +295,12 @@ func TestHandlerLogin(t *testing.T) {
 		AnyTimes()
 
 	cfg := config.Config{SrvAddr: "8000", SecretKey: "yvdUuY)HSX}?&b"}
-	user := user.New(m, cfg.SecretKey)
+	userUseCase := user.New(m, cfg.SecretKey)
 
 	ts := httptest.NewServer(
 		NewRouter(
 			&cfg,
-			NewHandler(&cfg, &services.Services{User: user}),
+			NewHandler(&cfg, nil, nil, nil, userUseCase),
 		),
 	)
 	defer ts.Close()

@@ -7,18 +7,18 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func (as *authService) Register(ctx context.Context, username, password string) (string, error) {
+func (uc *userUseCase) Register(ctx context.Context, username, password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", err
 	}
 
-	user, err := as.repo.CreateUser(ctx, username, string(bytes))
+	user, err := uc.repo.CreateUser(ctx, username, string(bytes))
 	if err != nil {
 		return "", err
 	}
 
-	token, err := auth.GenerateToken(as.secretKey, user)
+	token, err := auth.GenerateToken(uc.secretKey, user)
 	if err != nil {
 		return "", err
 	}

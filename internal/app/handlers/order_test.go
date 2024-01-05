@@ -12,10 +12,9 @@ import (
 	"github.com/Galish/loyalty-system/internal/app/entity"
 	repo "github.com/Galish/loyalty-system/internal/app/repository"
 	repoMocks "github.com/Galish/loyalty-system/internal/app/repository/mocks"
-	"github.com/Galish/loyalty-system/internal/app/services"
-	accrualMocks "github.com/Galish/loyalty-system/internal/app/services/accrual/mocks"
-	"github.com/Galish/loyalty-system/internal/app/services/order"
-	"github.com/Galish/loyalty-system/internal/app/services/user"
+	usecaseMocks "github.com/Galish/loyalty-system/internal/app/usecase/mocks"
+	"github.com/Galish/loyalty-system/internal/app/usecase/order"
+	"github.com/Galish/loyalty-system/internal/app/usecase/user"
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/config"
 	"github.com/golang/mock/gomock"
@@ -47,16 +46,23 @@ func TestHandlerAddOrder(t *testing.T) {
 		}).
 		AnyTimes()
 
-	accrualMock := accrualMocks.NewMockAccrualManager(ctrl)
-	accrualMock.EXPECT().GetAccrual(gomock.Any(), gomock.Any())
+	accrualMock := usecaseMocks.NewMockAccrualUseCase(ctrl)
+
+	accrualMock.EXPECT().GetAccrual(
+		gomock.Any(),
+		gomock.Eq(&entity.Order{
+			ID:   "12345678903",
+			User: "395fd5f4-964d-4135-9a55-fbf91c4a163b",
+		}),
+	)
 
 	cfg := config.Config{
 		SrvAddr:   "8000",
 		SecretKey: "yvdUuY)HSX}?&b",
 	}
 
-	order := order.New(orderMock)
-	user := user.New(nil, cfg.SecretKey)
+	orderUseCase := order.New(orderMock)
+	userUseCase := user.New(nil, cfg.SecretKey)
 
 	jwtToken, _ := auth.GenerateToken(
 		cfg.SecretKey,
@@ -66,14 +72,7 @@ func TestHandlerAddOrder(t *testing.T) {
 	ts := httptest.NewServer(
 		NewRouter(
 			&cfg,
-			NewHandler(
-				&cfg,
-				&services.Services{
-					Accrual: accrualMock,
-					Order:   order,
-					User:    user,
-				},
-			),
+			NewHandler(&cfg, accrualMock, nil, orderUseCase, userUseCase),
 		),
 	)
 	defer ts.Close()
@@ -312,8 +311,8 @@ func TestHandlerGetOrders(t *testing.T) {
 		SecretKey: "yvdUuY)HSX}?&b",
 	}
 
-	order := order.New(m)
-	user := user.New(nil, cfg.SecretKey)
+	orderUseCase := order.New(m)
+	userUseCase := user.New(nil, cfg.SecretKey)
 
 	jwtToken, _ := auth.GenerateToken(
 		cfg.SecretKey,
@@ -328,7 +327,7 @@ func TestHandlerGetOrders(t *testing.T) {
 	ts := httptest.NewServer(
 		NewRouter(
 			&cfg,
-			NewHandler(&cfg, &services.Services{User: user, Order: order}),
+			NewHandler(&cfg, nil, nil, orderUseCase, userUseCase),
 		),
 	)
 	defer ts.Close()

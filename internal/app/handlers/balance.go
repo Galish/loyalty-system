@@ -7,7 +7,7 @@ import (
 
 	"github.com/Galish/loyalty-system/internal/app/entity"
 	repo "github.com/Galish/loyalty-system/internal/app/repository"
-	"github.com/Galish/loyalty-system/internal/app/services/balance"
+	"github.com/Galish/loyalty-system/internal/app/usecase/balance"
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/logger"
 )
@@ -31,7 +31,7 @@ type responseWithdrawal struct {
 func (h *httpHandler) GetBalance(w http.ResponseWriter, r *http.Request) {
 	user := r.Header.Get(auth.AuthHeaderName)
 
-	balance, err := h.balance.GetBalance(r.Context(), user)
+	balance, err := h.uc.balance.GetBalance(r.Context(), user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -67,7 +67,7 @@ func (h *httpHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
 		User:  r.Header.Get(auth.AuthHeaderName),
 	}
 
-	err = h.balance.Withdraw(r.Context(), &withdrawal)
+	err = h.uc.balance.Withdraw(r.Context(), &withdrawal)
 	if err == nil {
 		w.WriteHeader(http.StatusOK)
 		return
@@ -89,7 +89,7 @@ func (h *httpHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *httpHandler) Withdrawals(w http.ResponseWriter, r *http.Request) {
-	withdrawals, err := h.balance.Withdrawals(
+	withdrawals, err := h.uc.balance.Withdrawals(
 		r.Context(),
 		r.Header.Get(auth.AuthHeaderName),
 	)

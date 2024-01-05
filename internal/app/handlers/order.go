@@ -9,7 +9,7 @@ import (
 
 	"github.com/Galish/loyalty-system/internal/app/entity"
 	"github.com/Galish/loyalty-system/internal/app/repository"
-	"github.com/Galish/loyalty-system/internal/app/services/order"
+	"github.com/Galish/loyalty-system/internal/app/usecase/order"
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/logger"
 )
@@ -34,9 +34,9 @@ func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 		User: r.Header.Get(auth.AuthHeaderName),
 	}
 
-	err = h.order.AddOrder(r.Context(), newOrder)
+	err = h.uc.order.AddOrder(r.Context(), newOrder)
 	if err == nil {
-		go h.accrual.GetAccrual(context.Background(), &newOrder)
+		go h.uc.accrual.GetAccrual(context.Background(), &newOrder)
 
 		w.WriteHeader(http.StatusAccepted)
 		return
@@ -66,7 +66,7 @@ func (h *httpHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 func (h *httpHandler) GetOrders(w http.ResponseWriter, r *http.Request) {
 	userID := r.Header.Get(auth.AuthHeaderName)
 
-	orders, err := h.order.GetOrders(r.Context(), userID)
+	orders, err := h.uc.order.GetOrders(r.Context(), userID)
 	if err != nil {
 		logger.WithError(err).Debug(errReadFromRepo)
 		http.Error(w, errReadFromRepo, http.StatusInternalServerError)

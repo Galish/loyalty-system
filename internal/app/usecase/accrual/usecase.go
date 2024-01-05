@@ -14,7 +14,7 @@ const (
 	maxAttempts uint = 10
 )
 
-type accrualService struct {
+type accrualUseCase struct {
 	accrualAPI      webapi.AccrualGetter
 	orderRepo       repo.OrderRepository
 	balanceRepo     repo.BalanceRepository
@@ -28,8 +28,8 @@ func New(
 	orderRepo repo.OrderRepository,
 	balanceRepo repo.BalanceRepository,
 	cfg *config.Config,
-) *accrualService {
-	service := &accrualService{
+) *accrualUseCase {
+	service := &accrualUseCase{
 		accrualAPI:      accrualAPI,
 		orderRepo:       orderRepo,
 		balanceRepo:     balanceRepo,
@@ -43,35 +43,35 @@ func New(
 	return service
 }
 
-func (s *accrualService) GetAccrual(ctx context.Context, order *entity.Order) {
-	s.requestCh <- &request{
+func (uc *accrualUseCase) GetAccrual(ctx context.Context, order *entity.Order) {
+	uc.requestCh <- &request{
 		order:    string(order.ID),
 		user:     order.User,
 		attempts: 0,
 	}
 }
 
-func (s *accrualService) flushMessages() {
-	limiter := newLimiter(s.limiterInterval)
+func (uc *accrualUseCase) flushMessages() {
+	limiter := newLimiter(uc.limiterInterval)
 
-	for req := range s.requestCh {
+	for req := range uc.requestCh {
 		<-limiter.C
 
 		go func(req *request) {
-			accrual, err := s.accrualAPI.GetAccrual(context.Background(), req.order)
+			accrual, err := uc.accrualAPI.GetAccrual(context.Background(), req.order)
 			if err != nil || !accrual.Status.IsFinal() && !req.isAttemptsExceeded() {
-				go s.retry(req)
+				go uc.retry(req)
 				return
 			}
 			accrual.User = req.user
 
-			s.applyAccrual(context.Background(), accrual)
+			uc.applyAccrual(context.Background(), accrual)
 		}(req)
 	}
 
 	limiter.Close()
 }
 
-func (s *accrualService) Close() {
-	close(s.requestCh)
+func (uc *accrualUseCase) Close() {
+	close(uc.requestCh)
 }
