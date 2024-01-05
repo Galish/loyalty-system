@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/Galish/loyalty-system/internal/app/entity"
+	"github.com/Galish/loyalty-system/internal/datetime"
 )
 
 var ErrInvalidOrderNumber = errors.New("invalid withdrawal order number")
@@ -21,7 +22,7 @@ func (uc *balanceUseCase) Withdraw(ctx context.Context, withdrawal *entity.Withd
 			Order:       withdrawal.Order,
 			User:        withdrawal.User,
 			Sum:         withdrawal.Sum,
-			ProcessedAt: entity.Time(time.Now()),
+			ProcessedAt: datetime.Round(time.Now()),
 		},
 	)
 	if err != nil {

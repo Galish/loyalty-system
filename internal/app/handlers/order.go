@@ -11,6 +11,7 @@ import (
 	"github.com/Galish/loyalty-system/internal/app/repository"
 	"github.com/Galish/loyalty-system/internal/app/usecase/order"
 	"github.com/Galish/loyalty-system/internal/auth"
+	"github.com/Galish/loyalty-system/internal/datetime"
 	"github.com/Galish/loyalty-system/internal/logger"
 )
 
@@ -86,7 +87,7 @@ func (h *httpHandler) GetOrders(w http.ResponseWriter, r *http.Request) {
 				ID:         order.ID,
 				Status:     string(order.Status),
 				Accrual:    order.Accrual,
-				UploadedAt: order.UploadedAt.Format(),
+				UploadedAt: datetime.Format(order.UploadedAt),
 			},
 		)
 	}

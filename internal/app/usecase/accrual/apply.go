@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/Galish/loyalty-system/internal/app/entity"
+	"github.com/Galish/loyalty-system/internal/datetime"
 	"github.com/Galish/loyalty-system/internal/logger"
 )
 
@@ -27,7 +28,7 @@ func (uc *accrualUseCase) applyAccrual(ctx context.Context, accrual *entity.Accr
 		&entity.Enrollment{
 			User:        accrual.User,
 			Sum:         accrual.Value,
-			ProcessedAt: entity.Time(time.Now()),
+			ProcessedAt: datetime.Round(time.Now()),
 		},
 	)
 	if err != nil {

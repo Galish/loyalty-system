@@ -18,7 +18,7 @@ func (s *psqlStore) Enroll(ctx context.Context, enroll *entity.Enrollment) error
 		`,
 		enroll.User,
 		enroll.Sum,
-		enroll.ProcessedAt.Value(),
+		enroll.ProcessedAt,
 	)
 	if err != nil {
 		return err

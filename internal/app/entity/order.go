@@ -1,6 +1,8 @@
 package entity
 
 import (
+	"time"
+
 	"github.com/Galish/loyalty-system/internal/validation"
 )
 
@@ -8,7 +10,7 @@ type Order struct {
 	ID         string
 	Status     Status
 	Accrual    float32
-	UploadedAt Time
+	UploadedAt time.Time
 	User       string
 }
 

@@ -25,7 +25,7 @@ func (s *psqlStore) Withdraw(ctx context.Context, withdrawal *entity.Withdrawal)
 			WHERE user_id = $3
 		`,
 		withdrawal.Sum,
-		withdrawal.ProcessedAt.Value(),
+		withdrawal.ProcessedAt,
 		withdrawal.User,
 	)
 	if err != nil {
@@ -60,7 +60,7 @@ func (s *psqlStore) Withdraw(ctx context.Context, withdrawal *entity.Withdrawal)
 		withdrawal.Order,
 		withdrawal.User,
 		withdrawal.Sum,
-		withdrawal.ProcessedAt.Value(),
+		withdrawal.ProcessedAt,
 	)
 
 	if err != nil {

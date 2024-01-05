@@ -9,6 +9,7 @@ import (
 	repo "github.com/Galish/loyalty-system/internal/app/repository"
 	"github.com/Galish/loyalty-system/internal/app/usecase/balance"
 	"github.com/Galish/loyalty-system/internal/auth"
+	"github.com/Galish/loyalty-system/internal/datetime"
 	"github.com/Galish/loyalty-system/internal/logger"
 )
 
@@ -111,7 +112,7 @@ func (h *httpHandler) Withdrawals(w http.ResponseWriter, r *http.Request) {
 			&responseWithdrawal{
 				Order:       withdrawal.Order,
 				Sum:         withdrawal.Sum,
-				ProcessedAt: withdrawal.ProcessedAt.Format(),
+				ProcessedAt: datetime.Format(withdrawal.ProcessedAt),
 			},
 		)
 	}

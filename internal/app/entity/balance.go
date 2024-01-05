@@ -1,19 +1,23 @@
 package entity
 
-import "github.com/Galish/loyalty-system/internal/validation"
+import (
+	"time"
+
+	"github.com/Galish/loyalty-system/internal/validation"
+)
 
 type Balance struct {
 	User      string
 	Current   float32
 	Withdrawn float32
-	UpdatedAt Time
+	UpdatedAt time.Time
 }
 
 type Withdrawal struct {
 	Order       string
 	Sum         float32
 	User        string
-	ProcessedAt Time
+	ProcessedAt time.Time
 }
 
 func (w Withdrawal) IsValid() bool {
@@ -23,5 +27,5 @@ func (w Withdrawal) IsValid() bool {
 type Enrollment struct {
 	User        string
 	Sum         float32
-	ProcessedAt Time
+	ProcessedAt time.Time
 }

@@ -21,7 +21,7 @@ func (s *psqlStore) CreateOrder(ctx context.Context, order *entity.Order) error 
 		order.ID,
 		order.Status,
 		order.Accrual,
-		order.UploadedAt.Value(),
+		order.UploadedAt,
 		order.User,
 	)
 
@@ -34,7 +34,7 @@ func (s *psqlStore) CreateOrder(ctx context.Context, order *entity.Order) error 
 		return err
 	}
 
-	if order.UploadedAt.Value().Equal(uploadedAt) {
+	if order.UploadedAt.Equal(uploadedAt) {
 		return nil
 	}
 
