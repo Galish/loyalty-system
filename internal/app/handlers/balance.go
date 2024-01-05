@@ -5,8 +5,8 @@ import (
 	"errors"
 	"net/http"
 
+	repo "github.com/Galish/loyalty-system/internal/app/adapters/repository"
 	"github.com/Galish/loyalty-system/internal/app/entity"
-	repo "github.com/Galish/loyalty-system/internal/app/repository"
 	"github.com/Galish/loyalty-system/internal/app/usecase/balance"
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/datetime"

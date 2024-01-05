@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"errors"
 
+	repo "github.com/Galish/loyalty-system/internal/app/adapters/repository"
 	"github.com/Galish/loyalty-system/internal/app/entity"
-	repo "github.com/Galish/loyalty-system/internal/app/repository"
 )
 
 func (s *psqlStore) UserBalance(ctx context.Context, user string) (*entity.Balance, error) {

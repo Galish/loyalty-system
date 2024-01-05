@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
+	repo "github.com/Galish/loyalty-system/internal/app/adapters/repository"
+	"github.com/Galish/loyalty-system/internal/app/adapters/webapi"
 	"github.com/Galish/loyalty-system/internal/app/entity"
-	repo "github.com/Galish/loyalty-system/internal/app/repository"
-	"github.com/Galish/loyalty-system/internal/app/webapi"
 	"github.com/Galish/loyalty-system/internal/config"
 )
 

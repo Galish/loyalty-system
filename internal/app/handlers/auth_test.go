@@ -11,9 +11,9 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/Galish/loyalty-system/internal/app/adapters/repository"
+	"github.com/Galish/loyalty-system/internal/app/adapters/repository/mocks"
 	"github.com/Galish/loyalty-system/internal/app/entity"
-	"github.com/Galish/loyalty-system/internal/app/repository"
-	"github.com/Galish/loyalty-system/internal/app/repository/mocks"
 	"github.com/Galish/loyalty-system/internal/app/usecase/user"
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/config"

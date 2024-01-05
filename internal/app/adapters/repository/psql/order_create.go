@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
+	repo "github.com/Galish/loyalty-system/internal/app/adapters/repository"
 	"github.com/Galish/loyalty-system/internal/app/entity"
-	repo "github.com/Galish/loyalty-system/internal/app/repository"
 )
 
 func (s *psqlStore) CreateOrder(ctx context.Context, order *entity.Order) error {

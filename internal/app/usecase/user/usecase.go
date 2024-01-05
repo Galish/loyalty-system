@@ -1,7 +1,7 @@
 package user
 
 import (
-	"github.com/Galish/loyalty-system/internal/app/repository"
+	"github.com/Galish/loyalty-system/internal/app/adapters/repository"
 )
 
 type userUseCase struct {

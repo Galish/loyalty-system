@@ -7,8 +7,8 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/Galish/loyalty-system/internal/app/adapters/repository"
 	"github.com/Galish/loyalty-system/internal/app/entity"
-	"github.com/Galish/loyalty-system/internal/app/repository"
 	"github.com/Galish/loyalty-system/internal/app/usecase/order"
 	"github.com/Galish/loyalty-system/internal/auth"
 	"github.com/Galish/loyalty-system/internal/datetime"

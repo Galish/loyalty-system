@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
+	repo "github.com/Galish/loyalty-system/internal/app/adapters/repository"
 	"github.com/Galish/loyalty-system/internal/app/entity"
-	repo "github.com/Galish/loyalty-system/internal/app/repository"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"

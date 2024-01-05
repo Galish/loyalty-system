@@ -1,13 +1,13 @@
 package main
 
 import (
+	"github.com/Galish/loyalty-system/internal/app/adapters/repository/psql"
+	"github.com/Galish/loyalty-system/internal/app/adapters/webapi"
 	"github.com/Galish/loyalty-system/internal/app/handlers"
-	"github.com/Galish/loyalty-system/internal/app/repository/psql"
 	"github.com/Galish/loyalty-system/internal/app/usecase/accrual"
 	"github.com/Galish/loyalty-system/internal/app/usecase/balance"
 	"github.com/Galish/loyalty-system/internal/app/usecase/order"
 	"github.com/Galish/loyalty-system/internal/app/usecase/user"
-	"github.com/Galish/loyalty-system/internal/app/webapi"
 	"github.com/Galish/loyalty-system/internal/config"
 	httpserver "github.com/Galish/loyalty-system/internal/http/server"
 	"github.com/Galish/loyalty-system/internal/logger"

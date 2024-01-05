@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
+	repo "github.com/Galish/loyalty-system/internal/app/adapters/repository"
+	"github.com/Galish/loyalty-system/internal/app/adapters/repository/mocks"
 	"github.com/Galish/loyalty-system/internal/app/entity"
-	repo "github.com/Galish/loyalty-system/internal/app/repository"
-	"github.com/Galish/loyalty-system/internal/app/repository/mocks"
 	"github.com/Galish/loyalty-system/internal/app/usecase/balance"
 	"github.com/Galish/loyalty-system/internal/app/usecase/user"
 	"github.com/Galish/loyalty-system/internal/auth"

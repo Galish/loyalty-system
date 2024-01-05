@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
+	repo "github.com/Galish/loyalty-system/internal/app/adapters/repository"
+	repoMocks "github.com/Galish/loyalty-system/internal/app/adapters/repository/mocks"
 	"github.com/Galish/loyalty-system/internal/app/entity"
-	repo "github.com/Galish/loyalty-system/internal/app/repository"
-	repoMocks "github.com/Galish/loyalty-system/internal/app/repository/mocks"
 	usecaseMocks "github.com/Galish/loyalty-system/internal/app/usecase/mocks"
 	"github.com/Galish/loyalty-system/internal/app/usecase/order"
 	"github.com/Galish/loyalty-system/internal/app/usecase/user"

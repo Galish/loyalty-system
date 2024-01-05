@@ -44,7 +44,7 @@ func NewStore(cfg *config.Config) (*psqlStore, error) {
 }
 
 func (s *psqlStore) init() error {
-	query, err := os.ReadFile("internal/app/repository/psql/init.sql")
+	query, err := os.ReadFile("internal/app/adapters/repository/psql/init.sql")
 	if err != nil {
 		return err
 	}
