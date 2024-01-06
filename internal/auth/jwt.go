@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Galish/loyalty-system/internal/model"
+	"github.com/Galish/loyalty-system/internal/app/entity"
 	"github.com/golang-jwt/jwt/v4"
 )
 
@@ -13,7 +13,7 @@ type JWTClaims struct {
 	UserID string
 }
 
-func (as *AuthService) GenerateToken(user *model.User) (string, error) {
+func GenerateToken(secretKey string, user *entity.User) (string, error) {
 	token := jwt.NewWithClaims(
 		jwt.SigningMethodHS256,
 		&JWTClaims{
@@ -21,7 +21,7 @@ func (as *AuthService) GenerateToken(user *model.User) (string, error) {
 		},
 	)
 
-	tokenString, err := token.SignedString([]byte(as.secretKey))
+	tokenString, err := token.SignedString([]byte(secretKey))
 	if err != nil {
 		return "", err
 	}
@@ -29,7 +29,7 @@ func (as *AuthService) GenerateToken(user *model.User) (string, error) {
 	return tokenString, nil
 }
 
-func (as *AuthService) ParseToken(tokenString string) (*JWTClaims, error) {
+func ParseToken(secretKey string, tokenString string) (*JWTClaims, error) {
 	var claims JWTClaims
 
 	token, err := jwt.ParseWithClaims(
@@ -40,7 +40,7 @@ func (as *AuthService) ParseToken(tokenString string) (*JWTClaims, error) {
 				return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
 			}
 
-			return []byte(as.secretKey), nil
+			return []byte(secretKey), nil
 		},
 	)
 	if err != nil {

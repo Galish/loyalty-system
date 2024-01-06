@@ -1,14 +1,16 @@
 package main
 
 import (
-	"github.com/Galish/loyalty-system/internal/accrual"
-	"github.com/Galish/loyalty-system/internal/api"
-	"github.com/Galish/loyalty-system/internal/auth"
-	"github.com/Galish/loyalty-system/internal/balance"
+	"github.com/Galish/loyalty-system/internal/app/adapters/repository/psql"
+	"github.com/Galish/loyalty-system/internal/app/adapters/webapi"
+	"github.com/Galish/loyalty-system/internal/app/handlers"
+	"github.com/Galish/loyalty-system/internal/app/usecase/accrual"
+	"github.com/Galish/loyalty-system/internal/app/usecase/balance"
+	"github.com/Galish/loyalty-system/internal/app/usecase/order"
+	"github.com/Galish/loyalty-system/internal/app/usecase/user"
 	"github.com/Galish/loyalty-system/internal/config"
+	httpserver "github.com/Galish/loyalty-system/internal/http/server"
 	"github.com/Galish/loyalty-system/internal/logger"
-	"github.com/Galish/loyalty-system/internal/order"
-	"github.com/Galish/loyalty-system/internal/repository/psql"
 )
 
 func main() {
@@ -22,21 +24,26 @@ func main() {
 	}
 	defer store.Close()
 
-	authService := auth.NewService(store, cfg.SecretKey)
-	orderService := order.NewService(store)
-	balanceService := balance.NewService(store)
-	accrualService := accrual.NewService(store, store, cfg)
-	defer accrualService.Close()
+	webAPI := webapi.New(cfg)
 
-	router := api.NewRouter(
+	accrualUseCase := accrual.New(webAPI, store, store, cfg)
+	defer accrualUseCase.Close()
+
+	balanceUseCase := balance.New(store)
+	orderUseCase := order.New(store)
+	userUseCase := user.New(store, cfg.SecretKey)
+
+	handler := handlers.NewHandler(
 		cfg,
-		authService,
-		orderService,
-		balanceService,
-		accrualService,
+		accrualUseCase,
+		balanceUseCase,
+		orderUseCase,
+		userUseCase,
 	)
 
-	httpServer := api.NewServer(cfg.SrvAddr, router)
+	router := handlers.NewRouter(cfg, handler)
+
+	httpServer := httpserver.New(cfg.SrvAddr, router)
 	if err := httpServer.Run(); err != nil {
 		panic(err)
 	}
